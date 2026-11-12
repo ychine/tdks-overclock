@@ -233,7 +233,7 @@ function Audiences({ t, enter }) {
 export default function Landing({ enter, dark, setDark }) {
   const { t } = useI18n()
   const root = useRef(null)
-  const trustIcons = ['lock', 'spark', 'help', 'sound']
+  const trustIcons = ['lock', 'refresh', 'check', 'spark']
   const statValues = [24, 3, 4, 0]
 
   // Smooth, inertial scrolling. Skipped for prefers-reduced-motion. Driven by GSAP's ticker so
@@ -316,13 +316,20 @@ export default function Landing({ enter, dark, setDark }) {
   const steps = t('landing.steps')
 
   return (
-    <div ref={root} className="overflow-x-clip">
+    <div ref={root} className="relative isolate overflow-x-clip">
+      {/* banig weave from the very top of the page, behind the header nav, dissolving downward into the hero */}
+      <div
+        aria-hidden="true"
+        className="banig pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 [mask-image:linear-gradient(to_top,transparent,rgba(0,0,0,0.35))] sm:h-48"
+      />
       <Header t={t} enter={enter} dark={dark} setDark={setDark} />
 
       <main>
+        {/* First screen fills the viewport (minus the 74px header) so the trust strip sits at its bottom edge. */}
+        <div className="flex min-h-[calc(100svh-74px)] flex-col">
         <section
           data-hero-section
-          className="mx-auto grid w-[min(1240px,calc(100%-32px))] items-center gap-10 py-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:py-20"
+          className="mx-auto grid w-[min(1240px,calc(100%-32px))] flex-1 content-center items-center gap-10 py-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:py-12"
         >
           <div>
             <span
@@ -359,23 +366,13 @@ export default function Landing({ enter, dark, setDark }) {
                 {t('landing.how')} <Icon name="arrow" size={18} />
               </a>
             </div>
-            <div data-hero="cta" className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-subtle">
-              <span className="flex items-center gap-1.5">
-                <span className="text-brand"><Icon name="lock" size={18} /></span>
-                {t('landing.reassure1')}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="text-brand"><Icon name="check" size={18} /></span>
-                {t('landing.reassure2')}
-              </span>
-            </div>
           </div>
           <ContractPreview t={t} />
         </section>
 
         {/* banig weave: the top dissolves into the hero, the bottom stays crisp against the trust strip */}
         <div className="relative h-3" aria-hidden="true">
-          <div className="banig pointer-events-none absolute inset-x-0 bottom-0 h-16 border-b border-line [mask-image:linear-gradient(to_bottom,transparent,black_75%)] sm:h-24" />
+          <div className="banig pointer-events-none absolute inset-x-0 bottom-0 h-16 border-b border-line opacity-40 [mask-image:linear-gradient(to_bottom,transparent,black_75%)] sm:h-24" />
         </div>
 
         <section className="border-b border-line bg-surface">
@@ -388,6 +385,7 @@ export default function Landing({ enter, dark, setDark }) {
             ))}
           </ul>
         </section>
+        </div>
 
         <section id="paano" className={`${wrap} scroll-mt-20 py-16 md:py-24`}>
           <div data-reveal className="max-w-[700px]">

@@ -2,7 +2,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { cn } from "@/lib/utils"
 
-/** Marker underline: two quick uniform strokes, like someone underlining a word to stress it. */
+/** Marker underline: a single quick uniform stroke, like someone underlining a word to stress it. */
 function BrushUnderline({ delay = 0, animate = true }) {
   const stroke = {
     fill: "none",
@@ -28,10 +28,9 @@ function BrushUnderline({ delay = 0, animate = true }) {
       aria-hidden="true"
       viewBox="0 0 200 24"
       preserveAspectRatio="none"
-      className="pointer-events-none absolute inset-x-0 -bottom-[0.26em] -z-10 h-[0.4em] w-full overflow-visible"
+      className="pointer-events-none absolute inset-x-0 -bottom-[0.3em] -z-10 h-[0.4em] w-full overflow-visible"
     >
-      <motion.path d="M3 9C55 5 125 4 197 7" {...stroke} {...draw({ delay })} />
-      <motion.path d="M22 19C80 16 135 15 178 17" {...stroke} {...draw({ delay: delay + 0.28 })} />
+      <motion.path d="M3 14C55 10 125 9 197 12" {...stroke} {...draw({ delay })} />
     </svg>
   )
 }

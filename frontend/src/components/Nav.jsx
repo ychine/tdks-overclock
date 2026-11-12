@@ -1,7 +1,10 @@
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
 import { SPRING_LAYOUT } from '@/lib/ease'
 import { cn } from '@/lib/utils'
 import { useI18n } from '../i18n/useI18n'
+import { agencies, telHref } from '../lib/agencies'
+import { Badge } from './ui/Surfaces'
 import Brand from './Brand'
 import Icon from './Icon'
 import LanguageSelect from './LanguageSelect'
@@ -42,6 +45,114 @@ function BottomNavButton({ item, active, go, label }) {
   )
 }
 
+/** Help nav item: click goes to the full page; hover or the chevron opens quick-call numbers. */
+function HelpMenu({ active, go }) {
+  const { t } = useI18n()
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    if (!open) return undefined
+    const onDown = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+    }
+    const onKey = (e) => e.key === 'Escape' && setOpen(false)
+    document.addEventListener('pointerdown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('pointerdown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
+  return (
+    <div
+      ref={ref}
+      className="relative flex items-center"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        type="button"
+        aria-current={active ? 'page' : undefined}
+        onClick={() => {
+          setOpen(false)
+          go('help')
+        }}
+        className={cn(
+          'min-h-11 rounded-btn pl-3 text-sm font-semibold transition-colors',
+          active ? 'text-brand' : 'text-subtle hover:text-ink',
+        )}
+      >
+        {t('nav.help')}
+      </button>
+      <button
+        type="button"
+        aria-label={t('nav.quickCalls')}
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className={cn(
+          'grid min-h-11 w-8 place-items-center rounded-btn transition-colors',
+          active ? 'text-brand' : 'text-subtle hover:text-ink',
+        )}
+      >
+        <svg
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          className={cn('transition-transform', open && 'rotate-180')}
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute top-full right-0 z-50 w-64 pt-1">
+          <div role="menu" className="rounded-card border border-line bg-surface p-2 shadow-lg">
+            <div className="flex items-center justify-between px-2 py-1.5">
+              <span className="text-xs font-bold tracking-wide text-subtle uppercase">{t('nav.quickCalls')}</span>
+              <Badge tone="ok" icon="phone">
+                {t('nav.quickCallsHours')}
+              </Badge>
+            </div>
+            <ul>
+              {agencies.map((a) => (
+                <li key={a.id}>
+                  <a
+                    role="menuitem"
+                    href={telHref(a.phone)}
+                    className="flex min-h-11 items-center justify-between gap-3 rounded-btn px-2 text-sm hover:bg-brand-soft"
+                  >
+                    <span className="font-bold">{a.name}</span>
+                    <span className="font-semibold text-brand tabular-nums">{a.phone}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              role="menuitem"
+              onClick={() => {
+                setOpen(false)
+                go('help')
+              }}
+              className="mt-1 flex min-h-11 w-full items-center rounded-btn border-t border-line px-2 text-sm font-semibold text-subtle hover:text-ink"
+            >
+              {t('nav.viewAllHelp')}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Nav({ screen, go, dark, setDark }) {
   const { t } = useI18n()
   const section = sectionOf[screen] ?? screen
@@ -53,6 +164,7 @@ export default function Nav({ screen, go, dark, setDark }) {
           <nav aria-label={t('nav.menu')} className="hidden items-center gap-1 lg:flex">
             {items.map((item) => {
               const active = section === item.id
+              if (item.id === 'help') return <HelpMenu key={item.id} active={active} go={go} />
               return (
                 <button
                   key={item.id}

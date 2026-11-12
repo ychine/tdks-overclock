@@ -24,6 +24,9 @@ const english = {
   'nav.chat': 'Ask',
   'nav.compare': 'Compare',
   'nav.help': 'Help',
+  'nav.quickCalls': 'Quick calls',
+  'nav.quickCallsHours': '24/7',
+  'nav.viewAllHelp': 'View full Help page',
 
   'screen.home': 'Home',
   'screen.upload': 'Upload',
@@ -48,8 +51,6 @@ const english = {
     'Take a photo of your employment contract or quitclaim. Linaw explains the pay, hours, deductions, and penalties in plain words, then lists what to ask.',
   'landing.cta': 'Check my contract',
   'landing.how': 'See how it works',
-  'landing.reassure1': 'Auto-deleted after 24 hours',
-  'landing.reassure2': 'No signup',
   'landing.previewFile': 'Employment Contract',
   'landing.previewMeta': '4 pages · Checked',
   'landing.previewLabel': '30-second summary',
@@ -62,7 +63,7 @@ const english = {
   'landing.previewChat': '“There are 2 things to clear up before you sign.”',
   'landing.noteRead': 'Read aloud',
   'landing.noteAsk': 'Ask in plain English',
-  'landing.trust': ['Private by default', 'Plain, not legalese', 'Always a next step', 'Easy to read'],
+  'landing.trust': ['Private by default', 'Auto-deleted after 24 hours', 'No signup', 'Plain, not legalese'],
   'landing.howTitle': 'You don’t need to be an expert.',
   'landing.howText': 'You make the decision. We just help you see what matters.',
   'landing.steps': [
