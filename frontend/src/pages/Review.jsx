@@ -1,129 +1,141 @@
 import { useState } from 'react'
-import Button from '../components/Button'
+import { motion } from 'motion/react'
+import { AgentDisclosure } from '@/components/agents/agent-disclosure'
+import { SPRING_SWAP } from '@/lib/ease'
+import { cn } from '@/lib/utils'
 import DocumentMock from '../components/DocumentMock'
 import Icon from '../components/Icon'
+import Button from '../components/ui/Button'
+import { Field } from '../components/ui/Controls'
+import { Page, PageHeading } from '../components/ui/Page'
+import Stepper from '../components/ui/Stepper'
+import { Badge, Callout, ListGroup } from '../components/ui/Surfaces'
+import { Segmented } from '../components/ui/Controls'
+import { useI18n } from '../i18n/useI18n'
 
+// `edited` holds the user's own text; until then the value follows the current language.
 const initialFields = [
-  { label: 'Sahod', value: '₱18,000 / buwan', confidence: true },
-  { label: 'Start date', value: '15 June 2025', confidence: true },
-  { label: 'Haba', value: '2 taon', confidence: true },
-  { label: 'Oras', value: '8 oras / araw', confidence: false },
-  { label: 'Day off', value: 'Linggo', confidence: true },
+  { key: 'salary', confident: true, edited: null },
+  { key: 'start', confident: true, edited: null },
+  { key: 'term', confident: true, edited: null },
+  { key: 'hours', confident: false, edited: null },
+  { key: 'rest', confident: true, edited: null },
 ]
 
 export default function Review({ go }) {
+  const { t } = useI18n()
   const [tab, setTab] = useState('fields')
   const [active, setActive] = useState(3)
   const [fields, setFields] = useState(initialFields)
 
-  const toCheck = fields.filter((f) => !f.confidence).length
+  const toCheck = fields.filter((f) => !f.confident).length
   const update = (index, patch) =>
     setFields((list) => list.map((f, i) => (i === index ? { ...f, ...patch } : f)))
 
   return (
-    <div className="page review-page">
-      <div className="page-heading row-heading">
-        <div>
-          <span className="step-label">Step 2 of 3</span>
-          <h1>Check natin kung tama</h1>
-          <p>I-tap ang detalye para makita kung saan ito galing at itama kung mali.</p>
-        </div>
-        <span className="confidence" role="status">
-          <Icon name={toCheck ? 'alert' : 'check'} size={17} />
-          {toCheck ? `${toCheck} kailangang suriin` : 'Nasuri na lahat'}
-        </span>
-      </div>
-      <div className="mobile-tabs">
-        <button
-          type="button"
-          className={tab === 'doc' ? 'active' : ''}
-          aria-pressed={tab === 'doc'}
-          onClick={() => setTab('doc')}
-        >
-          Original
-        </button>
-        <button
-          type="button"
-          className={tab === 'fields' ? 'active' : ''}
-          aria-pressed={tab === 'fields'}
-          onClick={() => setTab('fields')}
-        >
-          Mga detalye
-        </button>
-      </div>
-      <div className="review-grid">
+    <Page>
+      <Stepper current={1} />
+      <PageHeading title={t('review.title')} text={t('review.text')}>
+        <Badge tone={toCheck ? 'sun' : 'ok'} icon={toCheck ? 'alert' : 'check'} className="w-max px-3.5 py-2 text-sm" role="status">
+          {toCheck ? t('review.toCheck', { n: toCheck }) : t('review.allChecked')}
+        </Badge>
+      </PageHeading>
+      <p className="-mt-4 mb-6 text-sm text-subtle">{t('review.demo')}</p>
+
+      <Segmented
+        kind="tab"
+        label={t('review.original')}
+        value={tab}
+        onChange={setTab}
+        options={[
+          { value: 'doc', label: t('review.tabOriginal') },
+          { value: 'fields', label: t('review.tabFields') },
+        ]}
+        className="mb-4 lg:hidden"
+      />
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(430px,1.2fr)_minmax(380px,0.8fr)] lg:items-start">
         <section
-          aria-label="Original na dokumento"
-          className={`review-document ${tab !== 'doc' ? 'mobile-hidden' : ''}`}
+          aria-label={t('review.original')}
+          className={cn(tab === 'doc' ? 'block' : 'hidden', 'lg:sticky lg:top-24 lg:block')}
         >
-          <DocumentMock active={active} />
+          <DocumentMock active={active} label={t('review.original')} />
         </section>
-        <section className={`fields-panel card ${tab !== 'fields' ? 'mobile-hidden' : ''}`}>
-          <div className="panel-title">
-            <h2>Nakuha naming detalye</h2>
-            <span>Tap para i-edit</span>
+
+        <section className={cn(tab === 'fields' ? 'block' : 'hidden', 'lg:block')}>
+          <div className="mb-3 flex items-end justify-between gap-2.5">
+            <h2 className="font-sans text-xl font-bold">{t('review.panelTitle')}</h2>
+            <span className="text-sm text-subtle">{t('review.panelHint')}</span>
           </div>
-          <div className="field-list">
-            {fields.map((field, i) => (
-              <div
-                key={field.label}
-                className={`field-chip ${!field.confidence ? 'low' : ''} ${active === i ? 'active' : ''}`}
-              >
-                <button
-                  type="button"
-                  className="field-select"
-                  aria-expanded={active === i}
-                  onClick={() => setActive(i)}
-                >
-                  <span className="field-meta">
-                    {field.label}
-                    {!field.confidence && <em>Pakisuri</em>}
-                  </span>
-                  <strong>{field.value}</strong>
-                  <Icon name="chevron" size={19} />
-                </button>
-                {active === i && (
-                  <div className="field-edit">
-                    <label htmlFor={`field-${i}`}>I-edit ang {field.label.toLowerCase()}</label>
-                    <input
-                      id={`field-${i}`}
-                      value={field.value}
-                      onChange={(e) => update(i, { value: e.target.value, confidence: true })}
-                    />
-                    <div className="field-edit-actions">
-                      {!field.confidence && (
-                        <Button
-                          variant="secondary"
-                          icon="check"
-                          onClick={() => update(i, { confidence: true })}
+
+          <ListGroup>
+            {fields.map((field, i) => {
+              const open = active === i
+              const label = t(`review.${field.key}`)
+              const value = field.edited ?? t(`review.${field.key}Value`)
+              return (
+                <li key={field.key} className={cn('transition-colors', open && 'bg-brand-soft/60', !field.confident && !open && 'bg-sun/15')}>
+                  <button
+                    type="button"
+                    aria-expanded={open}
+                    onClick={() => setActive(i)}
+                    className="flex min-h-[68px] w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-brand-soft/40"
+                  >
+                    <span className="grid min-w-0 flex-1">
+                      <span className="flex items-center gap-2 text-sm text-subtle">
+                        {label}
+                        {!field.confident && <Badge tone="sun">{t('review.badge')}</Badge>}
+                      </span>
+                      <strong className="mt-0.5 truncate">{value}</strong>
+                    </span>
+                    <motion.span
+                      aria-hidden="true"
+                      className="shrink-0 text-subtle"
+                      animate={{ rotate: open ? 90 : 0 }}
+                      transition={SPRING_SWAP}
+                    >
+                      <Icon name="chevron" size={19} />
+                    </motion.span>
+                  </button>
+                  <AgentDisclosure open={open}>
+                    <div className="grid gap-3 px-4 pt-1 pb-4">
+                      <Field
+                        label={t('review.edit', { label: label.toLowerCase() })}
+                        id={`field-${field.key}`}
+                        value={value}
+                        onChange={(e) => update(i, { edited: e.target.value, confident: true })}
+                      />
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                        {!field.confident && (
+                          <Button variant="secondary" size="sm" icon="check" onClick={() => update(i, { confident: true })}>
+                            {t('review.confirm')}
+                          </Button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setTab('doc')}
+                          className="inline-flex min-h-12 items-center gap-2 rounded-btn font-bold text-brand lg:hidden"
                         >
-                          Tama ito
-                        </Button>
-                      )}
-                      <button
-                        type="button"
-                        className="inline-flex min-h-12 items-center gap-2 font-bold text-(--blue) lg:hidden"
-                        onClick={() => setTab('doc')}
-                      >
-                        <Icon name="file" size={18} /> Tingnan sa original
-                      </button>
+                          <Icon name="file" size={18} /> {t('review.viewOriginal')}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                  </AgentDisclosure>
+                </li>
+              )
+            })}
+          </ListGroup>
+
           {toCheck > 0 && (
-            <div className="low-note">
-              <span className="yellow-dot" />
-              <p>Hindi kami 100% sure sa naka-yellow. Tingnan kung tugma sa original.</p>
-            </div>
+            <Callout tone="sun" icon="alert" className="mt-4">
+              {t('review.lowNote')}
+            </Callout>
           )}
-          <Button icon="check" onClick={() => go('summary')}>
-            Tama na ito, ipaliwanag
+          <Button icon="check" className="mt-4 w-full" onClick={() => go('summary')}>
+            {t('review.cta')}
           </Button>
         </section>
       </div>
-    </div>
+    </Page>
   )
 }

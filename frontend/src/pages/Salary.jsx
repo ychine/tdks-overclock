@@ -1,66 +1,112 @@
-import Button from '../components/Button'
+import { useEffect } from 'react'
+import { animate, motion, useMotionValue, useReducedMotion, useTransform } from 'motion/react'
+import { EASE_OUT } from '@/lib/ease'
 import Icon from '../components/Icon'
-import useCountUp from '../hooks/useCountUp'
+import Button from '../components/ui/Button'
+import { Page, PageHeading } from '../components/ui/Page'
+import { Card, IconTile, ListGroup, Panel } from '../components/ui/Surfaces'
+import { useI18n } from '../i18n/useI18n'
+import { contract, netPay, peso, perPayday, takeHomePercent } from '../lib/contract'
 
-const rows = [
-  ['Gross pay', '₱18,000'],
-  ['SSS', '− ₱900'],
-  ['PhilHealth', '− ₱270'],
-  ['Pag-IBIG', '− ₱90'],
-]
+/** Counts the take-home figure up with a Motion value (no re-render per frame). */
+function CountUp({ value }) {
+  const reduce = useReducedMotion()
+  const motionValue = useMotionValue(reduce ? value : 0)
+  const text = useTransform(motionValue, (v) => peso(Math.round(v)))
 
-const TAKE_HOME = 16740
-const peso = (n) => `₱${n.toLocaleString('en-PH')}`
+  useEffect(() => {
+    if (reduce) {
+      motionValue.set(value)
+      return undefined
+    }
+    const controls = animate(motionValue, value, { duration: 1.1, ease: EASE_OUT })
+    return () => controls.stop()
+  }, [value, reduce, motionValue])
+
+  return <motion.strong aria-label={peso(value)} className="block font-display text-6xl font-semibold tabular-nums">{text}</motion.strong>
+}
 
 export default function Salary({ go }) {
-  const counted = useCountUp(TAKE_HOME)
+  const { t } = useI18n()
+  const deductions = [
+    { label: 'SSS', amount: contract.deductions.sss },
+    { label: 'PhilHealth', amount: contract.deductions.philhealth },
+    { label: 'Pag-IBIG', amount: contract.deductions.pagibig },
+  ]
+
   return (
-    <div className="page narrow-page salary-page">
-      <div className="page-heading">
-        <h1>Saan napupunta ang sahod?</h1>
-        <p>Estimate ito base sa nakasulat sa kontrata.</p>
-      </div>
-      <div className="take-home card">
-        <span>Estimated take-home pay</span>
-        <strong aria-label={peso(TAKE_HOME)}>{peso(counted)}</strong>
-        <p>kada buwan</p>
-        <div className="pay-bar" aria-hidden="true">
-          <span style={{ width: '93%' }} />
+    <Page>
+      <PageHeading title={t('salary.title')} text={t('salary.text')} />
+
+      <div className="grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:items-start">
+        <div className="grid gap-4">
+          <Panel className="border-transparent bg-brand p-7 text-on-solid">
+            <span className="text-sm font-semibold opacity-90">{t('salary.takeHome')}</span>
+            <div className="mt-2">
+              <CountUp value={netPay} />
+            </div>
+            <p className="opacity-90">{t('salary.perMonth')}</p>
+            <div aria-hidden="true" className="mt-6 mb-2 h-2 overflow-hidden rounded-full bg-on-solid/25">
+              <motion.span
+                className="block h-full origin-left rounded-full bg-sun"
+                style={{ width: `${takeHomePercent}%` }}
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.9, ease: EASE_OUT, delay: 0.15 }}
+              />
+            </div>
+            <small className="text-sm opacity-90">{t('salary.pct')}</small>
+          </Panel>
+
+          <ListGroup>
+            <li className="flex min-h-14 items-center justify-between px-5">
+              <span>{t('salary.gross')}</span>
+              <strong className="tabular-nums">{peso(contract.salary)}</strong>
+            </li>
+            {deductions.map((row) => (
+              <li key={row.label} className="flex min-h-14 items-center justify-between px-5">
+                <span className="flex items-center gap-2">
+                  {row.label}
+                  <span className="rounded-md bg-surface-2 px-1.5 py-0.5 text-xs text-subtle">{t('salary.mandatory')}</span>
+                </span>
+                <strong className="text-alert tabular-nums">− {peso(row.amount)}</strong>
+              </li>
+            ))}
+            <li className="flex min-h-16 items-center justify-between bg-brand-soft/60 px-5 text-lg">
+              <span className="font-semibold">{t('salary.net')}</span>
+              <strong className="text-brand tabular-nums">{peso(netPay)}</strong>
+            </li>
+          </ListGroup>
         </div>
-        <small>93% ng gross pay ang maiuuwi mo</small>
-      </div>
-      <div className="salary-table card">
-        {rows.map((r, i) => (
-          <div className={i > 0 ? 'deduction' : ''} key={r[0]}>
-            <span>
-              {r[0]}
-              {i > 0 && <small> mandatory</small>}
+
+        <div className="grid gap-4">
+          <Card className="flex items-center gap-4 p-5">
+            <IconTile icon="wallet" tone="brand" className="size-14 rounded-2xl" size={24} />
+            <div>
+              <span className="text-sm text-subtle">{t('salary.payday')}</span>
+              <strong className="block text-2xl tabular-nums">{peso(perPayday)}</strong>
+              <p className="text-sm text-subtle">{t('salary.paydayNote')}</p>
+            </div>
+          </Card>
+          <Card className="flex items-center gap-4 p-5">
+            <span aria-hidden="true" className="grid size-14 shrink-0 place-items-center rounded-2xl bg-sun font-display text-2xl font-semibold text-[#1b2433]">
+              13
             </span>
-            <strong>{r[1]}</strong>
-          </div>
-        ))}
-        <div className="net">
-          <span>Net pay</span>
-          <strong>{peso(TAKE_HOME)}</strong>
+            <div>
+              <span className="text-sm text-subtle">{t('salary.thirteenth')}</span>
+              <strong className="block text-2xl tabular-nums">{peso(contract.salary)}</strong>
+              <p className="text-sm text-subtle">{t('salary.thirteenthNote')}</p>
+            </div>
+          </Card>
+          <p className="flex items-start gap-2 px-1 text-sm text-subtle">
+            <span className="mt-0.5 shrink-0 text-ok"><Icon name="check" size={18} /></span>
+            {t('salary.formula')}
+          </p>
+          <Button variant="secondary" icon="chat" onClick={() => go('chat')}>
+            {t('salary.ask')}
+          </Button>
         </div>
       </div>
-      <div className="thirteenth card">
-        <div className="thirteen-icon" aria-hidden="true">
-          13
-        </div>
-        <div>
-          <span>Estimated 13th month pay</span>
-          <strong>₱18,000</strong>
-          <p>Kung nakumpleto mo ang 12 buwan</p>
-        </div>
-      </div>
-      <div className="formula-note">
-        <Icon name="check" size={18} />
-        <span>Kinuwenta ito gamit ang formula, hindi ng AI.</span>
-      </div>
-      <Button variant="secondary" icon="chat" onClick={() => go('chat')}>
-        May tanong tungkol sa sahod
-      </Button>
-    </div>
+    </Page>
   )
 }
