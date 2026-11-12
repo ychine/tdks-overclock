@@ -264,7 +264,7 @@ const filipino = {
     'May parusa sa maagang pag-alis at hindi malinaw kung ang employer ang sasagot sa gastusing medikal.',
   'summary.items': [
     { title: 'Sahod', value: '₱18,000 / buwan', detail: 'Ibinabayad tuwing ika-15 at ika-30' },
-    { title: 'Kaltas', value: '₱1,260 tantiya', detail: 'SSS, PhilHealth, at Pag-IBIG' },
+    { title: 'Kaltas', value: '₱1,550 tantiya', detail: 'SSS, PhilHealth, at Pag-IBIG' },
     { title: 'Oras ng trabaho', value: '8 oras / araw', detail: 'Lunes–Sabado, may 1 oras na pahinga' },
     { title: 'Araw ng pahinga', value: 'Tuwing Linggo', detail: '24 na oras na tuloy-tuloy na pahinga' },
     { title: 'Haba ng kontrata', value: '2 taon', detail: 'Mula Hunyo 15, 2025' },
@@ -334,7 +334,14 @@ const filipino = {
   'salary.text': 'Tantiya lamang ito batay sa nakasulat sa kontrata.',
   'salary.takeHome': 'Tinatayang iuuwi mong sahod',
   'salary.perMonth': 'kada buwan',
-  'salary.pct': '93% ng kabuuang sahod ang maiuuwi mo',
+  'salary.pct': '{pct}% ng kabuuang sahod ang maiuuwi mo',
+  'salary.sss': 'SSS (5%, salary credit ₱5,000–₱35,000)',
+  'salary.philhealth': 'PhilHealth (2.5%, pinakamababang batayan ₱10,000)',
+  'salary.pagibig': 'Pag-IBIG (2%, hanggang ₱10,000 lang)',
+  'salary.grossInput': 'Buwanang kabuuang sahod',
+  'salary.fromContract': 'Kinuha sa kontratang ipinadala mo. Maaari mo itong palitan.',
+  'salary.sample': 'Halimbawang sahod ito. Magpadala ng kontrata o isulat ang sahod mo.',
+  'salary.notMonthly': 'Ang nakasaad ay {value}, hindi buwanan. Isulat ang buwanang sahod para sa tamang kuwenta.',
   'salary.gross': 'Kabuuang sahod',
   'salary.mandatory': 'sapilitan',
   'salary.net': 'Netong sahod',
@@ -386,7 +393,7 @@ const filipino = {
   'qa.salary':
     'Ang sahod mo ay **₱18,000 kada buwan**, ibinabayad tuwing ika-15 at ika-30. Kung hati ang bayad, humigit-kumulang ₱9,000 bawat sahod bago ang kaltas.',
   'qa.deductions':
-    'Ang **₱1,260** ay tantiya ng sapilitang SSS (₱900), PhilHealth (₱270), at Pag-IBIG (₱90). Kinuwenta ito gamit ang pormula, kaya hingin ang eksaktong halaga sa payslip mo. Ang maiuuwi mo ay humigit-kumulang **₱16,740** kada buwan.',
+    'Ang **₱1,550** ay tantiya ng sapilitang SSS (₱900), PhilHealth (₱450), at Pag-IBIG (₱200). Kinuwenta ito gamit ang pormula, kaya hingin ang eksaktong halaga sa payslip mo. Ang maiuuwi mo ay humigit-kumulang **₱16,450** kada buwan.',
   'qa.hours':
     'Nakasulat na **8 oras bawat araw, anim na araw bawat linggo** (Lunes–Sabado). Ito ang detalyeng may markang “Pakisuri”, kaya itanong kung may overtime at magkano ang bayad dito.',
   'qa.dayoff':

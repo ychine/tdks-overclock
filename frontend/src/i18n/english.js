@@ -258,7 +258,7 @@ const english = {
     'There’s a penalty for leaving early, and it isn’t clear whether the employer covers medical costs.',
   'summary.items': [
     { title: 'Pay', value: '₱18,000 / month', detail: 'Paid on the 15th and 30th' },
-    { title: 'Deductions', value: '₱1,260 estimate', detail: 'SSS, PhilHealth, and Pag-IBIG' },
+    { title: 'Deductions', value: '₱1,550 estimate', detail: 'SSS, PhilHealth, and Pag-IBIG' },
     { title: 'Working hours', value: '8 hours / day', detail: 'Monday–Saturday, with a 1-hour break' },
     { title: 'Day off', value: 'Every Sunday', detail: '24 hours of continuous rest' },
     { title: 'Contract length', value: '2 years', detail: 'From June 15, 2025' },
@@ -328,7 +328,14 @@ const english = {
   'salary.text': 'This is an estimate based on what the contract says.',
   'salary.takeHome': 'Estimated take-home pay',
   'salary.perMonth': 'per month',
-  'salary.pct': '93% of your gross pay comes home with you',
+  'salary.pct': '{pct}% of your gross pay comes home with you',
+  'salary.sss': 'SSS (5%, salary credit ₱5,000–₱35,000)',
+  'salary.philhealth': 'PhilHealth (2.5%, minimum base ₱10,000)',
+  'salary.pagibig': 'Pag-IBIG (2%, capped at ₱10,000)',
+  'salary.grossInput': 'Monthly gross pay',
+  'salary.fromContract': 'Taken from the contract you uploaded. You can change it.',
+  'salary.sample': 'This is a sample salary. Upload a contract or type your own pay.',
+  'salary.notMonthly': 'The contract says {value}, which is not monthly. Enter your monthly pay for an accurate breakdown.',
   'salary.gross': 'Gross pay',
   'salary.mandatory': 'mandatory',
   'salary.net': 'Net pay',
@@ -380,7 +387,7 @@ const english = {
   'qa.salary':
     'Your pay is **₱18,000 per month**, paid on the 15th and 30th. If it’s split evenly, that’s about ₱9,000 each payday before deductions.',
   'qa.deductions':
-    'The **₱1,260** is an estimate of the mandatory SSS (₱900), PhilHealth (₱270), and Pag-IBIG (₱90). It was calculated with a formula, so ask for the exact amounts on your payslip. You’d take home about **₱16,740** a month.',
+    'The **₱1,550** is an estimate of the mandatory SSS (₱900), PhilHealth (₱450), and Pag-IBIG (₱200). It was calculated with a formula, so ask for the exact amounts on your payslip. You’d take home about **₱16,450** a month.',
   'qa.hours':
     'It says **8 hours a day, six days a week** (Monday–Saturday). This is the detail marked “Please check”, so ask whether there’s overtime and how it’s paid.',
   'qa.dayoff': 'Your day off is **every Sunday**, 24 hours of continuous rest.',

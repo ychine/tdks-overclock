@@ -271,7 +271,7 @@ const taglish = {
     'May penalty sa maagang pag-alis at hindi malinaw kung sagot ng employer ang medical.',
   'summary.items': [
     { title: 'Sahod', value: '₱18,000 / buwan', detail: 'Bayad tuwing ika-15 at ika-30' },
-    { title: 'Bawas', value: '₱1,260 estimate', detail: 'SSS, PhilHealth, at Pag-IBIG' },
+    { title: 'Bawas', value: '₱1,550 estimate', detail: 'SSS, PhilHealth, at Pag-IBIG' },
     { title: 'Oras ng trabaho', value: '8 oras / araw', detail: 'Lunes–Sabado, may 1 oras na break' },
     { title: 'Day off', value: 'Tuwing Linggo', detail: '24 oras na tuloy-tuloy na pahinga' },
     { title: 'Haba ng kontrata', value: '2 taon', detail: 'Mula June 15, 2025' },
@@ -342,7 +342,14 @@ const taglish = {
   'salary.text': 'Estimate ito base sa nakasulat sa kontrata.',
   'salary.takeHome': 'Estimated take-home pay',
   'salary.perMonth': 'kada buwan',
-  'salary.pct': '93% ng gross pay ang maiuuwi mo',
+  'salary.pct': '{pct}% ng gross pay ang maiuuwi mo',
+  'salary.sss': 'SSS (5%, salary credit ₱5,000–₱35,000)',
+  'salary.philhealth': 'PhilHealth (2.5%, minimum base ₱10,000)',
+  'salary.pagibig': 'Pag-IBIG (2%, capped at ₱10,000)',
+  'salary.grossInput': 'Monthly gross pay',
+  'salary.fromContract': 'Galing sa kontratang binasa mo. Puwede mong palitan.',
+  'salary.sample': 'Sample na sahod ito. Mag-upload ng kontrata o ilagay ang sahod mo.',
+  'salary.notMonthly': 'Ang nakasulat ay {value}, hindi buwanan. Ilagay ang buwanang sahod para sa tamang kuwenta.',
   'salary.gross': 'Gross pay',
   'salary.mandatory': 'mandatory',
   'salary.net': 'Net pay',
@@ -397,7 +404,7 @@ const taglish = {
   'qa.salary':
     'Ang sahod mo ay **₱18,000 kada buwan**, bayad tuwing ika-15 at ika-30. Kung hati ang bayad, mga ₱9,000 bawat sahod bago ang bawas.',
   'qa.deductions':
-    'Ang **₱1,260** ay estimate ng mandatory na SSS (₱900), PhilHealth (₱270), at Pag-IBIG (₱90). Kinuwenta ito gamit ang formula, kaya hingin ang eksaktong halaga sa payslip mo. Ang maiuuwi mo ay mga **₱16,740** kada buwan.',
+    'Ang **₱1,550** ay estimate ng mandatory na SSS (₱900), PhilHealth (₱450), at Pag-IBIG (₱200). Kinuwenta ito gamit ang formula, kaya hingin ang eksaktong halaga sa payslip mo. Ang maiuuwi mo ay mga **₱16,450** kada buwan.',
   'qa.hours':
     'Nakasulat na **8 oras kada araw, anim na araw kada linggo** (Lunes–Sabado). Ito ang detalyeng may markang “Pakisuri”, kaya itanong kung may overtime at magkano ang bayad dito.',
   'qa.dayoff':
