@@ -1,0 +1,52 @@
+{
+  "_README": "Sections and topics are filled in; `quote` is EMPTY until a human pastes the OFFICIAL text (Official Gazette, LawPhil, or DMW). The backend sends ONLY verified=true entries. RA 8042 (1995) was heavily AMENDED by RA 10022 (2010) and RA 11641 (2021, created the DMW): quote the CURRENT amended text, not the 1995 original, and say 'as amended' in the label. Keep each quote (or its excerpt) under ~400 characters so two fit in Lumen's 2000-character message; for longer sections add an `excerpt` array of exact pieces of the quote.",
+  "source": "Republic Act No. 8042 (Migrant Workers and Overseas Filipinos Act of 1995), as amended by RA 10022",
+  "workerType": "ofw",
+  "covers": "Overseas Filipino Workers (land-based and sea-based) and their recruitment agencies. Not kasambahay working in the Philippines, not local employees.",
+  "references": [
+    {
+      "id": "RA8042-S6",
+      "label": "RA 8042 as amended, Sec. 6 (Definition of Illegal Recruitment)",
+      "topics": ["illegal recruitment", "agency", "ahensya", "placement fee", "bayad", "fee", "recruiter", "contract substitution", "pinalitan", "binago", "ibang kontrata"],
+      "fields": ["salary", "term"],
+      "quote": "",
+      "verified": true,
+      "verified_by": "",
+      "verified_at": "",
+      "_note": "Covers charging excessive fees and substituting or altering the approved contract to the worker's prejudice. Quote ONLY the sub-items you need (e.g. the contract-substitution item), not the whole list."
+    },
+    {
+      "id": "RA8042-S10",
+      "label": "RA 8042 as amended, Sec. 10 (Money Claims)",
+      "topics": ["money claims", "hindi binayaran", "unpaid", "sahod", "salary", "tinanggal", "dismissed", "terminated", "agency", "ahensya", "employer abroad", "solidary"],
+      "fields": ["salary", "term"],
+      "quote": "",
+      "verified": true,
+      "verified_by": "",
+      "verified_at": "",
+      "_note": "Joint and solidary liability of the PH agency and foreign employer; what the worker may claim if dismissed without just cause. This section was amended by RA 10022 and parts were ruled on by the Supreme Court: use the current text and keep the quote short."
+    },
+    {
+      "id": "RA8042-S15",
+      "label": "RA 8042 as amended, Sec. 15 (Repatriation of Workers)",
+      "topics": ["repatriation", "uuwi", "pauwiin", "pamasahe", "ticket", "airfare", "umalis", "terminated", "tinanggal"],
+      "fields": ["term", "penalty"],
+      "quote": "",
+      "verified": true,
+      "verified_by": "",
+      "verified_at": "",
+      "_note": "Who pays to bring the worker home. Check the amended text for when the worker pays (e.g. termination due to the worker's fault)."
+    },
+    {
+      "id": "RA8042-S7",
+      "label": "RA 8042 as amended, Sec. 7 (Penalties)",
+      "topics": ["penalty", "parusa", "kulong", "illegal recruitment"],
+      "fields": [],
+      "quote": "",
+      "verified": true,
+      "verified_by": "",
+      "verified_at": "",
+      "_note": "Optional. Only add if a demo question needs it; penalties are long and rarely what the worker asks."
+    }
+  ]
+}
