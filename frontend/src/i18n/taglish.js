@@ -387,6 +387,13 @@ const taglish = {
   ],
 
   // ---------- questions asked in chat (suggestion chips) ----------
+  "chat.workerQ": "Para kanino ang kontratang ito? Iba-iba ang batas para sa bawat isa.",
+  "chat.worker.kasambahay": "Kasambahay",
+  "chat.worker.ofw": "OFW / sa abroad",
+  "chat.worker.local": "Empleyado sa Pilipinas",
+  "chat.workerFirst": "Piliin muna kung para kanino ang kontrata.",
+  "chat.noLawYet": "Wala pang na-verify na batas para dito sa Linaw, kaya ang kontrata mo lang ang maipapaliwanag. Para sa tanong tungkol sa batas, lumapit sa DOLE, DMW, o PAO.",
+  "chat.err.INVALID_WORKER_TYPE": "Piliin muna kung para kanino ang kontrata.",
   "chat.sugg.missing": "Walang nakasulat tungkol sa {label} sa kontrata ko. Ano ang dapat kong itanong?",
   "chat.sugg.penalty": "Ano ang sinasabi ng batas kapag umalis ako bago matapos ang kontrata?",
   "chat.sugg.rest": "Ano ang sinasabi ng batas tungkol sa pahinga, at ano ang nasa kontrata ko?",

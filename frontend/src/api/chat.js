@@ -32,6 +32,16 @@ async function post(path, body) {
 /** Opens one Lumen conversation. Returns the session id. */
 export const openChat = async () => (await post('/sessions')).sessionId
 
-/** Sends one question with the confirmed fields. Returns { answer, citations, degraded }. */
-export const askChat = (sessionId, { question, fields, language }) =>
-  post(`/sessions/${encodeURIComponent(sessionId)}/messages`, { question, fields, language })
+/** Sends one question with the confirmed fields. Returns { answer, citations, degraded, lawAvailable }. */
+export const askChat = (sessionId, { question, fields, language, workerType }) =>
+  post(`/sessions/${encodeURIComponent(sessionId)}/messages`, { question, fields, language, workerType })
+
+/** Free (no Lumen call): verified law entries per worker type, e.g. { kasambahay: 14, ofw: 0, local: 0 }. */
+export async function getCoverage() {
+  try {
+    const res = await fetch(API + '/coverage')
+    return res.ok ? await res.json() : null
+  } catch {
+    return null
+  }
+}

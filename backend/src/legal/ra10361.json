@@ -2,6 +2,7 @@
   "_README": "Legal references for Ask Linaw. `quote` is copied word for word from the IRR of RA 10361 PDF the team provided (OCR'd from a scan, then proofread against the page images). The backend sends ONLY entries with verified=true, and the AI may cite ONLY what is sent. Before the demo, a human must read each quote against the PDF and put their name in verified_by. Entries marked verified=false are NOT sent: they come from the Act via a secondary site because the team's IRR PDF is missing Rule IV Sections 3-7. Replace them with the official text, then set verified=true. `excerpt` (optional) = the key parts of `quote`, each piece an exact substring of it; the server sends the excerpt to the AI to fit Lumen's 2000-character limit, and shows the full quote to the user.",
   "source": "Implementing Rules and Regulations of Republic Act No. 10361 (Batas Kasambahay), team-provided PDF",
   "covers": "Domestic workers (kasambahay) in the Philippines only. Not OFWs, not other local employees.",
+  "workerType": "kasambahay",
   "references": [
     {
       "id": "IRR-II-5",
@@ -215,7 +216,17 @@
         "deposito",
         "multa",
         "penalty",
-        "fine"
+        "fine",
+        "masira",
+        "sira",
+        "nasiraan",
+        "nabasag",
+        "basag",
+        "makabasag",
+        "break",
+        "broke",
+        "broken",
+        "nawalan"
       ],
       "fields": [
         "salary",

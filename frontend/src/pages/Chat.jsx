@@ -12,7 +12,7 @@ import {
 } from '@/components/agents/message'
 import { PromptInput } from '@/components/agents/prompt-input'
 import { LocaleProvider } from '@/lib/i18n'
-import { askChat, openChat } from '../api/chat'
+import { askChat, getCoverage, openChat } from '../api/chat'
 import Icon from '../components/Icon'
 import NeedsUpload from '../components/NeedsUpload'
 import Rich from '../components/Rich'
@@ -33,11 +33,14 @@ const FIXED_INTENTS = ['quitclaim', 'probationary']
 // Fields that have a "what does the law say" suggestion, in priority order.
 const FIELD_SUGGESTIONS = ['penalty', 'rest', 'hours', 'salary', 'start']
 
+// Which law applies depends on who the worker is, so the user picks this before asking.
+const WORKER_TYPES = ['kasambahay', 'ofw', 'local']
+
 /**
  * Suggestions come from the user's own confirmed fields (no AI):
  * missing fields first, then fields the law file covers, then the "before signing" question.
  */
-function buildSuggestions(confirmed, t) {
+function buildSuggestions(confirmed, t, workerType) {
   const list = []
   for (const field of confirmed) {
     if (!hasValue(field)) {
@@ -48,6 +51,8 @@ function buildSuggestions(confirmed, t) {
     }
   }
   for (const key of FIELD_SUGGESTIONS) {
+    // The SSS/PhilHealth/Pag-IBIG timing rule we have verified is the kasambahay one.
+    if (key === 'start' && workerType !== 'kasambahay') continue
     if (hasValue(confirmed.find((f) => f.key === key))) list.push({ id: key, text: t(`chat.sugg.${key}`) })
   }
   return [...list.slice(0, 3), { id: 'checklist', text: t('chat.sugg.checklist') }]
@@ -91,6 +96,8 @@ export default function Chat({ go, confirmed }) {
   const [asked, setAsked] = useState([]) // suggestion ids already used
   const [sessionId, setSessionId] = useState(null) // one Lumen conversation per confirmed contract
   const [contract, setContract] = useState(confirmed)
+  const [workerType, setWorkerType] = useState(null) // 'kasambahay' | 'ofw' | 'local'
+  const [coverage, setCoverage] = useState(null) // verified law entries per worker type
   const [copied, setCopied] = useState(null)
   const nextId = useRef(0)
   const timers = useRef([])
@@ -101,6 +108,7 @@ export default function Chat({ go, confirmed }) {
     setThread([])
     setAsked([])
     setSessionId(null)
+    setWorkerType(null)
   }
 
   useEffect(() => {
@@ -108,9 +116,17 @@ export default function Chat({ go, confirmed }) {
     return () => pending.forEach(clearTimeout)
   }, [])
 
+  useEffect(() => {
+    let alive = true
+    getCoverage().then((c) => alive && setCoverage(c))
+    return () => {
+      alive = false
+    }
+  }, [])
+
   const suggestions = useMemo(
-    () => (confirmed ? buildSuggestions(confirmed, t).filter((s) => !asked.includes(s.id)) : []),
-    [confirmed, t, asked],
+    () => (confirmed && workerType ? buildSuggestions(confirmed, t, workerType).filter((s) => !asked.includes(s.id)) : []),
+    [confirmed, t, asked, workerType],
   )
 
   // Chat only exists for a confirmed contract. No upload -> no AI call, no credits.
@@ -121,7 +137,7 @@ export default function Chat({ go, confirmed }) {
 
   const ask = async (text, suggestionId) => {
     const question = text.trim()
-    if (!question || busy) return // one question at a time: no double charges
+    if (!question || busy || !workerType) return // one question at a time: no double charges
     const id = nextId.current++
     if (suggestionId) setAsked((list) => [...list, suggestionId])
 
@@ -138,13 +154,29 @@ export default function Chat({ go, confirmed }) {
         sid = await openChat()
         setSessionId(sid)
       }
-      const reply = await askChat(sid, { question, fields: confirmed, language })
-      update(id, { status: 'done', kind: 'ai', text: reply.answer, citations: reply.citations, degraded: reply.degraded })
+      const reply = await askChat(sid, { question, fields: confirmed, language, workerType })
+      update(id, {
+        status: 'done',
+        kind: 'ai',
+        text: reply.answer,
+        citations: reply.citations,
+        degraded: reply.degraded,
+        noLaw: reply.lawAvailable === false,
+      })
     } catch (err) {
       if (err.code === 'SESSION_EXPIRED') setSessionId(null) // the retry opens a new conversation
       update(id, { status: 'error', code: err.code, retryable: err.retryable })
     }
   }
+
+  // Switching worker type means different law, so start a clean conversation.
+  const chooseWorker = (type) => {
+    setWorkerType(type)
+    setThread([])
+    setAsked([])
+    setSessionId(null)
+  }
+  const noLawFor = (type) => coverage && coverage[type] === 0
 
   const retry = (turn) => {
     setThread((list) => list.filter((x) => x.id !== turn.id))
@@ -206,6 +238,32 @@ export default function Chat({ go, confirmed }) {
                 </MessageContent>
               </Message>
 
+              <Message from="assistant">
+                <Avatar />
+                <MessageContent>
+                  <MessageBubble variant="soft">
+                    <MessageBubbleContent>
+                      <p className="font-semibold">{t('chat.workerQ')}</p>
+                      <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label={t('chat.workerQ')}>
+                        {WORKER_TYPES.map((type) => (
+                          <Chip
+                            key={type}
+                            aria-pressed={workerType === type}
+                            disabled={busy}
+                            className={workerType === type ? 'border-brand bg-brand-soft' : undefined}
+                            onClick={() => chooseWorker(type)}
+                          >
+                            {workerType === type ? '✓ ' : ''}
+                            {t(`chat.worker.${type}`)}
+                          </Chip>
+                        ))}
+                      </div>
+                      {workerType && noLawFor(workerType) && <p className="mt-2 text-sm text-subtle">{t('chat.noLawYet')}</p>}
+                    </MessageBubbleContent>
+                  </MessageBubble>
+                </MessageContent>
+              </Message>
+
               {thread.map((turn) => {
                 const items = citationItems(turn)
                 const prefix = `cite-${turn.id}`
@@ -257,6 +315,7 @@ export default function Chat({ go, confirmed }) {
                                 </p>
                                 {turn.kind === 'fixed' && <p className="mt-2 text-sm text-subtle">{t('chat.generalAnswer')}</p>}
                                 {turn.degraded && <p className="mt-2 text-sm text-subtle">{t('chat.degraded')}</p>}
+                                {turn.noLaw && <p className="mt-2 text-sm text-subtle">{t('chat.noLawYet')}</p>}
                               </MessageBubbleContent>
                             </MessageBubble>
                             {items.length > 0 && (
@@ -293,7 +352,8 @@ export default function Chat({ go, confirmed }) {
             <PromptInput
               minRows={2}
               maxRows={4}
-              disabled={busy}
+              disabled={busy || !workerType}
+              placeholder={workerType ? undefined : t('chat.workerFirst')}
               onSubmit={(prompt) => ask(prompt)}
               className="rounded-card border-line shadow-card"
             />

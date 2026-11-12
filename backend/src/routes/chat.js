@@ -1,12 +1,13 @@
 // Ask Linaw. The browser talks to these routes; only the server talks to Lumen.
 //   POST /api/chat/sessions                      -> 201 { sessionId }
-//   POST /api/chat/sessions/:sessionId/messages  { question, fields, language }
-//        -> { answer, citations: [{ type, id, label, text }], degraded }
+//   POST /api/chat/sessions/:sessionId/messages  { question, fields, language, workerType }
+//        -> { answer, citations: [{ type, id, label, text }], degraded, lawAvailable }
+//   GET  /api/chat/coverage                      -> { kasambahay: n, ofw: n, local: n }
 // Every error: { error: { code, message, retryable } }
 
 import { Router } from 'express'
 import { chatConfig, lumenChat, LumenChatError } from '../services/lumenChat.js'
-import { selectRefs } from '../services/legalRefs.js'
+import { coverage, selectRefs, WORKER_TYPES } from '../services/legalRefs.js'
 import { buildMessage, MAX_QUESTION, parseCitations, pickFields } from '../services/chatMessage.js'
 
 const router = Router()
@@ -20,6 +21,9 @@ const fail = (res, status, code, message, retryable = false, upstream) =>
 // shows the REAL cause. Lumen's error text never contains the user's question or contract.
 const upstreamOf = (err) =>
   process.env.NODE_ENV === 'production' ? undefined : { status: err.status, code: err.code, message: err.message }
+
+// Public and free (no Lumen call): how many verified law entries each worker type has.
+router.get('/coverage', (req, res) => res.json(coverage))
 
 router.use((req, res, next) => {
   if (!chatConfig()) return fail(res, 503, 'CHAT_NOT_CONFIGURED', 'Chat is not set up on this server yet.')
@@ -42,9 +46,15 @@ router.post('/sessions/:sessionId/messages', async (req, res) => {
     return fail(res, 400, 'NO_CONTRACT', 'Confirm your contract details first.')
   }
 
-  const refs = selectRefs(question, Object.keys(fields))
+  // Which law applies depends on WHO the worker is. Never guess it: the client must send it.
+  const workerType = req.body?.workerType
+  if (!WORKER_TYPES.includes(workerType)) {
+    return fail(res, 400, 'INVALID_WORKER_TYPE', `workerType must be one of: ${WORKER_TYPES.join(', ')}`)
+  }
+
+  const refs = selectRefs(question, Object.keys(fields), workerType)
   const { message, refsSent } = buildMessage({
-    fields, notInContract, refs, question, language: req.body?.language,
+    fields, notInContract, refs, question, language: req.body?.language, workerType,
   })
 
   const r = await lumenChat.sendMessage(req.params.sessionId, message)
@@ -56,6 +66,8 @@ router.post('/sessions/:sessionId/messages', async (req, res) => {
     answer: text,
     citations,
     degraded: (r.Answer?.degradedSources?.length ?? 0) > 0,
+    // false = no verified law exists yet for this worker type, so answers explain the contract only.
+    lawAvailable: coverage[workerType] > 0,
   })
 })
 

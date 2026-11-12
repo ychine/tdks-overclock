@@ -377,6 +377,13 @@ const filipino = {
     'Ilang oras talaga ang trabaho—8 oras lamang ba, o may dagdag?',
   ],
 
+  "chat.workerQ": "Para kanino ang kontratang ito? Magkakaiba ang batas para sa bawat isa.",
+  "chat.worker.kasambahay": "Kasambahay",
+  "chat.worker.ofw": "OFW / sa ibang bansa",
+  "chat.worker.local": "Empleyado sa Pilipinas",
+  "chat.workerFirst": "Piliin muna kung para kanino ang kontrata.",
+  "chat.noLawYet": "Wala pang napatunayang batas para dito sa Linaw, kaya ang iyong kontrata lamang ang maipapaliwanag. Para sa tanong tungkol sa batas, lumapit sa DOLE, DMW, o PAO.",
+  "chat.err.INVALID_WORKER_TYPE": "Piliin muna kung para kanino ang kontrata.",
   "chat.sugg.missing": "Walang nakasulat tungkol sa {label} sa aking kontrata. Ano ang dapat kong itanong?",
   "chat.sugg.penalty": "Ano ang sinasabi ng batas kapag umalis ako bago matapos ang kontrata?",
   "chat.sugg.rest": "Ano ang sinasabi ng batas tungkol sa pahinga, at ano ang nasa aking kontrata?",
