@@ -1,5 +1,5 @@
 {
-  "_README": "Legal references for Ask Linaw. `quote` is copied word for word from the IRR of RA 10361 PDF the team provided (OCR'd from a scan, then proofread against the page images). The backend sends ONLY entries with verified=true, and the AI may cite ONLY what is sent. Before the demo, a human must read each quote against the PDF and put their name in verified_by. Entries marked verified=false are NOT sent: they come from the Act via a secondary site because the team's IRR PDF is missing Rule IV Sections 3-7. Replace them with the official text, then set verified=true.",
+  "_README": "Legal references for Ask Linaw. `quote` is copied word for word from the IRR of RA 10361 PDF the team provided (OCR'd from a scan, then proofread against the page images). The backend sends ONLY entries with verified=true, and the AI may cite ONLY what is sent. Before the demo, a human must read each quote against the PDF and put their name in verified_by. Entries marked verified=false are NOT sent: they come from the Act via a secondary site because the team's IRR PDF is missing Rule IV Sections 3-7. Replace them with the official text, then set verified=true. `excerpt` (optional) = the key parts of `quote`, each piece an exact substring of it; the server sends the excerpt to the AI to fit Lumen's 2000-character limit, and shows the full quote to the user.",
   "source": "Implementing Rules and Regulations of Republic Act No. 10361 (Batas Kasambahay), team-provided PDF",
   "covers": "Domestic workers (kasambahay) in the Philippines only. Not OFWs, not other local employees.",
   "references": [
@@ -24,7 +24,10 @@
       "quote": "Before the commencement of the service, a written employment contract between the Kasambahay and the employer shall be accomplished in three (3) copies. The contract shall be in a language or dialect understood by both the Kasambahay and the employer, and shall include the following: (a) Duties and responsibilities ... (b) Period of employment; (c) Compensation; (d) Authorized deductions; (e) Hours of work and proportionate additional payment; (f) Rest days and allowable leaves; (g) Board, lodging and medical attention; (h) Agreements on deployment expenses, if any; (i) Loan agreement, if any; (j) Termination of employment; and (k) Any other lawful condition agreed upon by both parties.",
       "verified": true,
       "verified_by": "Miah (verbatim from PDF p.4)",
-      "verified_at": "2026-11-13"
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "The contract shall be in a language or dialect understood by both the Kasambahay and the employer, and shall include the following: (a) Duties and responsibilities ... (b) Period of employment; (c) Compensation; (d) Authorized deductions; (e) Hours of work and proportionate additional payment; (f) Rest days and allowable leaves; (g) Board, lodging and medical attention"
+      ]
     },
     {
       "id": "IRR-II-7",
@@ -61,7 +64,10 @@
       "quote": "The Kasambahay who has rendered at least one (1) month of service is entitled to a thirteenth-month pay which shall not be less than one-twelfth (1/12) of his/her total basic salary earned in a calendar year. The thirteenth-month pay shall be paid not later than December 24 of every year or upon separation from employment.",
       "verified": true,
       "verified_by": "Miah (verbatim from PDF p.8)",
-      "verified_at": "2026-11-13"
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "The Kasambahay who has rendered at least one (1) month of service is entitled to a thirteenth-month pay which shall not be less than one-twelfth (1/12) of his/her total basic salary earned in a calendar year."
+      ]
     },
     {
       "id": "IRR-IV-9",
@@ -87,7 +93,11 @@
       "quote": "A Kasambahay who has rendered at least one (1) month of service shall be covered by the Social Security System (SSS), Employees Compensation Commission (ECC), Philippine Health Insurance Corporation (PhilHealth), and Home Development Mutual Fund or Pag-IBIG ... Mandatory premium payments or contributions shall be shouldered by the employer. However, if the Kasambahay is receiving a monthly wage rate of Five Thousand Pesos (Php5,000.00) and above, the Kasambahay shall pay the proportionate share in the premium payments or contributions, as provided by law.",
       "verified": true,
       "verified_by": "Miah (verbatim from PDF p.8)",
-      "verified_at": "2026-11-13"
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "A Kasambahay who has rendered at least one (1) month of service shall be covered by the Social Security System (SSS)",
+        "Mandatory premium payments or contributions shall be shouldered by the employer. However, if the Kasambahay is receiving a monthly wage rate of Five Thousand Pesos (Php5,000.00) and above, the Kasambahay shall pay the proportionate share in the premium payments or contributions, as provided by law."
+      ]
     },
     {
       "id": "IRR-IV-11",
@@ -135,7 +145,11 @@
       "quote": "The Kasambahay shall be treated with respect by the employer or any member of the household. He/she shall not be subjected to any kind of abuse ... The employer shall provide ... (a) At least three (3) adequate meals a day ... (b) Humane sleeping condition that respects the person's privacy for live-in arrangement; and (c) Appropriate rest and medical assistance in the form of first-aid medicines ... At no instance shall the employer withdraw or hold in abeyance the provision of these basic necessities as punishment to, or disciplinary action against the Kasambahay.",
       "verified": true,
       "verified_by": "Miah (verbatim from PDF p.8-9)",
-      "verified_at": "2026-11-13"
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "He/she shall not be subjected to any kind of abuse",
+        "At no instance shall the employer withdraw or hold in abeyance the provision of these basic necessities as punishment to, or disciplinary action against the Kasambahay."
+      ]
     },
     {
       "id": "IRR-V-2",
@@ -181,7 +195,10 @@
       "quote": "It shall be unlawful for the employer to withhold the wages of the Kasambahay directly or indirectly, except as provided for under Section 2, Rule VII of this IRR. ... It shall be unlawful for the employer to interfere with the freedom of the Kasambahay in the disposition of his/her wages ...",
       "verified": true,
       "verified_by": "Miah (verbatim from PDF p.10)",
-      "verified_at": "2026-11-13"
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "It shall be unlawful for the employer to withhold the wages of the Kasambahay directly or indirectly"
+      ]
     },
     {
       "id": "IRR-V-6-7",
@@ -207,7 +224,11 @@
       "quote": "Other than those mandated by law, the employer shall not deduct any amount from the wages of the Kasambahay without his/her written consent or authorization; provided that, deduction for loss or damage shall only be made under the following conditions: (a) The Kasambahay is clearly shown to be responsible ... (d) The deduction ... does not exceed 20% of his/her wages in a month. ... It shall be unlawful for the employer or any other person to require a Kasambahay to make deposits from which deductions shall be made for the reimbursement of loss or damage ...",
       "verified": true,
       "verified_by": "Miah (verbatim from PDF p.10-11)",
-      "verified_at": "2026-11-13"
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "Other than those mandated by law, the employer shall not deduct any amount from the wages of the Kasambahay without his/her written consent or authorization",
+        "(d) The deduction ... does not exceed 20% of his/her wages in a month."
+      ]
     },
     {
       "id": "IRR-V-9",
@@ -252,7 +273,11 @@
       "quote": "(a) In case the duration of employment is specified in the contract, the Kasambahay and the employer may mutually agree upon notice to terminate the contract of employment before the expiration of its term. (b) In case the duration is not determined by stipulation or by nature of service, the employer or the Kasambahay may give notice to end the employment relationship five (5) days before the intended termination of employment.",
       "verified": true,
       "verified_by": "Miah (verbatim from PDF p.13)",
-      "verified_at": "2026-11-13"
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "(a) In case the duration of employment is specified in the contract, the Kasambahay and the employer may mutually agree upon notice to terminate the contract of employment before the expiration of its term.",
+        "(b) In case the duration is not determined by stipulation or by nature of service, the employer or the Kasambahay may give notice to end the employment relationship five (5) days before the intended termination of employment."
+      ]
     },
     {
       "id": "IRR-VII-2",
@@ -280,7 +305,11 @@
       "quote": "The Kasambahay may terminate the employment relationship at any time before the expiration of the contract for any of the following causes: (a) Verbal or emotional abuse ... (b) Inhuman treatment including physical abuse ... (c) Commission of a crime or offense against the Kasambahay ... (d) Violation by the employer of the terms and conditions of the employment contract ... If the Kasambahay leaves without cause, any unpaid salary due, not exceeding the equivalent of fifteen (15) days work, shall be forfeited. In addition, the employer may recover from the Kasambahay deployment expenses, if any, if the services have been terminated within six (6) months from employment.",
       "verified": true,
       "verified_by": "Miah (verbatim from PDF p.13)",
-      "verified_at": "2026-11-13"
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "The Kasambahay may terminate the employment relationship at any time before the expiration of the contract for any of the following causes: (a) Verbal or emotional abuse ... (b) Inhuman treatment including physical abuse",
+        "If the Kasambahay leaves without cause, any unpaid salary due, not exceeding the equivalent of fifteen (15) days work, shall be forfeited."
+      ]
     },
     {
       "id": "IRR-VII-3-4",

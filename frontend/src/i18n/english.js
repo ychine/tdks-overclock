@@ -389,7 +389,7 @@ const english = {
   "chat.err.AI_UNAVAILABLE": "The AI is not available right now. Try again later.",
   "chat.err.CHAT_NOT_CONFIGURED": "Chat is not set up on the server yet.",
   "chat.err.NETWORK": "Can't reach the server. Is the backend running?",
-  "chat.err.INVALID_QUESTION": "Please shorten your question (up to 600 characters).",
+  "chat.err.INVALID_QUESTION": "Please shorten your question (up to 300 characters).",
   "chat.err.NO_CONTRACT": "Confirm your contract details first.",
   'q.salary': 'How much is my pay?',
   'q.deductions': 'Are the deductions right?',

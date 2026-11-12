@@ -3,9 +3,11 @@
 
 export class LumenChatError extends Error {
   constructor(status, body) {
-    super(body?.error?.message || body?.message || `Lumen AI Chat request failed (${status})`)
+    // Lumen uses PascalCase in its bodies (Session, Answer), so check both spellings.
+    const err = body?.error || body?.Error || body || {}
+    super(err.message || err.Message || `Lumen AI Chat request failed (${status})`)
     this.status = status
-    this.code = body?.error?.code || body?.code || `HTTP_${status}`
+    this.code = err.code || err.Code || `HTTP_${status}`
   }
 }
 

@@ -395,7 +395,7 @@ const filipino = {
   "chat.err.AI_UNAVAILABLE": "Hindi magagamit ang AI ngayon. Subukang muli mamaya.",
   "chat.err.CHAT_NOT_CONFIGURED": "Hindi pa nakahanda ang chat sa server.",
   "chat.err.NETWORK": "Hindi maabot ang server. Bukas ba ang backend?",
-  "chat.err.INVALID_QUESTION": "Paikliin ang tanong (hanggang 600 titik).",
+  "chat.err.INVALID_QUESTION": "Paikliin ang tanong (hanggang 300 titik).",
   "chat.err.NO_CONTRACT": "Kumpirmahin muna ang mga detalye ng iyong kontrata.",
   'q.salary': 'Magkano ang sahod ko?',
   'q.deductions': 'Tama ba ang mga kaltas?',

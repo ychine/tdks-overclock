@@ -405,7 +405,7 @@ const taglish = {
   "chat.err.AI_UNAVAILABLE": "Hindi available ang AI ngayon. Subukan ulit mamaya.",
   "chat.err.CHAT_NOT_CONFIGURED": "Hindi pa naka-set up ang chat sa server.",
   "chat.err.NETWORK": "Hindi maabot ang server. Naka-on ba ang backend?",
-  "chat.err.INVALID_QUESTION": "Paikliin ang tanong (hanggang 600 characters).",
+  "chat.err.INVALID_QUESTION": "Paikliin ang tanong (hanggang 300 characters).",
   "chat.err.NO_CONTRACT": "Kumpirmahin muna ang mga detalye ng kontrata mo.",
   'q.salary': 'Magkano ang sahod ko?',
   'q.deductions': 'Tama ba ang mga bawas?',

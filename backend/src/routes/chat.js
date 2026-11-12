@@ -13,8 +13,13 @@ const router = Router()
 
 const LABELS = { salary: 'Sahod', start: 'Simula', term: 'Tagal', hours: 'Oras', rest: 'Pahinga', penalty: 'Multa' }
 
-const fail = (res, status, code, message, retryable = false) =>
-  res.status(status).json({ error: { code, message, retryable } })
+const fail = (res, status, code, message, retryable = false, upstream) =>
+  res.status(status).json({ error: { code, message, retryable, ...(upstream && { upstream }) } })
+
+// Outside production, pass Lumen's own status/code/message through so the browser's Network tab
+// shows the REAL cause. Lumen's error text never contains the user's question or contract.
+const upstreamOf = (err) =>
+  process.env.NODE_ENV === 'production' ? undefined : { status: err.status, code: err.code, message: err.message }
 
 router.use((req, res, next) => {
   if (!chatConfig()) return fail(res, 503, 'CHAT_NOT_CONFIGURED', 'Chat is not set up on this server yet.')
@@ -63,16 +68,18 @@ router.use((err, req, res, next) => {
     console.error('[chat] unexpected error:', err?.name)
     return fail(res, 502, 'AI_UNAVAILABLE', 'The AI is not available right now.', true)
   }
-  console.error(`[chat] Lumen ${err.status} ${err.code}`)
+  console.error(`[chat] Lumen ${err.status} ${err.code}: ${err.message}`)
+  const up = upstreamOf(err)
   if (err.code === 'CHAT_NOT_CONFIGURED') return fail(res, 503, 'CHAT_NOT_CONFIGURED', 'Chat is not set up on this server yet.')
-  if (err.status === 504) return fail(res, 504, 'AI_TIMEOUT', 'The AI took too long.', true)
-  if (err.status === 429) return fail(res, 429, 'AI_BUSY', 'The AI is busy.', true)
+  if (err.code === 'AI_CHAT_QUERY_TOO_LONG') return fail(res, 400, 'INVALID_QUESTION', 'The question is too long.', false, up)
+  if (err.status === 504) return fail(res, 504, 'AI_TIMEOUT', 'The AI took too long.', true, up)
+  if (err.status === 429) return fail(res, 429, 'AI_BUSY', 'The AI is busy.', true, up)
   if (err.status === 404 || err.status === 409 || err.code === 'SESSION_NOT_OWNED') {
-    return fail(res, 409, 'SESSION_EXPIRED', 'The conversation expired.', true)
+    return fail(res, 409, 'SESSION_EXPIRED', 'The conversation expired.', true, up)
   }
-  if (err.status >= 500) return fail(res, 502, 'AI_UNAVAILABLE', 'The AI is not available right now.', true)
-  // 401/403: wrong key, missing AI Chat grant, or no credits. Our setup problem, not the user's.
-  return fail(res, 502, 'AI_UNAVAILABLE', 'The AI is not available right now.', false)
+  if (err.status >= 500) return fail(res, 502, 'AI_UNAVAILABLE', 'The AI is not available right now.', true, up)
+  // 400/401/403: bad request, wrong key, missing AI Chat grant, or no credits. Our setup problem, not the user's.
+  return fail(res, 502, 'AI_UNAVAILABLE', 'The AI is not available right now.', false, up)
 })
 
 export default router

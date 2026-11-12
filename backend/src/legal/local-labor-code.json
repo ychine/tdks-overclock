@@ -1,0 +1,72 @@
+{
+  "_README": "Articles and topics are filled in; `quote` is EMPTY until a human pastes the OFFICIAL text. The backend sends ONLY verified=true entries. The Labor Code was RENUMBERED (RA 10151 and DOLE Department Advisory No. 1, s. 2015): labels use the NEW number with the old one in brackets, e.g. Art. 296 [281]. Check both numbers against your source. Keep each quote (or its excerpt) under ~400 characters so two fit in Lumen's 2000-character message. NOTE: 13th-month pay is NOT in the Labor Code; it is Presidential Decree No. 851. The Labor Code's household-worker chapter was repealed by RA 10361, so kasambahay use ra10361.json, not this file.",
+  "source": "Presidential Decree No. 442 (Labor Code of the Philippines), as amended and renumbered",
+  "workerType": "local",
+  "covers": "Private-sector employees in the Philippines. Not kasambahay (see ra10361.json), not OFWs (see ofw-ra8042.json).",
+  "references": [
+    {
+      "id": "LC-83",
+      "label": "Labor Code, Art. 83 (Normal Hours of Work)",
+      "topics": ["oras", "hours", "walong oras", "8 hours", "shift", "pasok", "schedule"],
+      "fields": ["hours"],
+      "quote": "", "verified": false, "verified_by": "", "verified_at": ""
+    },
+    {
+      "id": "LC-87",
+      "label": "Labor Code, Art. 87 (Overtime Work)",
+      "topics": ["overtime", "ot", "sobra", "lagpas", "dagdag na oras", "extra hours"],
+      "fields": ["hours"],
+      "quote": "", "verified": false, "verified_by": "", "verified_at": ""
+    },
+    {
+      "id": "LC-91",
+      "label": "Labor Code, Art. 91 (Right to Weekly Rest Day)",
+      "topics": ["pahinga", "rest", "day off", "dayoff", "linggo", "weekly"],
+      "fields": ["rest"],
+      "quote": "", "verified": false, "verified_by": "", "verified_at": ""
+    },
+    {
+      "id": "LC-95",
+      "label": "Labor Code, Art. 95 (Service Incentive Leave)",
+      "topics": ["leave", "bakasyon", "sick leave", "vacation", "liban"],
+      "fields": ["start"],
+      "quote": "", "verified": false, "verified_by": "", "verified_at": ""
+    },
+    {
+      "id": "LC-103",
+      "label": "Labor Code, Art. 103 (Time of Payment of Wages)",
+      "topics": ["sahod", "sweldo", "suweldo", "salary", "payday", "kinsenas", "15th", "30th", "kailan"],
+      "fields": ["salary"],
+      "quote": "", "verified": false, "verified_by": "", "verified_at": ""
+    },
+    {
+      "id": "LC-113-114",
+      "label": "Labor Code, Art. 113-114 (Wage Deductions; Deposits for Loss or Damage)",
+      "topics": ["kaltas", "bawas", "deduction", "deposit", "deposito", "nasira", "nawala", "multa", "penalty"],
+      "fields": ["salary", "penalty"],
+      "quote": "", "verified": false, "verified_by": "", "verified_at": ""
+    },
+    {
+      "id": "LC-296",
+      "label": "Labor Code, Art. 296 [281] (Probationary Employment)",
+      "topics": ["probationary", "probation", "regular", "regularization", "standards", "6 months", "anim na buwan"],
+      "fields": ["term", "start"],
+      "quote": "", "verified": false, "verified_by": "", "verified_at": ""
+    },
+    {
+      "id": "LC-297",
+      "label": "Labor Code, Art. 297 [282] (Termination by Employer: Just Causes)",
+      "topics": ["tinanggal", "tanggal", "fired", "dismiss", "terminate", "just cause"],
+      "fields": ["term"],
+      "quote": "", "verified": false, "verified_by": "", "verified_at": "",
+      "_note": "Long list of causes: add an `excerpt` with only the opening line and the causes you need."
+    },
+    {
+      "id": "LC-300",
+      "label": "Labor Code, Art. 300 [285] (Termination by Employee)",
+      "topics": ["umalis", "aalis", "resign", "resignation", "quit", "abiso", "notice", "30 days", "maaga", "early"],
+      "fields": ["term", "penalty"],
+      "quote": "", "verified": false, "verified_by": "", "verified_at": ""
+    }
+  ]
+}

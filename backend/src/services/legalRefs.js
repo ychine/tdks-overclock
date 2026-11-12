@@ -7,6 +7,17 @@ const file = new URL('../legal/ra10361.json', import.meta.url)
 const all = JSON.parse(readFileSync(file, 'utf8')).references
 export const verifiedRefs = all.filter((r) => r.verified === true)
 
+// `excerpt` pieces must be exact substrings of `quote`, so what the AI reads is still the law's own words.
+for (const ref of verifiedRefs) {
+  if (ref.excerpt && !ref.excerpt.every((piece) => ref.quote.includes(piece))) {
+    console.warn(`[legal] ${ref.id}: excerpt is not an exact part of the quote; using the full quote`)
+    delete ref.excerpt
+  }
+}
+
+/** The law text the AI sees: the excerpt if there is one, else the full quote. */
+export const lawTextFor = (ref) => (ref.excerpt ? ref.excerpt.join(' ... ') : ref.quote)
+
 console.log(`[legal] ${verifiedRefs.length} of ${all.length} references verified and usable`)
 
 export const normalize = (text) =>
@@ -24,7 +35,7 @@ export const normalize = (text) =>
  * the contract actually has. Entries with no topic match are never picked, so a question about
  * something the file does not cover gets NO law (and the answer leaves out "Ayon sa batas").
  */
-export function selectRefs(question, fieldKeys = [], max = 3) {
+export function selectRefs(question, fieldKeys = [], max = 2) {
   const q = ` ${normalize(question)} `
   return verifiedRefs
     .map((ref) => {
