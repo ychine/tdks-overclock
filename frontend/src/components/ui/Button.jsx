@@ -34,6 +34,7 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   icon,
+  trailingIcon,
   className,
   href,
   type = 'button',
@@ -51,6 +52,7 @@ export default function Button({
     >
       {icon && <Icon name={icon} size={size === 'lg' ? 22 : 20} />}
       <span>{children}</span>
+      {trailingIcon && <Icon name={trailingIcon} size={size === 'lg' ? 22 : 20} />}
     </Comp>
   )
 }

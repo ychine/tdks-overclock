@@ -60,7 +60,7 @@ function ContractPreview({ t }) {
       <div data-parallax>
         <span
           aria-hidden="true"
-          className="absolute -top-1 left-0 z-10 grid size-14 place-items-center rounded-full bg-sun text-[#1b2433] shadow-card sm:left-2"
+          className="absolute -bottom-1 right-6 z-10 grid size-14 place-items-center rounded-full bg-sun text-[#1b2433] shadow-card"
         >
           <Icon name="sun" size={28} />
         </span>
@@ -347,6 +347,7 @@ export default function Landing({ enter, dark, setDark }) {
 
         <section id="faq" className="mx-auto w-[min(820px,calc(100%-32px))] scroll-mt-20 py-16 md:py-24">
           <h2 data-reveal className={h2}>{t('landing.faqTitle')}</h2>
+          <p data-reveal className="mt-3 max-w-[60ch] text-lg text-subtle">{t('landing.faqText')}</p>
           <div data-reveal className="mt-8">
             <Accordion items={t('landing.faq')} />
           </div>
@@ -359,8 +360,8 @@ export default function Landing({ enter, dark, setDark }) {
             </span>
             <h2 className="text-4xl leading-[1.05] font-semibold md:text-6xl">{t('landing.finalTitle')}</h2>
             <p className="mt-4 mb-7 text-lg text-subtle">{t('landing.finalText')}</p>
-            <Button size="lg" onClick={enter} className="min-w-60">
-              {t('landing.finalCta')} <Icon name="arrow" />
+            <Button size="lg" onClick={enter} className="min-w-60" trailingIcon="arrow">
+              {t('landing.finalCta')}
             </Button>
             <small className="mt-4 text-sm text-subtle">{t('app.disclaimer')}</small>
           </div>

@@ -8,6 +8,7 @@ const english = {
   'app.close': 'Close',
   'app.back': 'Back',
   'app.backHome': 'Back to Home',
+  'app.backLanding': 'Back to landing',
   'app.retry': 'Retry',
   'app.step': 'Step {n} of 3',
   'app.errorTitle': 'Something went wrong.',
@@ -108,24 +109,39 @@ const english = {
     'Encrypted while it’s checked and automatically deleted after 24 hours. Your personal document is never sold or used to train AI.',
   'landing.statLabels': ["auto-delete","languages","hotlines","ads or spam"],
   'landing.faqTitle': 'Frequently asked questions',
+  'landing.faqText': 'Straight answers about privacy, coverage, and what Linaw can and cannot do.',
   'landing.faq': [
-    { q: 'Is it free?', a: 'Yes. No signup and no charge to check your contract.' },
     {
-      q: 'Is this legal advice?',
-      a: 'No. Linaw explains what your contract says so you can ask the right questions. For legal advice, go to DOLE or the Public Attorney’s Office.',
+      q: 'Is Linaw really free?',
+      a: 'Yes. Checking a contract, asking follow-up questions, and reading the summary are free. There is no signup, subscription, or hidden fee.',
     },
     {
-      q: 'What happens to my document?',
-      a: 'It’s encrypted while it’s checked and automatically deleted after 24 hours. It is never sold or used to train AI.',
-    },
-    { q: 'Which files can I use?', a: 'PDF, JPG, or PNG up to 20 MB. You can also take a photo with your phone.' },
-    {
-      q: 'What if I don’t have a contract?',
-      a: 'That’s okay. Answer a few questions and we’ll show the rights you usually have, along with hotlines you can call.',
+      q: 'Is it the same as legal advice?',
+      a: 'No. Linaw explains what your document says in plain language and points out clauses worth asking about. It does not represent you or decide a case. For legal advice, call DOLE’s hotline 1349 or the Public Attorney’s Office (PAO).',
     },
     {
-      q: 'How do I know it was read correctly?',
-      a: 'We show every detail we picked up so you can check it. Anything we’re unsure about is marked “Please check”.',
+      q: 'What documents can I check?',
+      a: 'Employment contracts, job offers, quitclaims, and similar work documents. Upload a PDF, JPG, or PNG up to 20 MB, or take a clear photo with your phone. Handwritten notes and very blurry photos may not be readable.',
+    },
+    {
+      q: 'What happens to my document after I upload it?',
+      a: 'Files are encrypted while they are processed and automatically deleted after 24 hours. We do not sell or share your data with employers, or use it to train AI. No account is created.',
+    },
+    {
+      q: 'What if the app reads a detail incorrectly?',
+      a: 'The Check & Correct step shows every detail we extracted, and anything uncertain is marked “Please check”. You can review or edit it before the summary is generated. If a photo is too blurry, we ask you to retake it.',
+    },
+    {
+      q: 'What if I don’t have a written contract?',
+      a: 'Choose the no-contract option and answer a few questions about your pay, hours, and deductions. Linaw will show the rights workers usually have and the agencies you can call. This is general guidance, not a review of your employer’s terms.',
+    },
+    {
+      q: 'Which languages does it support?',
+      a: 'The interface, summary, and chat work in English, Filipino, and Taglish. You can switch language anytime from the header without losing your place in the document.',
+    },
+    {
+      q: 'How long does it take?',
+      a: 'A clear one-page document is usually read in under 30 seconds. Multiple pages or large photos take longer. Reading happens in steps so you can follow what is being checked.',
     },
   ],
   'landing.finalTitle': 'Give yourself a few minutes of clarity.',
@@ -458,7 +474,7 @@ const english = {
   "chat.responding": "Responding",
   "chat.transcript": "Conversation",
   "chat.clause": "Clause",
-  "chat.approvalShort": "Pre-signing checklist",
+  "chat.approvalShort": "Checklist",
 }
 
 export default english

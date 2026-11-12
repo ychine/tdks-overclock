@@ -26,7 +26,7 @@ export default function Questions({ go }) {
   if (answers[2] >= 1) flags.push(t('questions.flagRest'))
 
   return (
-    <Page className="min-h-[calc(100vh-150px)]">
+    <Page className="min-h-[calc(100dvh-74px-76px)] lg:min-h-[calc(100dvh-74px)]">
       {!done ? (
         <>
           <div className="mx-auto max-w-[660px]">
