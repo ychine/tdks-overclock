@@ -60,7 +60,7 @@ function ContractPreview({ t }) {
       <div data-parallax>
         <span
           aria-hidden="true"
-          className="absolute -top-1 right-0 z-10 grid size-16 place-items-center rounded-full bg-sun text-[#1b2433] shadow-card sm:right-2"
+          className="absolute -top-1 left-0 z-10 grid size-14 place-items-center rounded-full bg-sun text-[#1b2433] shadow-card sm:left-2"
         >
           <Icon name="sun" size={28} />
         </span>
@@ -93,20 +93,6 @@ function ContractPreview({ t }) {
             <p className="text-sm leading-snug">{t('landing.previewChat')}</p>
           </div>
         </Panel>
-        <span
-          aria-hidden="true"
-          className="absolute bottom-0 left-0 z-[3] hidden items-center gap-2 rounded-btn border border-line bg-surface px-3 py-2.5 text-sm font-bold shadow-card sm:flex"
-        >
-          <span className="text-brand"><Icon name="sound" size={18} /></span>
-          {t('landing.noteRead')}
-        </span>
-        <span
-          aria-hidden="true"
-          className="absolute top-[26%] right-0 z-[3] hidden items-center gap-2 rounded-btn border border-line bg-surface px-3 py-2.5 text-sm font-bold shadow-card sm:flex"
-        >
-          <span className="text-brand"><Icon name="chat" size={18} /></span>
-          {t('landing.noteAsk')}
-        </span>
       </div>
     </div>
   )
