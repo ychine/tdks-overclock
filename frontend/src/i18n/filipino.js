@@ -8,6 +8,7 @@ const filipino = {
   'app.close': 'Isara',
   'app.back': 'Bumalik',
   'app.backHome': 'Bumalik sa Simula',
+  'app.backLanding': 'Bumalik sa landing page',
   'app.retry': 'Subukan muli',
   'app.step': 'Hakbang {n} sa 3',
   'app.errorTitle': 'May nangyaring mali.',
@@ -113,27 +114,39 @@ const filipino = {
     'Naka-encrypt habang sinusuri at kusang buburahin pagkalipas ng 24 oras. Hindi ito ibebenta o gagamitin sa pagsasanay ng AI.',
   'landing.statLabels': ["kusang pagbura","wika","hotline","ads o spam"],
   'landing.faqTitle': 'Mga madalas na tanong',
+  'landing.faqText': 'Tuwirang sagot tungkol sa privacy, saklaw, at kung ano ang kaya at hindi kayang gawin ng Linaw.',
   'landing.faq': [
-    { q: 'Libre ba ito?', a: 'Oo. Walang pagpaparehistro at walang bayad sa pagsusuri ng kontrata mo.' },
     {
-      q: 'Legal na payo ba ito?',
-      a: 'Hindi. Ipinapaliwanag lamang ng Linaw ang nakasulat sa kontrata para makapagtanong ka nang tama. Para sa legal na payo, lumapit sa DOLE o sa Public Attorney’s Office.',
+      q: 'Libre ba talaga ang Linaw?',
+      a: 'Oo. Libre ang pagsusuri ng kontrata, pagtatanong ng follow-up, at pagbasa ng summary. Walang pagpaparehistro, subscription, o nakatagong bayad.',
     },
     {
-      q: 'Ano ang mangyayari sa dokumento ko?',
-      a: 'Naka-encrypt habang sinusuri at kusang buburahin pagkalipas ng 24 oras. Hindi ito ibebenta o gagamitin sa pagsasanay ng AI.',
+      q: 'Pareho ba ito ng legal advice?',
+      a: 'Hindi. Ipinapaliwanag ng Linaw sa simpleng salita ang nakasulat sa dokumento mo at itinatampok ang mga probisyon na dapat mong itanong. Hindi ito kumakatawan sa iyo o nagpapasya ng kaso. Para sa legal na payo, tumawag sa DOLE hotline 1349 o lumapit sa Public Attorney’s Office (PAO).',
     },
     {
-      q: 'Anong file ang puwede?',
-      a: 'PDF, JPG, o PNG hanggang 20 MB. Puwede ring kunan ng larawan gamit ang telepono.',
+      q: 'Anong dokumento ang puwedeng suriin?',
+      a: 'Mga employment contract, job offer, quitclaim, at katulad na dokumentong pangtrabaho. Mag-upload ng PDF, JPG, o PNG hanggang 20 MB, o kumuha ng malinaw na larawan gamit ang telepono. Maaaring hindi mabasa ang sulat-kamay at malabong larawan.',
     },
     {
-      q: 'Paano kung wala akong kontrata?',
-      a: 'Ayos lang. Sagutin ang ilang tanong at ipapakita namin ang karaniwang karapatan mo, kasama ang hotline na matatawagan.',
+      q: 'Ano ang nangyayari sa dokumento ko pagkatapos i-upload?',
+      a: 'Naka-encrypt ang file habang pinoproseso at awtomatikong binubura pagkalipas ng 24 oras. Hindi namin ibinebenta o ibinabahagi sa employer ang data mo, at hindi ito ginagamit sa pag-train ng AI. Walang account na ginagawa.',
     },
     {
-      q: 'Sigurado bang tama ang pagkabasa?',
-      a: 'Ipinapakita namin ang bawat nakuhang detalye para ikaw ang magsuri. Ang mga hindi kami sigurado ay may markang “Pakisuri”.',
+      q: 'Paano kung mali ang nabasa ng app?',
+      a: 'Sa Check & Correct, ipinapakita ang lahat ng detalyeng nakuha namin, at may markang “Pakisuri” ang hindi tiyak. Maaari mong repasuhin o i-edit bago gawin ang summary. Kung masyadong malabo ang larawan, hihilingin naming kunan muli.',
+    },
+    {
+      q: 'Paano kung wala akong nakasulat na kontrata?',
+      a: 'Piliin ang walang-kontratang opsyon at sagutin ang ilang tanong tungkol sa sahod, oras, at deductions. Ipapakita ng Linaw ang karaniwang karapatan ng manggagawa at ang mga ahensyang matatawagan. Pangkalahatang gabay ito, hindi pagsusuri ng aktwal na terms ng employer mo.',
+    },
+    {
+      q: 'Anong mga wika ang sinusuportahan?',
+      a: 'Gumagana ang interface, summary, at chat sa English, Filipino, at Taglish. Puwede kang magpalit ng wika anumang oras sa header nang hindi nawawala ang kinaroroonan mo sa dokumento.',
+    },
+    {
+      q: 'Gaano katagal bago matapos?',
+      a: 'Kadalasan wala pang 30 segundo ang malinaw na isang-pahinang dokumento. Mas matagal ang maraming pahina o malalaking larawan. Hinahati ang pagbasa sa mga hakbang para masundan mo ang sinusuri.',
     },
   ],
   'landing.finalTitle': 'Bigyan ang sarili ng ilang minutong linaw.',
@@ -468,7 +481,7 @@ const filipino = {
   "chat.responding": "Sumasagot",
   "chat.transcript": "Usapan",
   "chat.clause": "Sugnay",
-  "chat.approvalShort": "Checklist bago pumirma",
+  "chat.approvalShort": "Checklist",
 }
 
 export default filipino

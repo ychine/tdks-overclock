@@ -9,7 +9,7 @@ import { Callout, IconTile, Panel } from '../components/ui/Surfaces'
 import { useI18n } from '../i18n/useI18n'
 import { checkContractFile } from '../lib/files'
 
-export default function Upload({ go, onFile }) {
+export default function Upload({ go, onFile, onExit }) {
   const { t } = useI18n()
   const [problem, setProblem] = useState(null)
   const cameraInput = useRef(null)
@@ -28,16 +28,28 @@ export default function Upload({ go, onFile }) {
 
   return (
     <Page narrow>
-      <button
-        type="button"
-        onClick={() => go('home')}
-        className="mb-2 inline-flex min-h-12 items-center gap-2 rounded-btn px-1 text-sm font-bold text-brand transition-colors hover:text-ink"
-      >
-        <span className="-scale-x-100" aria-hidden="true">
-          <Icon name="arrow" size={18} />
-        </span>
-        {t('app.backHome')}
-      </button>
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={() => go('home')}
+          className="inline-flex min-h-12 items-center gap-2 rounded-btn px-1 text-sm font-bold text-brand transition-colors hover:text-ink"
+        >
+          <span className="-scale-x-100" aria-hidden="true">
+            <Icon name="arrow" size={18} />
+          </span>
+          {t('app.backHome')}
+        </button>
+        {onExit && (
+          <button
+            type="button"
+            onClick={onExit}
+            className="inline-flex min-h-12 items-center gap-1.5 rounded-btn px-1 text-sm font-semibold text-subtle transition-colors hover:text-ink"
+          >
+            <Icon name="close" size={16} />
+            {t('app.backLanding')}
+          </button>
+        )}
+      </div>
       <Stepper current={0} />
       <PageHeading title={t('upload.title')} text={t('upload.text')} />
 
