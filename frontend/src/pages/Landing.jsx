@@ -12,6 +12,7 @@ import ThemeToggle from '../components/ThemeToggle'
 import Accordion from '../components/ui/Accordion'
 import Button from '../components/ui/Button'
 import { Segmented } from '../components/ui/Controls'
+import { BlurReveal } from '../components/motion/blur-reveal'
 import { Badge, IconTile, ListGroup, ListRow, Panel } from '../components/ui/Surfaces'
 import { useI18n } from '../i18n/useI18n'
 import { agencies, telHref } from '../lib/agencies'
@@ -159,8 +160,7 @@ export default function Landing({ enter, dark, setDark }) {
         const intro = gsap.timeline({ defaults: { ease: 'power3.out' } })
         intro
           .from('[data-hero="pill"]', { y: 12, opacity: 0, duration: 0.5 })
-          .from('[data-hero="line"]', { yPercent: 110, duration: 0.85, stagger: 0.12 }, '-=0.25')
-          .from('[data-hero="lead"]', { y: 14, opacity: 0, duration: 0.55 }, '-=0.45')
+          .from('[data-hero="lead"]', { y: 14, opacity: 0, duration: 0.55 }, '-=0.1')
           .from('[data-hero="cta"]', { y: 14, opacity: 0, duration: 0.5, stagger: 0.08 }, '-=0.35')
           .from('[data-hero="visual"]', { y: 40, opacity: 0, duration: 0.9 }, 0.25)
 
@@ -229,11 +229,15 @@ export default function Landing({ enter, dark, setDark }) {
               {t('landing.pill')}
             </span>
             <h1 className="mt-6 text-5xl leading-[1.04] font-semibold md:text-6xl lg:text-[4.5rem]">
-              <span className="block overflow-hidden pb-1">
-                <span data-hero="line" className="inline-block">{t('landing.h1a')}</span>
+              <span className="block pb-1">
+                <BlurReveal as="span" className="inline-block" delay={0.2} speedReveal={1.4} speedSegment={0.7}>
+                  {t('landing.h1a')}
+                </BlurReveal>
               </span>
-              <span className="block overflow-hidden pb-1 text-brand">
-                <span data-hero="line" className="inline-block">{t('landing.h1b')}</span>
+              <span className="block pb-1 text-brand">
+                <BlurReveal as="span" className="inline-block" delay={0.55} speedReveal={1.4} speedSegment={0.7}>
+                  {t('landing.h1b')}
+                </BlurReveal>
               </span>
             </h1>
             <p data-hero="lead" className="mt-6 max-w-[56ch] text-lg text-subtle">{t('landing.lead')}</p>
