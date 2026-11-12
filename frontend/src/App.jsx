@@ -1,55 +1,40 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
+import { AnimatePresence, MotionConfig, motion } from 'motion/react'
+import { EASE_OUT } from '@/lib/ease'
+import ErrorBoundary from './components/ErrorBoundary'
 import Nav from './components/Nav'
-import Topbar from './components/Topbar'
-import Landing from './pages/Landing'
-import Home from './pages/Home'
-import Upload from './pages/Upload'
-import Reading from './pages/Reading'
-import Review from './pages/Review'
-import Summary from './pages/Summary'
-import Salary from './pages/Salary'
-import Chat from './pages/Chat'
-import Compare from './pages/Compare'
-import Questions from './pages/Questions'
-import Help from './pages/Help'
+import { I18nProvider } from './i18n/I18nProvider'
+import { useI18n } from './i18n/useI18n'
 
-const labels = {
-  home: 'Home',
-  upload: 'Upload',
-  reading: 'Binabasa',
-  review: 'Check & Correct',
-  summary: '30-Second Summary',
-  salary: 'Salary Breakdown',
-  chat: 'Magtanong',
-  compare: 'Compare',
-  questions: 'Walang kontrata',
-  help: 'Get Help',
+// Screens are code-split: the landing page (which carries GSAP) and the chat (which carries the
+// beUI agent components) only load when someone opens them — kinder to cheap phones and slow data.
+const Landing = lazy(() => import('./pages/Landing'))
+const Home = lazy(() => import('./pages/Home'))
+const Upload = lazy(() => import('./pages/Upload'))
+const Reading = lazy(() => import('./pages/Reading'))
+const Review = lazy(() => import('./pages/Review'))
+const Summary = lazy(() => import('./pages/Summary'))
+const Salary = lazy(() => import('./pages/Salary'))
+const Chat = lazy(() => import('./pages/Chat'))
+const Compare = lazy(() => import('./pages/Compare'))
+const Questions = lazy(() => import('./pages/Questions'))
+const Help = lazy(() => import('./pages/Help'))
+
+function Loading() {
+  return <div className="min-h-[60vh]" aria-busy="true" />
 }
 
-export default function App() {
+function Shell() {
+  const { t } = useI18n()
   const [landed, setLanded] = useState(false)
   const [screen, setScreen] = useState('home')
+  const [documentName, setDocumentName] = useState('')
   const [dark, setDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
-  const [language, setLanguage] = useState('Taglish')
-  const firstRender = useRef(true)
 
-  // Theme the page itself (overscroll, scrollbars, form controls), not just .app.
+  // Theme the page itself (overscroll, scrollbars, form controls), not just the app wrapper.
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? 'dark' : 'light'
   }, [dark])
-
-  // After a screen change, move focus to the new heading for keyboard and screen-reader users.
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false
-      return
-    }
-    const heading = document.querySelector('.main-shell h1')
-    if (heading) {
-      heading.tabIndex = -1
-      heading.focus({ preventScroll: true })
-    }
-  }, [screen, landed])
 
   const go = useCallback((next) => {
     setScreen(next)
@@ -57,13 +42,13 @@ export default function App() {
   }, [])
 
   const content = {
-    home: <Home go={go} language={language} setLanguage={setLanguage} />,
-    upload: <Upload go={go} />,
-    reading: <Reading go={go} />,
+    home: <Home go={go} />,
+    upload: <Upload go={go} onFile={setDocumentName} />,
+    reading: <Reading go={go} fileName={documentName} />,
     review: <Review go={go} />,
     summary: <Summary go={go} />,
     salary: <Salary go={go} />,
-    chat: <Chat />,
+    chat: <Chat go={go} />,
     compare: <Compare />,
     questions: <Questions go={go} />,
     help: <Help />,
@@ -71,46 +56,60 @@ export default function App() {
 
   if (!landed) {
     return (
-      <div className={dark ? 'app dark' : 'app'}>
-        <Landing
-          dark={dark}
-          setDark={setDark}
-          enter={() => {
-            setLanded(true)
-            window.scrollTo(0, 0)
-          }}
-        />
+      <div className="min-h-screen bg-canvas text-ink">
+        <Suspense fallback={<Loading />}>
+          <Landing
+            dark={dark}
+            setDark={setDark}
+            enter={() => {
+              setLanded(true)
+              window.scrollTo(0, 0)
+            }}
+          />
+        </Suspense>
       </div>
     )
   }
 
   return (
-    <div className={dark ? 'app with-nav dark' : 'app with-nav'}>
+    <div className="min-h-screen bg-canvas text-ink transition-colors print:pl-0">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:rounded-xl focus:bg-(--blue) focus:px-4 focus:py-3 focus:font-bold focus:text-(--on-solid)"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:rounded-btn focus:bg-brand focus:px-4 focus:py-3 focus:font-bold focus:text-on-solid"
       >
-        Lumaktaw sa nilalaman
+        {t('app.skip')}
       </a>
-      <Nav screen={screen} go={go} />
-      <main id="main" className="main-shell">
-        <Topbar
-          title={labels[screen]}
-          onHome={() => {
-            setLanded(false)
-            window.scrollTo(0, 0)
-          }}
-          dark={dark}
-          setDark={setDark}
-          language={language}
-          setLanguage={setLanguage}
-        />
-        {content[screen]}
-        <footer>
-          <span>Linaw</span>
-          <p>Nagpapaliwanag lang kami, hindi legal advice.</p>
+      <Nav screen={screen} go={go} dark={dark} setDark={setDark} />
+      <main id="main" className="min-h-screen pb-22 lg:pb-0">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={screen}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.22, ease: EASE_OUT }}
+          >
+            <Suspense fallback={<Loading />}>{content[screen]}</Suspense>
+          </motion.div>
+        </AnimatePresence>
+        <footer className="mx-10 hidden h-24 items-center justify-between border-t border-line text-sm text-subtle lg:flex print:hidden">
+          <span className="font-display text-xl text-ink">Linaw</span>
+          <p>{t('app.disclaimer')}</p>
         </footer>
       </main>
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <I18nProvider>
+      {/* "user" turns Motion's transform / layout animation off for people who ask for less motion. */}
+      <MotionConfig reducedMotion="user">
+        <ErrorBoundary>
+          <Shell />
+        </ErrorBoundary>
+      </MotionConfig>
+    </I18nProvider>
   )
 }
