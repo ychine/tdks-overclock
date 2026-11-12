@@ -41,9 +41,14 @@ function Shell() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
+  const exitToLanding = useCallback(() => {
+    setLanded(false)
+    window.scrollTo(0, 0)
+  }, [])
+
   const content = {
     home: <Home go={go} />,
-    upload: <Upload go={go} onFile={setDocumentName} />,
+    upload: <Upload go={go} onFile={setDocumentName} onExit={exitToLanding} />,
     reading: <Reading go={go} fileName={documentName} />,
     review: <Review go={go} />,
     summary: <Summary go={go} />,
@@ -80,10 +85,11 @@ function Shell() {
         {t('app.skip')}
       </a>
       <Nav screen={screen} go={go} dark={dark} setDark={setDark} />
-      <main id="main" className="min-h-screen pb-22 lg:pb-0">
+      <main id="main" className="flex min-h-[calc(100dvh-74px)] flex-col pb-22 lg:pb-0">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={screen}
+            className="flex-1"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
@@ -92,7 +98,7 @@ function Shell() {
             <Suspense fallback={<Loading />}>{content[screen]}</Suspense>
           </motion.div>
         </AnimatePresence>
-        <footer className="mx-10 hidden h-24 items-center justify-between border-t border-line text-sm text-subtle lg:flex print:hidden">
+        <footer className="mx-10 mt-auto hidden h-24 items-center justify-between border-t border-line text-sm text-subtle lg:flex print:hidden">
           <span className="font-display text-xl text-ink">Linaw</span>
           <p>{t('app.disclaimer')}</p>
         </footer>

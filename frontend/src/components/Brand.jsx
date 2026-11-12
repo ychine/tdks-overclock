@@ -5,7 +5,7 @@ export default function Brand({ compact = false, onClick, label }) {
   return (
     <Tag
       {...(onClick ? { type: 'button', 'aria-label': label, onClick } : {})}
-      className={`inline-flex items-center rounded-btn ${onClick ? 'cursor-pointer transition-opacity hover:opacity-80' : ''}`}
+      className={`inline-flex items-center rounded-btn ${onClick ? 'min-h-12 cursor-pointer transition-opacity hover:opacity-80' : ''}`}
     >
       <span
         aria-hidden="true"

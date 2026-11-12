@@ -109,9 +109,21 @@ export default function Chat({ go }) {
 
   return (
     <LocaleProvider locale={LANGUAGE_TAGS[language]} messages={messages}>
-      <Page narrow className="flex h-[calc(100dvh-68px-76px)] flex-col py-3 md:py-4 lg:h-[calc(100dvh-68px)] lg:py-6">
+      <Page narrow className="flex h-[calc(100dvh-74px-76px)] flex-col py-3 md:py-4 lg:h-[calc(100dvh-74px)] lg:py-6">
         <div className="mb-3 flex items-end justify-between gap-4 px-1">
-          <h1 className="text-2xl leading-tight font-semibold md:text-4xl">{t('chat.title')}</h1>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => go('home')}
+              aria-label={t('app.backHome')}
+              className="grid size-11 shrink-0 place-items-center rounded-btn text-brand transition-colors hover:bg-brand-soft"
+            >
+              <span className="-scale-x-100" aria-hidden="true">
+                <Icon name="arrow" size={20} />
+              </span>
+            </button>
+            <h1 className="text-2xl leading-tight font-semibold md:text-4xl">{t('chat.title')}</h1>
+          </div>
           <Badge tone="ok" className="hidden shrink-0 md:inline-flex">
             <i className="size-1.5 rounded-full bg-ok" /> {t('chat.online')}
           </Badge>
@@ -237,7 +249,7 @@ export default function Chat({ go }) {
                 ))}
               </div>
             )}
-            <PromptInput minRows={1} maxRows={4} onSubmit={(prompt) => ask(prompt)} className="rounded-card border-line shadow-card" />
+            <PromptInput minRows={2} maxRows={4} onSubmit={(prompt) => ask(prompt)} className="rounded-card border-line shadow-card" />
             <p className="mt-2 px-1 text-sm text-subtle">{t('chat.footer')}</p>
           </div>
         </Panel>

@@ -9,6 +9,7 @@ const taglish = {
   'app.close': 'Isara',
   'app.back': 'Bumalik',
   'app.backHome': 'Bumalik sa Home',
+  'app.backLanding': 'Bumalik sa landing page',
   'app.retry': 'Retry',
   'app.step': 'Step {n} of 3',
   'app.errorTitle': 'May nangyaring mali.',
@@ -115,30 +116,39 @@ const taglish = {
     'Encrypted habang sinusuri at awtomatikong binubura matapos ang 24 oras. Hindi ibebenta o gagamitin para mag-train ng AI ang personal mong dokumento.',
   'landing.statLabels': ["auto-delete","wika","hotline","ads o spam"],
   'landing.faqTitle': 'Mga madalas itanong',
+  'landing.faqText': 'Mga straight answer tungkol sa privacy, coverage, at kung ano ang kaya at hindi kayang gawin ng Linaw.',
   'landing.faq': [
     {
-      q: 'Libre ba ito?',
-      a: 'Oo. Walang signup at walang bayad para suriin ang kontrata mo.',
+      q: 'Libre ba talaga ang Linaw?',
+      a: 'Oo. Libre ang pag-check ng contract, pag-ask ng follow-up questions, at pagbasa ng summary. Walang signup, subscription, o hidden fee.',
     },
     {
       q: 'Legal advice ba ito?',
-      a: 'Hindi. Ipinapaliwanag lang ng Linaw ang nakasulat sa kontrata para makapagtanong ka nang tama. Para sa legal na payo, lumapit sa DOLE o sa Public Attorney’s Office.',
+      a: 'Hindi. Ini-explain ng Linaw sa plain language ang nakasulat sa document mo at tinuturo ang clauses na dapat mong i-ask. Hindi ito nagre-represent sa iyo o nagde-decide ng case. For legal advice, tumawag sa DOLE hotline 1349 o pumunta sa Public Attorney’s Office (PAO).',
     },
     {
-      q: 'Ano ang mangyayari sa dokumento ko?',
-      a: 'Encrypted habang sinusuri at awtomatikong binubura matapos ang 24 oras. Hindi ito ibebenta o gagamitin para mag-train ng AI.',
+      q: 'Anong documents ang puwedeng i-check?',
+      a: 'Employment contracts, job offers, quitclaims, at similar work documents. Mag-upload ng PDF, JPG, o PNG hanggang 20 MB, o kumuha ng malinaw na photo gamit ang phone. Baka hindi mabasa ang handwritten notes at sobrang blurry na photos.',
     },
     {
-      q: 'Anong file ang puwede?',
-      a: 'PDF, JPG, o PNG hanggang 20 MB. Puwede ring kunan ng photo gamit ang phone.',
+      q: 'Ano ang nangyayari sa document ko after i-upload?',
+      a: 'Naka-encrypt ang file habang ginagawork at auto-deleted after 24 hours. Hindi namin binibenta o ibinabahagi sa employer ang data mo, at hindi ito ginagamit para mag-train ng AI. Walang account na ginagawa.',
     },
     {
-      q: 'Paano kung wala akong kontrata?',
-      a: 'Okay lang. Sagutin ang ilang tanong at ipapakita namin ang karaniwang karapatan mo, kasama ang hotline na matatawagan.',
+      q: 'Paano kung mali ang nabasa ng app?',
+      a: 'Sa Check & Correct, ipinapakita namin lahat ng details na nakuha namin, at may mark na “Please check” ang hindi sure. Puwede mong i-review o i-edit bago gawin ang summary. Kung masyadong blurry ang photo, hihilingin naming kunan ulit.',
     },
     {
-      q: 'Sigurado bang tama ang pagkabasa?',
-      a: 'Ipinapakita namin ang bawat nakuhang detalye para ikaw ang mag-check. Ang mga hindi kami sigurado ay may markang “Pakisuri”.',
+      q: 'Paano kung wala akong written contract?',
+      a: 'Piliin ang no-contract option at sagutin ang ilang tanong tungkol sa pay, hours, at deductions. Ipapakita ng Linaw ang usual rights ng workers at ang mga agency na matatawagan. General guidance ito, hindi review ng actual terms ng employer mo.',
+    },
+    {
+      q: 'Anong languages ang supported?',
+      a: 'Gumagana ang interface, summary, at chat sa English, Filipino, at Taglish. Puwede kang magpalit ng language anytime sa header nang hindi nawawala ang place mo sa document.',
+    },
+    {
+      q: 'Gaano katagal bago matapos?',
+      a: 'Usually wala pang 30 seconds ang malinaw na one-page document. Mas matagal ang maraming pages o malalaking photos. Hinahati ang reading sa steps para masundan mo kung ano ang chine-check.',
     },
   ],
   'landing.finalTitle': 'Bigyan ang sarili mo ng ilang minutong linaw.',
@@ -485,7 +495,7 @@ const taglish = {
   "chat.responding": "Sumasagot",
   "chat.transcript": "Usapan",
   "chat.clause": "Sugnay",
-  "chat.approvalShort": "Checklist bago pumirma",
+  "chat.approvalShort": "Checklist",
 }
 
 export default taglish
