@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ApprovalCard } from '@/components/agents/approval-card'
 import { Citation, Citations } from '@/components/agents/citations'
 import { ThinkingShimmer } from '@/components/agents/loading-states/thinking-shimmer'
 import {
@@ -12,9 +11,10 @@ import {
   MessageScroller,
 } from '@/components/agents/message'
 import { PromptInput } from '@/components/agents/prompt-input'
-import { Checkbox } from '@/components/motion/checkbox'
 import { LocaleProvider } from '@/lib/i18n'
+import { askChat, openChat } from '../api/chat'
 import Icon from '../components/Icon'
+import NeedsUpload from '../components/NeedsUpload'
 import Rich from '../components/Rich'
 import Button from '../components/ui/Button'
 import { Chip } from '../components/ui/Controls'
@@ -22,10 +22,36 @@ import { Page } from '../components/ui/Page'
 import { Badge, Panel } from '../components/ui/Surfaces'
 import { LANGUAGE_TAGS } from '../i18n/messages'
 import { useI18n } from '../i18n/useI18n'
-import { askContract, STARTER_INTENTS } from '../lib/contractQa'
+import { matchIntent } from '../lib/contractQa'
 
-const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const stripBold = (text) => text.replaceAll('**', '')
+const hasValue = (field) => String(field?.value ?? '').trim() !== ''
+
+// Definitions are the same for everyone, so they use the prewritten answers and cost no credits.
+const FIXED_INTENTS = ['quitclaim', 'probationary']
+
+// Fields that have a "what does the law say" suggestion, in priority order.
+const FIELD_SUGGESTIONS = ['penalty', 'rest', 'hours', 'salary', 'start']
+
+/**
+ * Suggestions come from the user's own confirmed fields (no AI):
+ * missing fields first, then fields the law file covers, then the "before signing" question.
+ */
+function buildSuggestions(confirmed, t) {
+  const list = []
+  for (const field of confirmed) {
+    if (!hasValue(field)) {
+      list.push({
+        id: `missing-${field.key}`,
+        text: t('chat.sugg.missing', { label: t(`review.${field.key}`).toLowerCase() }),
+      })
+    }
+  }
+  for (const key of FIELD_SUGGESTIONS) {
+    if (hasValue(confirmed.find((f) => f.key === key))) list.push({ id: key, text: t(`chat.sugg.${key}`) })
+  }
+  return [...list.slice(0, 3), { id: 'checklist', text: t('chat.sugg.checklist') }]
+}
 
 function Avatar() {
   return (
@@ -51,50 +77,85 @@ function useBeuiMessages(t) {
         typing: t('chat.responding'),
       },
       messageScroller: { label: t('chat.transcript') },
-      citations: { title: t('chat.sources'), viewCitation: t('chat.viewCitation') },
-      approvalCard: {
-        title: t('chat.approvalShort'),
-        approve: t('chat.approvalYes'),
-        reject: t('chat.approvalLater'),
-        inputRequired: t('chat.needsYou'),
-        approved: t('chat.approved'),
-        rejected: t('chat.later'),
-      },
+      citations: { title: t('chat.basis'), viewCitation: t('chat.viewCitation') },
       loadingStates: { thinking: t('chat.thinking') },
     }),
     [t],
   )
 }
 
-export default function Chat({ go }) {
+export default function Chat({ go, confirmed }) {
   const { t, language } = useI18n()
   const messages = useBeuiMessages(t)
   const [thread, setThread] = useState([])
-  const [approval, setApproval] = useState('pending')
-  const [checked, setChecked] = useState([])
+  const [asked, setAsked] = useState([]) // suggestion ids already used
+  const [sessionId, setSessionId] = useState(null) // one Lumen conversation per confirmed contract
+  const [contract, setContract] = useState(confirmed)
   const [copied, setCopied] = useState(null)
   const nextId = useRef(0)
   const timers = useRef([])
+
+  // A newly confirmed contract starts a fresh conversation (React's "reset state on prop change" pattern).
+  if (contract !== confirmed) {
+    setContract(confirmed)
+    setThread([])
+    setAsked([])
+    setSessionId(null)
+  }
 
   useEffect(() => {
     const pending = timers.current
     return () => pending.forEach(clearTimeout)
   }, [])
 
-  const ask = (text, intent) => {
+  const suggestions = useMemo(
+    () => (confirmed ? buildSuggestions(confirmed, t).filter((s) => !asked.includes(s.id)) : []),
+    [confirmed, t, asked],
+  )
+
+  // Chat only exists for a confirmed contract. No upload -> no AI call, no credits.
+  if (!confirmed) return <NeedsUpload go={go} />
+
+  const busy = thread.some((turn) => turn.status === 'loading')
+  const update = (id, patch) => setThread((list) => list.map((x) => (x.id === id ? { ...x, ...patch } : x)))
+
+  const ask = async (text, suggestionId) => {
     const question = text.trim()
-    if (!question) return
+    if (!question || busy) return // one question at a time: no double charges
     const id = nextId.current++
-    setThread((list) => [...list, { id, question, answer: askContract(question, intent), ready: false }])
-    const delay = reduceMotion() ? 0 : 700
-    timers.current.push(
-      setTimeout(() => setThread((list) => list.map((turn) => (turn.id === id ? { ...turn, ready: true } : turn))), delay),
-    )
+    if (suggestionId) setAsked((list) => [...list, suggestionId])
+
+    const intent = matchIntent(question)
+    if (FIXED_INTENTS.includes(intent)) {
+      setThread((list) => [...list, { id, question, status: 'done', kind: 'fixed', intent }])
+      return
+    }
+
+    setThread((list) => [...list, { id, question, status: 'loading' }])
+    try {
+      let sid = sessionId
+      if (!sid) {
+        sid = await openChat()
+        setSessionId(sid)
+      }
+      const reply = await askChat(sid, { question, fields: confirmed, language })
+      update(id, { status: 'done', kind: 'ai', text: reply.answer, citations: reply.citations, degraded: reply.degraded })
+    } catch (err) {
+      if (err.code === 'SESSION_EXPIRED') setSessionId(null) // the retry opens a new conversation
+      update(id, { status: 'error', code: err.code, retryable: err.retryable })
+    }
   }
+
+  const retry = (turn) => {
+    setThread((list) => list.filter((x) => x.id !== turn.id))
+    ask(turn.question)
+  }
+
+  const answerText = (turn) => (turn.kind === 'fixed' ? t(`qa.${turn.intent}`) : turn.text)
 
   const copy = async (turn) => {
     try {
-      await navigator.clipboard.writeText(stripBold(t(`qa.${turn.answer.intent}`)))
+      await navigator.clipboard.writeText(stripBold(answerText(turn)))
       setCopied(turn.id)
       timers.current.push(setTimeout(() => setCopied(null), 1800))
     } catch {
@@ -102,10 +163,12 @@ export default function Chat({ go }) {
     }
   }
 
-  const last = thread[thread.length - 1]
-  const busy = thread.some((turn) => !turn.ready)
-  const suggestions = !last ? STARTER_INTENTS : last.ready ? last.answer.followUps : []
-  const checklist = t('chat.checklist')
+  const citationItems = (turn) =>
+    (turn.citations ?? []).map((c) => ({
+      id: `${turn.id}-${c.type}-${c.id}`,
+      title: c.type === 'contract' ? `${t('chat.basisContract')} · ${t(`review.${c.id}`)}` : c.label,
+      domain: c.text,
+    }))
 
   return (
     <LocaleProvider locale={LANGUAGE_TAGS[language]} messages={messages}>
@@ -144,8 +207,8 @@ export default function Chat({ go }) {
               </Message>
 
               {thread.map((turn) => {
-                const { source, intent } = turn.answer
-                const citationId = `clause-${turn.id}`
+                const items = citationItems(turn)
+                const prefix = `cite-${turn.id}`
                 return (
                   <div key={turn.id} className="grid gap-4">
                     <Message from="user" animateIn>
@@ -158,35 +221,7 @@ export default function Chat({ go }) {
                     <Message from="assistant" animateIn>
                       <Avatar />
                       <MessageContent>
-                        {turn.ready ? (
-                          <>
-                            <MessageBubble variant="soft">
-                              <MessageBubbleContent>
-                                <p>
-                                  <Rich text={t(`qa.${intent}`)} />
-                                  {source && <Citation citationId={citationId} index={1} idPrefix="cite" />}
-                                </p>
-                              </MessageBubbleContent>
-                            </MessageBubble>
-                            {source && (
-                              <Citations
-                                idPrefix="cite"
-                                citations={[{ id: citationId, title: source.label, domain: source.quote }]}
-                                className="w-full max-w-[82%]"
-                              />
-                            )}
-                            <div className="-ml-2 flex flex-wrap items-center gap-x-1">
-                              <Button variant="ghost" size="sm" icon={copied === turn.id ? 'check' : 'file'} onClick={() => copy(turn)}>
-                                {copied === turn.id ? t('chat.copied') : t('chat.copy')}
-                              </Button>
-                              {['fallback', 'help'].includes(intent) && (
-                                <Button variant="ghost" size="sm" icon="help" onClick={() => go('help')}>
-                                  {t('chat.helpLink')}
-                                </Button>
-                              )}
-                            </div>
-                          </>
-                        ) : (
+                        {turn.status === 'loading' && (
                           <MessageBubble variant="ghost">
                             <MessageBubbleContent>
                               <span role="status">
@@ -195,61 +230,73 @@ export default function Chat({ go }) {
                             </MessageBubbleContent>
                           </MessageBubble>
                         )}
+
+                        {turn.status === 'error' && (
+                          <MessageBubble variant="soft">
+                            <MessageBubbleContent>
+                              <p role="alert">{t(`chat.err.${turn.code}`) === `chat.err.${turn.code}` ? t('chat.err.AI_UNAVAILABLE') : t(`chat.err.${turn.code}`)}</p>
+                              {turn.retryable && (
+                                <Button variant="ghost" size="sm" icon="arrow" className="-ml-2 mt-1" disabled={busy} onClick={() => retry(turn)}>
+                                  {t('chat.retry')}
+                                </Button>
+                              )}
+                            </MessageBubbleContent>
+                          </MessageBubble>
+                        )}
+
+                        {turn.status === 'done' && (
+                          <>
+                            <MessageBubble variant="soft">
+                              <MessageBubbleContent>
+                                {/* Rich renders plain text plus **bold**: model output can never inject HTML. */}
+                                <p className="whitespace-pre-line">
+                                  <Rich text={answerText(turn)} />
+                                  {items.map((c, i) => (
+                                    <Citation key={c.id} citationId={c.id} index={i + 1} idPrefix={prefix} />
+                                  ))}
+                                </p>
+                                {turn.kind === 'fixed' && <p className="mt-2 text-sm text-subtle">{t('chat.generalAnswer')}</p>}
+                                {turn.degraded && <p className="mt-2 text-sm text-subtle">{t('chat.degraded')}</p>}
+                              </MessageBubbleContent>
+                            </MessageBubble>
+                            {items.length > 0 && (
+                              <Citations idPrefix={prefix} title={t('chat.basis')} citations={items} className="w-full max-w-[82%]" />
+                            )}
+                            <div className="-ml-2 flex flex-wrap items-center gap-x-1">
+                              <Button variant="ghost" size="sm" icon={copied === turn.id ? 'check' : 'file'} onClick={() => copy(turn)}>
+                                {copied === turn.id ? t('chat.copied') : t('chat.copy')}
+                              </Button>
+                              <Button variant="ghost" size="sm" icon="help" onClick={() => go('help')}>
+                                {t('chat.helpLink')}
+                              </Button>
+                            </div>
+                          </>
+                        )}
                       </MessageContent>
                     </Message>
                   </div>
                 )
               })}
-
-              {approval !== 'later' && (
-                <Message from="assistant">
-                  <Avatar />
-                  <MessageContent>
-                    <ApprovalCard
-                      status={approval}
-                      description={`${t('chat.approvalTitle')} ${t('chat.approvalText')}`}
-                      onApprove={() => setApproval('approved')}
-                      onReject={() => setApproval('rejected')}
-                      result={approval === 'approved' ? t('chat.checklistDone') : undefined}
-                    >
-                      {null}
-                    </ApprovalCard>
-                    {approval === 'approved' && (
-                      <fieldset className="mt-3 w-full rounded-card border border-line bg-surface px-3 py-2">
-                        <legend className="px-1.5 font-bold">{t('chat.checklistTitle')}</legend>
-                        <ul className="divide-y divide-line">
-                          {checklist.map((item, i) => (
-                            <li key={item}>
-                              <Checkbox
-                                checked={checked.includes(i)}
-                                onCheckedChange={(on) =>
-                                  setChecked((list) => (on ? [...list, i] : list.filter((n) => n !== i)))
-                                }
-                                label={item}
-                                className="min-h-14 w-full py-2"
-                              />
-                            </li>
-                          ))}
-                        </ul>
-                      </fieldset>
-                    )}
-                  </MessageContent>
-                </Message>
-              )}
             </MessageGroup>
           </MessageScroller>
 
           <div className="border-t border-line bg-surface-2/50 px-3 pt-3 pb-3 md:px-4">
-            {suggestions.length > 0 && (
+            {suggestions.length > 0 && !busy && (
               <div className="scrollbar-hide -mx-3 mb-2.5 flex gap-2 overflow-x-auto px-3 md:mx-0 md:flex-wrap md:px-0">
-                {suggestions.map((id) => (
-                  <Chip key={id} onClick={() => ask(t(`q.${id}`), id)}>
-                    {t(`q.${id}`)}
+                {suggestions.map((s) => (
+                  <Chip key={s.id} onClick={() => ask(s.text, s.id)}>
+                    {s.text}
                   </Chip>
                 ))}
               </div>
             )}
-            <PromptInput minRows={2} maxRows={4} onSubmit={(prompt) => ask(prompt)} className="rounded-card border-line shadow-card" />
+            <PromptInput
+              minRows={2}
+              maxRows={4}
+              disabled={busy}
+              onSubmit={(prompt) => ask(prompt)}
+              className="rounded-card border-line shadow-card"
+            />
             <p className="mt-2 px-1 text-sm text-subtle">{t('chat.footer')}</p>
           </div>
         </Panel>
