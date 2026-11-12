@@ -1,0 +1,10 @@
+{
+  "description": "Helps Filipino workers understand contracts and quitclaims with plain-language summaries, pay breakdowns, document comparisons, and guidance on getting help.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
