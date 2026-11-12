@@ -22,7 +22,7 @@ export default function Upload({ go, onFile, onExit }) {
     const found = checkContractFile(file)
     if (found) return setProblem(found)
     setProblem(null)
-    onFile(file.name)
+    onFile(file)
     go('reading')
   }
 

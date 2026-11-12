@@ -4,24 +4,85 @@ import { ThinkingShimmer } from '@/components/agents/loading-states/thinking-shi
 import { SPRING_SWAP } from '@/lib/ease'
 import { cn } from '@/lib/utils'
 import Icon from '../components/Icon'
+import NeedsUpload from '../components/NeedsUpload'
+import Button from '../components/ui/Button'
 import { Page } from '../components/ui/Page'
 import Stepper from '../components/ui/Stepper'
-import { Card } from '../components/ui/Surfaces'
+import { Callout, Card } from '../components/ui/Surfaces'
 import { useI18n } from '../i18n/useI18n'
+import { readDocument, retryRead } from '../lib/readDocument'
 
-export default function Reading({ go, fileName }) {
+const STAGES = ['upload', 'read', 'extract']
+const RETRYABLE_STATUS = [0, 429, 502, 503, 504]
+
+export default function Reading({ go, upload, onRead }) {
   const { t } = useI18n()
-  const statuses = t('reading.statuses')
-  const [step, setStep] = useState(0)
+  const statuses = t('reading.stages')
+  const [stage, setStage] = useState('upload')
+  const [error, setError] = useState(null)
+  const [attempt, setAttempt] = useState(null) // promise of a retried read
 
+  // Start (or rejoin) the read for this file. Deduped inside readDocument,
+  // so StrictMode's double effect never uploads twice (each upload costs credits).
   useEffect(() => {
-    const id = window.setInterval(() => setStep((s) => Math.min(s + 1, 3)), 1100)
-    const done = window.setTimeout(() => go('review'), 5200)
+    if (!upload) return undefined
+    let active = true
+    const promise = attempt ?? readDocument(upload.file, (s) => active && setStage(s))
+    promise.then(
+      (result) => active && (onRead(result), go('review')),
+      (err) => active && setError(err),
+    )
     return () => {
-      clearInterval(id)
-      clearTimeout(done)
+      active = false
     }
-  }, [go])
+  }, [upload, attempt, onRead, go])
+
+  if (!upload) return <NeedsUpload go={go} />
+
+  const step = Math.max(0, STAGES.indexOf(stage))
+  const fileName = upload.file.name
+
+  if (error) {
+    const canRetry = Boolean(error.documentId) || RETRYABLE_STATUS.includes(error.status) || error.kind === 'timeout'
+    const message =
+      error.kind === 'timeout'
+        ? t('reading.errTimeout')
+        : error.kind === 'failed'
+          ? t('reading.errFailed')
+          : error.kind === 'unreadable'
+            ? t('reading.errUnreadable')
+            : error.status === 0
+              ? t('reading.errNetwork')
+              : error.message
+    const retry = () => {
+      setError(null)
+      setAttempt(
+        error.documentId ? retryRead(upload.file, error.documentId, setStage) : readDocument(upload.file, setStage),
+      )
+    }
+    return (
+      <Page narrow>
+        <Stepper current={0} />
+        <Callout
+          title={error.kind === 'unreadable' ? t('reading.unreadableTitle') : t('reading.errorTitle')}
+          className="mt-6"
+          role="alert"
+        >
+          <p>{message}</p>
+          <div className="mt-4 flex flex-wrap gap-2.5">
+            {canRetry && (
+              <Button icon="refresh" onClick={retry}>
+                {t('reading.retry')}
+              </Button>
+            )}
+            <Button variant="secondary" icon="camera" onClick={() => go('upload')}>
+              {t('reading.another')}
+            </Button>
+          </div>
+        </Callout>
+      </Page>
+    )
+  }
 
   return (
     <Page narrow>
