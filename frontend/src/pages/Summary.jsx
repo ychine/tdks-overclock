@@ -1,71 +1,35 @@
-import { useEffect, useRef, useState } from 'react'
-import Button from '../components/Button'
+import { useEffect, useState } from 'react'
 import Icon from '../components/Icon'
+import Button from '../components/ui/Button'
+import { Chip } from '../components/ui/Controls'
+import { Page, PageHeading } from '../components/ui/Page'
+import Sheet from '../components/ui/Sheet'
+import Stepper from '../components/ui/Stepper'
+import { Badge, Callout, ListGroup, ListRow, Panel } from '../components/ui/Surfaces'
+import { LANGUAGE_TAGS } from '../i18n/messages'
+import { useI18n } from '../i18n/useI18n'
 
-const summaryItems = [
-  {
-    icon: 'wallet',
-    title: 'Sahod',
-    value: '₱18,000 / buwan',
-    detail: 'Bayad tuwing ika-15 at ika-30',
-  },
-  {
-    icon: 'alert',
-    title: 'Bawas',
-    value: '₱1,260 estimate',
-    detail: 'SSS, PhilHealth, at Pag-IBIG',
-    worry: true,
-  },
-  {
-    icon: 'sun',
-    title: 'Oras ng trabaho',
-    value: '8 oras / araw',
-    detail: 'Lunes–Sabado, may 1 oras na break',
-  },
-  {
-    icon: 'home',
-    title: 'Day off',
-    value: 'Tuwing Linggo',
-    detail: '24 oras na tuloy-tuloy na pahinga',
-  },
-  {
-    icon: 'file',
-    title: 'Haba ng kontrata',
-    value: '2 taon',
-    detail: 'Mula June 15, 2025',
-  },
-  {
-    icon: 'alert',
-    title: 'Parusa / penalties',
-    value: 'May ₱5,000 penalty',
-    detail: 'Kapag umalis bago matapos ang kontrata',
-    worry: true,
-  },
+// Icons and "worrying" flags follow the order of `summary.items` in the message files.
+const itemMeta = [
+  { icon: 'wallet', tone: 'brand' },
+  { icon: 'alert', tone: 'alert', worry: true },
+  { icon: 'sun', tone: 'sun' },
+  { icon: 'home', tone: 'brand' },
+  { icon: 'file', tone: 'brand' },
+  { icon: 'alert', tone: 'alert', worry: true },
 ]
 
-const terms = {
-  Quitclaim:
-    'Dokumentong nagsasabing natanggap mo na ang bayad at wala ka nang ibang hahabulin sa employer.',
-  Probationary:
-    'Trial period kung kailan tinitingnan kung pasado ka sa malinaw na standards ng trabaho.',
-  'Liquidated damages': 'Halagang napagkasunduang bayaran kapag may hindi nasunod sa kontrata.',
-}
-
 const canSpeak = typeof window !== 'undefined' && 'speechSynthesis' in window
+const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function'
 
 export default function Summary({ go }) {
+  const { t, language } = useI18n()
+  const items = t('summary.items')
+  const terms = t('summary.terms')
   const [term, setTerm] = useState(null)
   const [speaking, setSpeaking] = useState(false)
-  const closeButton = useRef(null)
 
-  // Close the term sheet with Escape and move focus into it when it opens.
-  useEffect(() => {
-    if (!term) return undefined
-    closeButton.current?.focus()
-    const onKey = (e) => e.key === 'Escape' && setTerm(null)
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [term])
+  const summaryText = items.map((i) => `${i.title}: ${i.value}. ${i.detail}.`).join('\n')
 
   // Stop reading aloud when leaving the screen.
   useEffect(
@@ -82,99 +46,99 @@ export default function Summary({ go }) {
       setSpeaking(false)
       return
     }
-    const text = summaryItems.map((i) => `${i.title}: ${i.value}. ${i.detail}.`).join(' ')
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.lang = 'fil-PH'
+    const utterance = new SpeechSynthesisUtterance(summaryText.replace(/\n/g, ' '))
+    utterance.lang = LANGUAGE_TAGS[language]
     utterance.onend = () => setSpeaking(false)
     utterance.onerror = () => setSpeaking(false)
     synth.speak(utterance)
     setSpeaking(true)
   }
 
+  const share = () => navigator.share({ title: t('summary.shareTitle'), text: summaryText }).catch(() => {})
+  const closeSheet = () => setTerm(null)
+
   return (
-    <div className="page">
-      <div className="page-heading summary-heading">
-        <div>
-          <span className="step-label">Step 3 of 3 · Tapos na</span>
-          <h1>Ang kontrata mo, in 30 seconds</h1>
-          <p>Unahin natin ang mga bagay na may epekto sa pera at oras mo.</p>
-        </div>
-        {canSpeak && (
-          <Button variant="secondary" icon="sound" onClick={toggleSpeech}>
-            {speaking ? 'Itigil ang pagbasa' : 'Basahin nang malakas'}
+    <Page>
+      <Stepper current={2} />
+      <PageHeading title={t('summary.title')} text={t('summary.text')}>
+        <div className="flex flex-wrap gap-2.5 print:hidden">
+          {canSpeak && (
+            <Button variant="secondary" icon="sound" onClick={toggleSpeech}>
+              {speaking ? t('summary.stop') : t('summary.speak')}
+            </Button>
+          )}
+          <Button variant="secondary" icon="file" onClick={() => window.print()}>
+            {t('summary.print')}
           </Button>
-        )}
-      </div>
-      <div className="notice">
-        <Icon name="alert" />
-        <div>
-          <strong>May 2 bagay na dapat mong tanungin.</strong>
-          <p>
-            May penalty sa maagang pag-alis at hindi malinaw kung sagot ng employer ang medical.
-          </p>
+          {canShare && (
+            <Button variant="secondary" icon="send" onClick={share}>
+              {t('summary.share')}
+            </Button>
+          )}
         </div>
-      </div>
-      <div className="summary-grid">
-        {summaryItems.map((item) => (
-          <article key={item.title} className={`summary-card card ${item.worry ? 'worry' : ''}`}>
-            <div className="summary-icon">
-              <Icon name={item.icon} />
+      </PageHeading>
+
+      <Callout title={t('summary.noticeTitle')} className="mb-6">
+        {t('summary.noticeText')}
+      </Callout>
+
+      <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
+        <ListGroup aria-label={t('summary.title')}>
+          {items.map((item, i) => {
+            const { icon, tone, worry } = itemMeta[i]
+            return (
+              <ListRow
+                key={item.title}
+                icon={icon}
+                tone={tone}
+                title={item.title}
+                detail={item.detail}
+                value={item.value}
+                badge={worry ? <Badge tone="alert">{t('summary.askBadge')}</Badge> : null}
+                className={worry ? 'bg-alert-soft' : i === 0 ? 'py-5' : undefined}
+              />
+            )
+          })}
+        </ListGroup>
+
+        <div className="grid gap-4 lg:sticky lg:top-24">
+          <Panel className="p-5">
+            <h2 className="font-sans text-xl font-bold">{t('summary.termsTitle')}</h2>
+            <p className="mt-1 text-subtle">{t('summary.termsHint')}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {terms.map((entry, i) => (
+                <Chip key={entry.name} onClick={() => setTerm(i)} className="inline-flex items-center gap-1.5">
+                  {entry.name}
+                  <span className="text-brand"><Icon name="plus" size={15} /></span>
+                </Chip>
+              ))}
             </div>
-            <div>
-              <span>{item.title}</span>
-              <h2>{item.value}</h2>
-              <p>{item.detail}</p>
-            </div>
-          </article>
-        ))}
-      </div>
-      <div className="terms-card card">
-        <div>
-          <h2>Hindi kailangang manghula.</h2>
-          <p className="terms-hint">I-tap ang salitang hindi mo gets.</p>
-        </div>
-        <div className="term-list">
-          {Object.keys(terms).map((t) => (
-            <button key={t} type="button" onClick={() => setTerm(t)}>
-              {t}
-              <Icon name="plus" size={18} />
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className="summary-actions">
-        <Button icon="wallet" onClick={() => go('salary')}>
-          Tingnan ang salary breakdown
-        </Button>
-        <Button variant="secondary" icon="chat" onClick={() => go('chat')}>
-          May itatanong ako
-        </Button>
-      </div>
-      {term && (
-        <div className="sheet-backdrop" onClick={() => setTerm(null)}>
-          <div
-            className="bottom-sheet"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="term-title"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="sheet-handle" />
-            <button
-              ref={closeButton}
-              type="button"
-              className="sheet-close"
-              aria-label="Isara"
-              onClick={() => setTerm(null)}
-            >
-              <Icon name="close" />
-            </button>
-            <h2 id="term-title">{term}</h2>
-            <p>{terms[term]}</p>
-            <Button onClick={() => setTerm(null)}>Gets ko na</Button>
+          </Panel>
+          <div className="grid gap-2.5 print:hidden">
+            <Button icon="wallet" onClick={() => go('salary')}>
+              {t('summary.toSalary')}
+            </Button>
+            <Button variant="secondary" icon="chat" onClick={() => go('chat')}>
+              {t('summary.toChat')}
+            </Button>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+
+      <Sheet open={term !== null} onClose={closeSheet} titleId="term-title" closeLabel={t('app.close')}>
+        {term !== null && (
+          <>
+            <p className="text-sm font-bold text-brand">{t('summary.meaning')}</p>
+            <h2 id="term-title" className="mt-1 pr-12 text-3xl font-semibold">
+              {terms[term].name}
+            </h2>
+            <p className="mt-3 mb-6 text-lg text-subtle">{terms[term].def}</p>
+            <Button className="w-full" onClick={closeSheet}>
+              {t('summary.gotIt')}
+            </Button>
+          </>
+        )}
+      </Sheet>
+    </Page>
   )
 }

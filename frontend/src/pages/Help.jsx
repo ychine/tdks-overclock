@@ -1,41 +1,24 @@
 import { useEffect, useState } from 'react'
-import Icon from '../components/Icon'
+import { cn } from '@/lib/utils'
+import Button from '../components/ui/Button'
+import { Page, PageHeading } from '../components/ui/Page'
+import { Callout, ListGroup } from '../components/ui/Surfaces'
+import { useI18n } from '../i18n/useI18n'
+import { agencies, telHref } from '../lib/agencies'
 
-const agencies = [
-  {
-    name: 'DOLE',
-    full: 'Department of Labor and Employment',
-    for: 'Sahod, termination, benefits, at labor complaints',
-    phone: '1349',
-    color: 'blue',
-  },
-  {
-    name: 'DMW',
-    full: 'Department of Migrant Workers',
-    for: 'Kontrata, recruiter, at problema ng OFW',
-    phone: '8722-1144',
-    color: 'red',
-  },
-  {
-    name: 'OWWA',
-    full: 'Overseas Workers Welfare Administration',
-    for: 'Welfare support, repatriation, at pamilya ng OFW',
-    phone: '1348',
-    color: 'yellow',
-  },
-  {
-    name: 'PAO',
-    full: 'Public Attorney’s Office',
-    for: 'Libreng legal assistance kung qualified',
-    phone: '(02) 8929-9436',
-    color: 'ink',
-  },
-]
+const marks = {
+  brand: 'bg-brand text-on-solid',
+  alert: 'bg-alert text-on-solid',
+  sun: 'bg-sun text-[#1b2433]',
+  ink: 'bg-ink text-canvas',
+}
 
-const officeSearch = (agency) =>
-  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${agency.full} office`)}`
+const officeSearch = (name) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name} office`)}`
 
 export default function Help() {
+  const { t } = useI18n()
+  const info = t('help.agencies')
   const [offline, setOffline] = useState(() => !navigator.onLine)
 
   // Follow the real connection state; the demo link below can still force the banner.
@@ -51,55 +34,59 @@ export default function Help() {
   }, [])
 
   return (
-    <div className="page help-page">
-      <div className="page-heading">
-        <h1>Humingi ng tulong</h1>
-        <p>Mga official na ahensya. Piliin kung alin ang pinakamalapit sa kailangan mo.</p>
-      </div>
+    <Page>
+      <PageHeading title={t('help.title')} text={t('help.text')} />
+
       {offline && (
-        <div className="offline-banner" role="status">
-          <Icon name="wifi" />
-          <div>
-            <strong>Offline ka ngayon.</strong>
-            <p>Makikita mo pa rin ang saved hotline numbers.</p>
+        <Callout tone="info" icon="wifi" title={t('help.offlineTitle')} className="mb-3" role="status">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span>{t('help.offlineText')}</span>
+            <Button variant="ghost" size="sm" icon="refresh" onClick={() => setOffline(!navigator.onLine)}>
+              {t('app.retry')}
+            </Button>
           </div>
-          <button type="button" onClick={() => setOffline(!navigator.onLine)}>
-            <Icon name="refresh" size={19} /> Retry
-          </button>
-        </div>
+        </Callout>
       )}
-      <button type="button" className="offline-demo" onClick={() => setOffline(true)}>
-        I-preview ang offline state
+      <button
+        type="button"
+        onClick={() => setOffline(true)}
+        className="mb-4 min-h-12 rounded-btn px-1 text-sm text-subtle underline hover:text-ink"
+      >
+        {t('help.demo')}
       </button>
-      <div className="agency-grid">
-        {agencies.map((a) => (
-          <article className="agency-card card" key={a.name}>
-            <div className={`agency-mark ${a.color}`} aria-hidden="true">
-              {a.name}
+
+      <ListGroup>
+        {agencies.map((a, i) => (
+          <li key={a.id} className="grid gap-4 p-4 md:grid-cols-[1fr_auto] md:items-center md:p-5">
+            <div className="flex items-start gap-4">
+              <span
+                aria-hidden="true"
+                className={cn('grid size-14 shrink-0 place-items-center rounded-2xl font-display text-sm font-semibold', marks[a.color])}
+              >
+                {a.name}
+              </span>
+              <div className="min-w-0">
+                <h2 className="font-sans text-base font-bold">{info[i].full}</h2>
+                <p className="mt-0.5 text-sm text-subtle">{info[i].for}</p>
+              </div>
             </div>
-            <div className="agency-copy">
-              <h2>{a.full}</h2>
-              <p>{a.for}</p>
+            <div className="grid grid-cols-2 gap-2 md:flex">
+              <Button href={telHref(a.phone)} icon="phone" size="sm" className="tabular-nums">
+                {a.phone}
+              </Button>
+              <Button href={officeSearch(info[i].full)} target="_blank" rel="noreferrer" variant="secondary" size="sm" icon="map">
+                {t('help.find')}
+              </Button>
             </div>
-            <div className="agency-actions">
-              <a className="call" href={`tel:${a.phone}`}>
-                <Icon name="phone" size={19} /> {a.phone}
-              </a>
-              <a href={officeSearch(a)} target="_blank" rel="noreferrer">
-                <Icon name="map" size={19} /> Find office
-              </a>
-            </div>
-          </article>
+          </li>
         ))}
-      </div>
-      <div className="urgent card">
-        <Icon name="alert" />
-        <div>
-          <h2>Kung may agarang panganib</h2>
-          <p>Tumawag sa 911 o lumapit sa pinakamalapit na barangay o police station.</p>
+      </ListGroup>
+
+      <Callout title={t('help.urgentTitle')} className="mt-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <span>{t('help.urgentText')}</span>
         </div>
-        <a href="tel:911">Call 911</a>
-      </div>
-    </div>
+      </Callout>
+    </Page>
   )
 }
