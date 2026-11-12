@@ -1,10 +1,12 @@
 import express from 'express'
 import cors from 'cors'
 import { supabase } from './supabase.js'
+import ocrRouter from './src/routes/ocr.js'
 
 const app = express()
-app.use(cors({ origin: 'http://localhost:5173' }))
+app.use(cors({ origin: 'http://localhost:5173', exposedHeaders: ['ETag', 'Location'] }))
 app.use(express.json())
+app.use('/api/ocr', ocrRouter)
 
 app.get('/api/todos', async (req, res) => {
   const { data, error } = await supabase.from('todos').select('*')
