@@ -3,8 +3,9 @@ import { motion } from 'motion/react'
 import { AgentDisclosure } from '@/components/agents/agent-disclosure'
 import { SPRING_SWAP } from '@/lib/ease'
 import { cn } from '@/lib/utils'
-import DocumentMock from '../components/DocumentMock'
 import Icon from '../components/Icon'
+import NeedsUpload from '../components/NeedsUpload'
+import OriginalView from '../components/OriginalView'
 import Button from '../components/ui/Button'
 import { Field } from '../components/ui/Controls'
 import { Page, PageHeading } from '../components/ui/Page'
@@ -13,24 +14,23 @@ import { Badge, Callout, ListGroup } from '../components/ui/Surfaces'
 import { Segmented } from '../components/ui/Controls'
 import { useI18n } from '../i18n/useI18n'
 
-// `edited` holds the user's own text; until then the value follows the current language.
-const initialFields = [
-  { key: 'salary', confident: true, edited: null },
-  { key: 'start', confident: true, edited: null },
-  { key: 'term', confident: true, edited: null },
-  { key: 'hours', confident: false, edited: null },
-  { key: 'rest', confident: true, edited: null },
-]
-
-export default function Review({ go }) {
+// Fields come from the real OCR read (lib/extract.js). `low` = below Lumen's confidence threshold or not found.
+export default function Review({ go, upload, doc, onConfirm }) {
   const { t } = useI18n()
   const [tab, setTab] = useState('fields')
-  const [active, setActive] = useState(3)
-  const [fields, setFields] = useState(initialFields)
+  const [fields, setFields] = useState(() => doc?.fields ?? [])
+  const [active, setActive] = useState(() => Math.max(0, (doc?.fields ?? []).findIndex((f) => f.low)))
 
-  const toCheck = fields.filter((f) => !f.confident).length
+  if (!upload || !doc) return <NeedsUpload go={go} />
+
+  const toCheck = fields.filter((f) => f.low).length
   const update = (index, patch) =>
     setFields((list) => list.map((f, i) => (i === index ? { ...f, ...patch } : f)))
+
+  const confirm = () => {
+    onConfirm(fields.map((f) => ({ ...f, low: false })))
+    go('summary')
+  }
 
   return (
     <Page>
@@ -40,7 +40,6 @@ export default function Review({ go }) {
           {toCheck ? t('review.toCheck', { n: toCheck }) : t('review.allChecked')}
         </Badge>
       </PageHeading>
-      <p className="-mt-4 mb-6 text-sm text-subtle">{t('review.demo')}</p>
 
       <Segmented
         kind="tab"
@@ -59,7 +58,7 @@ export default function Review({ go }) {
           aria-label={t('review.original')}
           className={cn(tab === 'doc' ? 'block' : 'hidden', 'lg:sticky lg:top-24 lg:block')}
         >
-          <DocumentMock active={active} label={t('review.original')} />
+          <OriginalView upload={upload} lines={doc.lines} field={fields[active]} label={t('review.original')} />
         </section>
 
         <section className={cn(tab === 'fields' ? 'block' : 'hidden', 'lg:block')}>
@@ -72,9 +71,9 @@ export default function Review({ go }) {
             {fields.map((field, i) => {
               const open = active === i
               const label = t(`review.${field.key}`)
-              const value = field.edited ?? t(`review.${field.key}Value`)
+              const value = field.value
               return (
-                <li key={field.key} className={cn('transition-colors', open && 'bg-brand-soft/60', !field.confident && !open && 'bg-sun/15')}>
+                <li key={field.key} className={cn('transition-colors', open && 'bg-brand-soft/60', field.low && !open && 'bg-sun/15')}>
                   <button
                     type="button"
                     aria-expanded={open}
@@ -84,9 +83,11 @@ export default function Review({ go }) {
                     <span className="grid min-w-0 flex-1">
                       <span className="flex items-center gap-2 text-sm text-subtle">
                         {label}
-                        {!field.confident && <Badge tone="sun">{t('review.badge')}</Badge>}
+                        {field.low && (
+                          <Badge tone="sun">{value ? t('review.badge') : t('review.notFound')}</Badge>
+                        )}
                       </span>
-                      <strong className="mt-0.5 truncate">{value}</strong>
+                      <strong className="mt-0.5 truncate">{value || '—'}</strong>
                     </span>
                     <motion.span
                       aria-hidden="true"
@@ -103,11 +104,17 @@ export default function Review({ go }) {
                         label={t('review.edit', { label: label.toLowerCase() })}
                         id={`field-${field.key}`}
                         value={value}
-                        onChange={(e) => update(i, { edited: e.target.value, confident: true })}
+                        placeholder={field.found ? undefined : t('review.placeholder')}
+                        onChange={(e) => update(i, { value: e.target.value, low: false, edited: true })}
                       />
+                      {field.source && (
+                        <p className="text-sm text-subtle">
+                          {t('review.source', { page: field.pageNumber, text: field.source })}
+                        </p>
+                      )}
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                        {!field.confident && (
-                          <Button variant="secondary" size="sm" icon="check" onClick={() => update(i, { confident: true })}>
+                        {field.low && value && (
+                          <Button variant="secondary" size="sm" icon="check" onClick={() => update(i, { low: false })}>
                             {t('review.confirm')}
                           </Button>
                         )}
@@ -128,10 +135,10 @@ export default function Review({ go }) {
 
           {toCheck > 0 && (
             <Callout tone="sun" icon="alert" className="mt-4">
-              {t('review.lowNote')}
+              {t('review.lowNoteReal')}
             </Callout>
           )}
-          <Button icon="check" className="mt-4 w-full" onClick={() => go('summary')}>
+          <Button icon="check" className="mt-4 w-full" onClick={confirm}>
             {t('review.cta')}
           </Button>
         </section>

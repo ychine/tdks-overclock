@@ -4,7 +4,8 @@ import { supabase } from './supabase.js'
 import ocrRouter from './src/routes/ocr.js'
 
 const app = express()
-app.use(cors({ origin: 'http://localhost:5173', exposedHeaders: ['ETag', 'Location'] }))
+// Any localhost port, so Vite still works when it falls back to 5174, 5175, ...
+app.use(cors({ origin: /^http:\/\/localhost:\d+$/, exposedHeaders: ['ETag', 'Location'] }))
 app.use(express.json())
 app.use('/api/ocr', ocrRouter)
 

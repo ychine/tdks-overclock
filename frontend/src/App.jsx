@@ -28,8 +28,21 @@ function Shell() {
   const { t } = useI18n()
   const [landed, setLanded] = useState(false)
   const [screen, setScreen] = useState('home')
-  const [documentName, setDocumentName] = useState('')
   const [dark, setDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
+
+  // The document flow: Step 1 picks a file, Reading runs OCR, Step 2 confirms, Step 3 explains.
+  const [upload, setUpload] = useState(null) // { file, url }
+  const [doc, setDoc] = useState(null) // OCR result + extracted fields
+  const [confirmed, setConfirmed] = useState(null) // fields the user approved
+
+  const onFile = useCallback((file) => {
+    setUpload((prev) => {
+      if (prev) URL.revokeObjectURL(prev.url)
+      return { file, url: URL.createObjectURL(file) }
+    })
+    setDoc(null)
+    setConfirmed(null)
+  }, [])
 
   // Theme the page itself (overscroll, scrollbars, form controls), not just the app wrapper.
   useEffect(() => {
@@ -48,10 +61,10 @@ function Shell() {
 
   const content = {
     home: <Home go={go} />,
-    upload: <Upload go={go} onFile={setDocumentName} onExit={exitToLanding} />,
-    reading: <Reading go={go} fileName={documentName} />,
-    review: <Review go={go} />,
-    summary: <Summary go={go} />,
+    upload: <Upload go={go} onFile={onFile} onExit={exitToLanding} />,
+    reading: <Reading go={go} upload={upload} onRead={setDoc} />,
+    review: <Review go={go} upload={upload} doc={doc} onConfirm={setConfirmed} />,
+    summary: <Summary go={go} doc={doc} confirmed={confirmed} />,
     salary: <Salary go={go} />,
     chat: <Chat go={go} />,
     compare: <Compare />,

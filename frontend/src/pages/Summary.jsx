@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Icon from '../components/Icon'
+import NeedsUpload from '../components/NeedsUpload'
 import Button from '../components/ui/Button'
 import { Chip } from '../components/ui/Controls'
 import { Page, PageHeading } from '../components/ui/Page'
@@ -8,26 +9,88 @@ import Stepper from '../components/ui/Stepper'
 import { Badge, Callout, ListGroup, ListRow, Panel } from '../components/ui/Surfaces'
 import { LANGUAGE_TAGS } from '../i18n/messages'
 import { useI18n } from '../i18n/useI18n'
+import { fullText } from '../lib/extract'
 
-// Icons and "worrying" flags follow the order of `summary.items` in the message files.
-const itemMeta = [
-  { icon: 'wallet', tone: 'brand' },
-  { icon: 'alert', tone: 'alert', worry: true },
-  { icon: 'sun', tone: 'sun' },
-  { icon: 'home', tone: 'brand' },
-  { icon: 'file', tone: 'brand' },
-  { icon: 'alert', tone: 'alert', worry: true },
-]
+/** Builds the rows and the "things to ask" purely from the fields the user confirmed in Step 2. */
+function buildSummary(fields, t) {
+  const get = (key) => fields.find((f) => f.key === key)?.value?.trim() || ''
+  const salary = get('salary')
+  const hours = get('hours')
+  const rest = get('rest')
+  const term = get('term')
+  const start = get('start')
+  const penalty = get('penalty')
+  const perDay = /araw|day/i.test(hours) ? Number(hours.match(/\d+/)?.[0]) : null
+  const overHours = perDay > 8
+  const missing = t('summary.missing')
+  const fromContract = t('summary.fromContract')
+
+  const items = [
+    {
+      icon: 'wallet', tone: 'brand', worry: !salary,
+      title: t('summary.itemSalary'),
+      value: salary || missing,
+      detail: salary ? fromContract : t('summary.salaryAsk'),
+    },
+    {
+      icon: 'sun', tone: 'sun', worry: !hours || overHours,
+      title: t('summary.itemHours'),
+      value: hours || missing,
+      detail: overHours ? t('summary.hoursOver') : hours ? fromContract : t('summary.hoursAsk'),
+    },
+    {
+      icon: 'home', tone: 'brand', worry: !rest,
+      title: t('summary.itemRest'),
+      value: rest ? t('summary.restValue', { day: rest }) : missing,
+      detail: rest ? t('summary.restDetail') : t('summary.restAsk'),
+    },
+    {
+      icon: 'file', tone: 'brand', worry: !term && !start,
+      title: t('summary.itemTerm'),
+      value: term || missing,
+      detail: start ? t('summary.termFrom', { date: start }) : t('summary.termNoStart'),
+    },
+  ]
+  if (penalty) {
+    items.push({
+      icon: 'alert', tone: 'alert', worry: true,
+      title: t('summary.itemPenalty'),
+      value: penalty,
+      detail: t('summary.penaltyDetail'),
+    })
+  }
+
+  const asks = [
+    penalty && t('summary.askPenalty'),
+    !salary && t('summary.askSalary'),
+    overHours && t('summary.askOverHours'),
+    !rest && t('summary.askRest'),
+    !hours && t('summary.askHours'),
+  ].filter(Boolean)
+
+  return { items, asks }
+}
 
 const canSpeak = typeof window !== 'undefined' && 'speechSynthesis' in window
 const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function'
 
-export default function Summary({ go }) {
+export default function Summary({ go, doc, confirmed }) {
   const { t, language } = useI18n()
-  const items = t('summary.items')
-  const terms = t('summary.terms')
   const [term, setTerm] = useState(null)
   const [speaking, setSpeaking] = useState(false)
+
+  const { items, asks } = useMemo(
+    () => (confirmed ? buildSummary(confirmed, t) : { items: [], asks: [] }),
+    [confirmed, t],
+  )
+  // Only explain terms that actually appear in the document; fall back to all of them.
+  const terms = useMemo(() => {
+    const all = t('summary.terms')
+    if (!doc) return all
+    const text = fullText(doc.lines).toLowerCase()
+    const found = all.filter((entry) => text.includes(entry.name.toLowerCase()))
+    return found.length ? found : all
+  }, [doc, t])
 
   const summaryText = items.map((i) => `${i.title}: ${i.value}. ${i.detail}.`).join('\n')
 
@@ -57,6 +120,8 @@ export default function Summary({ go }) {
   const share = () => navigator.share({ title: t('summary.shareTitle'), text: summaryText }).catch(() => {})
   const closeSheet = () => setTerm(null)
 
+  if (!doc || !confirmed) return <NeedsUpload go={go} />
+
   return (
     <Page>
       <Stepper current={2} />
@@ -78,14 +143,16 @@ export default function Summary({ go }) {
         </div>
       </PageHeading>
 
-      <Callout title={t('summary.noticeTitle')} className="mb-6">
-        {t('summary.noticeText')}
-      </Callout>
+      {asks.length > 0 && (
+        <Callout title={t('summary.asksTitle', { n: asks.length })} className="mb-6">
+          {t('summary.asksText', { list: asks.join(', ') })}
+        </Callout>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
         <ListGroup aria-label={t('summary.title')}>
           {items.map((item, i) => {
-            const { icon, tone, worry } = itemMeta[i]
+            const { icon, tone, worry } = item
             return (
               <ListRow
                 key={item.title}
