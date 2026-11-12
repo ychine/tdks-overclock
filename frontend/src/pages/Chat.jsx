@@ -237,7 +237,7 @@ export default function Chat({ go }) {
                 ))}
               </div>
             )}
-            <PromptInput minRows={1} maxRows={4} onSubmit={(prompt) => ask(prompt)} className="rounded-card border-line shadow-card" />
+            <PromptInput minRows={2} maxRows={4} onSubmit={(prompt) => ask(prompt)} className="rounded-card border-line shadow-card" />
             <p className="mt-2 px-1 text-sm text-subtle">{t('chat.footer')}</p>
           </div>
         </Panel>
