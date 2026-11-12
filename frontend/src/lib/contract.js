@@ -1,9 +1,15 @@
 // The sample contract used throughout the demo. Numbers here are the single source of truth
 // for the Salary screen, the Summary, and the contract Q&A engine.
 
+import { computeDeductions } from './payroll'
+
+const SAMPLE_SALARY = 18000
+const sample = computeDeductions(SAMPLE_SALARY)
+
 export const contract = {
-  salary: 18000,
-  deductions: { sss: 900, philhealth: 270, pagibig: 90 },
+  salary: SAMPLE_SALARY,
+  // SSS 5%, PhilHealth 2.5%, Pag-IBIG 2% capped at ₱10,000 -> ₱900, ₱450, ₱200
+  deductions: { sss: sample.sss, philhealth: sample.philhealth, pagibig: sample.pagibig },
   penalty: 5000,
   // Original wording of the clauses (the contract itself is in English).
   clauses: {
