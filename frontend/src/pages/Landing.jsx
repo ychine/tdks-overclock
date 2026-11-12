@@ -260,8 +260,7 @@ export default function Landing({ enter, dark, setDark }) {
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         const intro = gsap.timeline({ defaults: { ease: 'power3.out' } })
         intro
-          .from('[data-hero="pill"]', { y: 12, opacity: 0, duration: 0.5 })
-          .from('[data-hero="lead"]', { y: 14, opacity: 0, duration: 0.55 }, '-=0.1')
+          .from('[data-hero="lead"]', { y: 14, opacity: 0, duration: 0.55 }, 0.2)
           .from('[data-hero="cta"]', { y: 14, opacity: 0, duration: 0.5, stagger: 0.08 }, '-=0.35')
           .from('[data-hero="visual"]', { y: 40, opacity: 0, duration: 0.9 }, 0.25)
           .from('[data-preview="rows"] > li', { y: 10, opacity: 0, duration: 0.45, stagger: 0.14 }, 0.95)
@@ -332,14 +331,8 @@ export default function Landing({ enter, dark, setDark }) {
           className="mx-auto grid w-[min(1240px,calc(100%-32px))] flex-1 content-center items-center gap-10 py-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:py-12"
         >
           <div>
-            <span
-              data-hero="pill"
-              className="flex w-max max-w-full items-center gap-2.5 rounded-full border border-line bg-surface px-3 py-2 text-sm font-semibold text-subtle"
-            >
-              <i className="size-2 shrink-0 rounded-full bg-ok ring-4 ring-ok/15" />
-              {t('landing.pill')}
-            </span>
-            <h1 className="mt-6 text-5xl leading-[1.04] font-semibold md:text-6xl lg:text-[4.5rem]">
+            {/* The pill that used to sit here is gone; this margin (pill height + old gap) keeps the headline where it was. */}
+            <h1 className="mt-[62px] text-5xl leading-[1.04] font-semibold md:text-6xl lg:text-[4.5rem]">
               <span className="block pb-1">
                 <BlurReveal as="span" className="inline-block" delay={0.2} speedReveal={1.4} speedSegment={0.7}>
                   {t('landing.h1a')}

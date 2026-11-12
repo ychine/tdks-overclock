@@ -1,6 +1,18 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'motion/react'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { EASE_OUT } from '@/lib/ease'
+import {
+  clearFile,
+  loadConfirmed,
+  loadDoc,
+  loadFile,
+  loadTheme,
+  saveConfirmed,
+  saveDoc,
+  saveFile,
+  saveTheme,
+} from './lib/session'
 import ErrorBoundary from './components/ErrorBoundary'
 import Nav from './components/Nav'
 import { I18nProvider } from './i18n/I18nProvider'
@@ -24,16 +36,54 @@ function Loading() {
   return <div className="min-h-[60vh]" aria-busy="true" />
 }
 
+// Every in-app screen id maps to a real URL. Pages keep calling go('upload') and friends.
+const SCREENS = ['home', 'upload', 'reading', 'review', 'summary', 'salary', 'chat', 'compare', 'questions', 'help']
+const pathOf = (screen) => `/${screen}`
+
 function Shell() {
   const { t } = useI18n()
-  const [landed, setLanded] = useState(false)
-  const [screen, setScreen] = useState('home')
-  const [dark, setDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
+  const screen = pathname.replace(/^\//, '')
+  const [dark, setDarkState] = useState(() => (loadTheme() ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark')
 
   // The document flow: Step 1 picks a file, Reading runs OCR, Step 2 confirms, Step 3 explains.
+  // doc + confirmed + the file survive a refresh (sessionStorage), so reloading mid-flow keeps your place.
   const [upload, setUpload] = useState(null) // { file, url }
-  const [doc, setDoc] = useState(null) // OCR result + extracted fields
-  const [confirmed, setConfirmed] = useState(null) // fields the user approved
+  const [doc, setDoc] = useState(loadDoc) // OCR result + extracted fields
+  const [confirmed, setConfirmed] = useState(loadConfirmed) // fields the user approved
+  const [restoring, setRestoring] = useState(true) // the saved file is rebuilt asynchronously
+
+  // Remember an explicit theme choice; until then the page follows the system setting.
+  const setDark = useCallback((value) => {
+    setDarkState((prev) => {
+      const next = typeof value === 'function' ? value(prev) : value
+      saveTheme(next ? 'dark' : 'light')
+      return next
+    })
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    loadFile().then((restored) => {
+      if (cancelled) {
+        if (restored) URL.revokeObjectURL(restored.url)
+        return
+      }
+      if (restored) setUpload((prev) => prev ?? restored)
+      setRestoring(false)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    saveDoc(doc)
+  }, [doc])
+  useEffect(() => {
+    saveConfirmed(confirmed)
+  }, [confirmed])
 
   const onFile = useCallback((file) => {
     setUpload((prev) => {
@@ -42,22 +92,46 @@ function Shell() {
     })
     setDoc(null)
     setConfirmed(null)
-  }, [])
+    clearFile()
+    saveFile(file) // best effort: too big for storage just means "upload again" after a refresh
+  }, [setDoc, setConfirmed])
 
   // Theme the page itself (overscroll, scrollbars, form controls), not just the app wrapper.
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? 'dark' : 'light'
   }, [dark])
 
-  const go = useCallback((next) => {
-    setScreen(next)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [])
+  const go = useCallback(
+    (next) => {
+      navigate(pathOf(next))
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    },
+    [navigate],
+  )
 
   const exitToLanding = useCallback(() => {
-    setLanded(false)
+    navigate('/')
     window.scrollTo(0, 0)
-  }, [])
+  }, [navigate])
+
+  if (pathname === '/') {
+    return (
+      <div className="min-h-screen bg-canvas text-ink">
+        <Suspense fallback={<Loading />}>
+          <Landing
+            dark={dark}
+            setDark={setDark}
+            enter={() => {
+              navigate(pathOf('home'))
+              window.scrollTo(0, 0)
+            }}
+          />
+        </Suspense>
+      </div>
+    )
+  }
+
+  if (!SCREENS.includes(screen)) return <Navigate to="/" replace />
 
   const content = {
     home: <Home go={go} />,
@@ -70,23 +144,6 @@ function Shell() {
     compare: <Compare />,
     questions: <Questions go={go} />,
     help: <Help />,
-  }
-
-  if (!landed) {
-    return (
-      <div className="min-h-screen bg-canvas text-ink">
-        <Suspense fallback={<Loading />}>
-          <Landing
-            dark={dark}
-            setDark={setDark}
-            enter={() => {
-              setLanded(true)
-              window.scrollTo(0, 0)
-            }}
-          />
-        </Suspense>
-      </div>
-    )
   }
 
   return (
@@ -108,7 +165,7 @@ function Shell() {
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.22, ease: EASE_OUT }}
           >
-            <Suspense fallback={<Loading />}>{content[screen]}</Suspense>
+            <Suspense fallback={<Loading />}>{restoring ? <Loading /> : content[screen]}</Suspense>
           </motion.div>
         </AnimatePresence>
         <footer className="mx-10 mt-auto hidden h-24 items-center justify-between border-t border-line text-sm text-subtle lg:flex print:hidden">
