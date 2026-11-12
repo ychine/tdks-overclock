@@ -9,7 +9,8 @@ const sample = computeDeductions(SAMPLE_SALARY)
 export const contract = {
   salary: SAMPLE_SALARY,
   // SSS 5%, PhilHealth 2.5%, Pag-IBIG 2% capped at ₱10,000 -> ₱900, ₱450, ₱200
-  deductions: { sss: sample.sss, philhealth: sample.philhealth, pagibig: sample.pagibig },
+  deductions: { sss: sample.sss, philhealth: sample.philhealth, pagibig: sample
+    .pagibig },
   penalty: 5000,
   // Original wording of the clauses (the contract itself is in English).
   clauses: {
