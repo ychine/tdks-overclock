@@ -43,11 +43,11 @@ const taglish = {
   'landing.navPrivacy': 'Privacy',
   'landing.navFaq': 'Mga tanong',
   'landing.start': 'Simulan',
-  'landing.pill': 'Libre, pribado, at madaling maintindihan',
+  'landing.pill': 'Libre, pribado, simpleng Taglish',
   'landing.h1a': 'Linaw sa kontrata.',
   'landing.h1b': 'Kampante sa pirma.',
   'landing.lead':
-    'Ipaunawa ang employment contract o quitclaim mo sa simpleng Taglish—para alam mo ang sahod, oras, bawas, at mga dapat itanong.',
+    'Kunan ng photo ang employment contract o quitclaim mo. Ipapaliwanag ng Linaw ang sahod, oras, bawas, at penalties sa simpleng salita, saka ililista ang mga dapat itanong.',
   'landing.cta': 'Suriin ang kontrata ko',
   'landing.how': 'Tingnan kung paano',
   'landing.reassure1': 'Auto-delete after 24 hours',

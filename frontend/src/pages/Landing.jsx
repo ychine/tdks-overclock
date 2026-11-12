@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
+import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react'
 import { EASE_OUT } from '@/lib/ease'
 import { cn } from '@/lib/utils'
 import Brand from '../components/Brand'
@@ -19,6 +20,13 @@ import { agencies, telHref } from '../lib/agencies'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
+// Lenis gives the wheel / trackpad / touch scroll its inertia. One instance lives while the landing is mounted.
+let lenis = null
+function scrollToTop() {
+  if (lenis) lenis.scrollTo(0)
+  else window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
 const wrap = 'mx-auto w-[min(1160px,calc(100%-32px))]'
 const h2 = 'text-3xl leading-[1.08] font-semibold md:text-5xl'
 
@@ -34,16 +42,26 @@ function Header({ t, enter, dark, setDark }) {
         scrolled ? 'border-b border-line bg-canvas/85 backdrop-blur' : 'border-b border-transparent',
       )}
     >
-      <div className="mx-auto flex h-[74px] w-[min(1240px,calc(100%-32px))] items-center justify-between">
-        <Brand onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} label={t('app.brandHome')} />
-        <nav className="hidden items-center gap-8 text-sm font-semibold text-subtle lg:flex">
-          <a className="hover:text-ink" href="#paano">{t('landing.navHow')}</a>
-          <a className="hover:text-ink" href="#para-kanino">{t('landing.navWho')}</a>
-          <a className="hover:text-ink" href="#privacy">{t('landing.navPrivacy')}</a>
-          <a className="hover:text-ink" href="#faq">{t('landing.navFaq')}</a>
+      <div className="mx-auto flex h-[74px] w-[min(1240px,calc(100%-32px))] items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr]">
+        <Brand onClick={() => scrollToTop()} label={t('app.brandHome')} />
+        <nav className="hidden items-center gap-1 text-sm font-semibold text-subtle lg:flex">
+          {[
+            ['#paano', 'landing.navHow'],
+            ['#para-kanino', 'landing.navWho'],
+            ['#privacy', 'landing.navPrivacy'],
+            ['#faq', 'landing.navFaq'],
+          ].map(([href, key]) => (
+            <a
+              key={href}
+              href={href}
+              className="rounded-btn px-4 py-2.5 transition-colors hover:bg-surface-2 hover:text-ink"
+            >
+              {t(key)}
+            </a>
+          ))}
         </nav>
-        <div className="flex items-center gap-2">
-          <LanguageSelect className="max-w-28" />
+        <div className="flex items-center gap-2 lg:justify-self-end">
+          <LanguageSelect />
           <ThemeToggle dark={dark} setDark={setDark} />
           <span className="hidden sm:block">
             <Button onClick={enter}>{t('landing.start')}</Button>
@@ -54,18 +72,83 @@ function Header({ t, enter, dark, setDark }) {
   )
 }
 
+/* Rays fan evenly across the open quarter outside the card corner: 0° points up, 90° points right.
+   [angle, inner radius, outer radius]. Long and short alternate so it reads as sunlight, not a burst. */
+const SUN_RAYS = [
+  [0, 18, 44],
+  [30, 18, 34],
+  [60, 18, 34],
+  [90, 18, 44],
+]
+
+/**
+ * Sunburst rays drawn from the card's top-right corner in the same marker style as the headline
+ * underline: even width, round caps. Each ray draws outward once, after the card lands.
+ */
+function BrushSun() {
+  const reduce = useReducedMotion()
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="-60 -60 120 120"
+      className="pointer-events-none absolute -top-12 -right-5 z-0 size-28 overflow-visible sm:-top-[88px] sm:-right-[88px] sm:size-44"
+    >
+      {SUN_RAYS.map(([angle, r0, r1], i) => (
+        <motion.path
+          key={angle}
+          d={`M0 ${-r0}L0 ${-r1}`}
+          transform={`rotate(${angle})`}
+          fill="none"
+          stroke="var(--sun)"
+          strokeWidth={6}
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          initial={reduce ? false : { pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{
+            pathLength: { duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 1.3 + i * 0.06 },
+            opacity: { duration: 0.01, delay: 1.3 + i * 0.06 },
+          }}
+        />
+      ))}
+    </svg>
+  )
+}
+
 /** The hero visual reuses the real ListGroup / ListRow / Badge, so the preview is the product. */
 function ContractPreview({ t }) {
   return (
-    <div data-hero="visual" className="relative mx-auto w-full max-w-[440px] py-8">
-      <div data-parallax>
-        <span
+    <div data-hero="visual" className="relative mx-auto w-full max-w-[480px] py-10">
+      <div data-parallax className="relative">
+        {/* The original page: what the worker photographed. Bars stand in for text; colors mark what Linaw found. */}
+        <div
           aria-hidden="true"
-          className="absolute -bottom-1 right-6 z-10 grid size-14 place-items-center rounded-full bg-sun text-[#1b2433] shadow-card"
+          className="absolute inset-y-3 left-0 z-[1] w-[64%] -rotate-[4deg] rounded-card border border-line bg-surface-2 p-5 shadow-card"
         >
-          <Icon name="sun" size={28} />
-        </span>
-        <Panel className="relative z-[2] w-[min(400px,94%)] rotate-[1.5deg] p-4 shadow-float">
+          <div className="h-3 w-2/5 rounded-full bg-ink/25" />
+          <div className="mt-5 grid gap-2.5">
+            <div className="h-2 w-full rounded-full bg-line" />
+            <div className="h-2 w-11/12 rounded-full bg-line" />
+            <div className="h-2.5 w-4/5 rounded-full bg-brand-soft ring-1 ring-brand/40" />
+            <div className="h-2 w-full rounded-full bg-line" />
+            <div className="h-2 w-9/12 rounded-full bg-line" />
+          </div>
+          <div className="mt-6 grid gap-2.5">
+            <div className="h-2 w-full rounded-full bg-line" />
+            <div className="h-2.5 w-10/12 rounded-full bg-sun/60" />
+            <div className="h-2 w-full rounded-full bg-line" />
+            <div className="h-2 w-7/12 rounded-full bg-line" />
+          </div>
+          <div className="mt-6 grid gap-2.5">
+            <div className="h-2 w-11/12 rounded-full bg-line" />
+            <div className="h-2.5 w-full rounded-full bg-alert-soft ring-1 ring-alert/50" />
+            <div className="h-2 w-8/12 rounded-full bg-line" />
+          </div>
+        </div>
+
+        <div className="relative z-[2] mt-14 ml-auto w-[min(400px,90%)] rotate-[1.5deg]">
+        <BrushSun />
+        <Panel className="relative z-[1] p-4 shadow-float">
           <div className="flex items-center gap-3 border-b border-line pb-4">
             <IconTile icon="file" tone="brand" />
             <div className="grid flex-1 text-sm">
@@ -75,7 +158,7 @@ function ContractPreview({ t }) {
             <Badge tone="ok" icon="check">OK</Badge>
           </div>
           <p className="pt-4 pb-2 text-sm font-semibold text-subtle">{t('landing.previewLabel')}</p>
-          <ListGroup>
+          <ListGroup data-preview="rows">
             <ListRow icon="wallet" tone="brand" title={t('landing.previewSalary')} value={t('landing.previewSalaryValue')} />
             <ListRow icon="sun" tone="sun" title={t('landing.previewHours')} value={t('landing.previewHoursValue')} />
             <ListRow
@@ -87,13 +170,14 @@ function ContractPreview({ t }) {
               className="bg-alert-soft"
             />
           </ListGroup>
-          <div className="mt-3 flex gap-2.5 rounded-card bg-navy p-3.5 text-[#f8f4ec]">
+          <div data-preview="chat" className="mt-3 flex gap-2.5 rounded-card bg-navy p-3.5 text-[#f8f4ec]">
             <span className="mt-0.5 shrink-0 text-sun">
               <Icon name="spark" size={18} />
             </span>
             <p className="text-sm leading-snug">{t('landing.previewChat')}</p>
           </div>
         </Panel>
+        </div>
       </div>
     </div>
   )
@@ -152,6 +236,23 @@ export default function Landing({ enter, dark, setDark }) {
   const trustIcons = ['lock', 'spark', 'help', 'sound']
   const statValues = [24, 3, 4, 0]
 
+  // Smooth, inertial scrolling. Skipped for prefers-reduced-motion. Driven by GSAP's ticker so
+  // ScrollTrigger stays in sync.
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+    const instance = new Lenis({ lerp: 0.1, anchors: { offset: -90 } })
+    lenis = instance
+    instance.on('scroll', ScrollTrigger.update)
+    const tick = (time) => instance.raf(time * 1000)
+    gsap.ticker.add(tick)
+    gsap.ticker.lagSmoothing(0)
+    return () => {
+      gsap.ticker.remove(tick)
+      instance.destroy()
+      lenis = null
+    }
+  }, [])
+
   // GSAP owns the scroll story. Everything is skipped for prefers-reduced-motion.
   useGSAP(
     () => {
@@ -163,6 +264,9 @@ export default function Landing({ enter, dark, setDark }) {
           .from('[data-hero="lead"]', { y: 14, opacity: 0, duration: 0.55 }, '-=0.1')
           .from('[data-hero="cta"]', { y: 14, opacity: 0, duration: 0.5, stagger: 0.08 }, '-=0.35')
           .from('[data-hero="visual"]', { y: 40, opacity: 0, duration: 0.9 }, 0.25)
+          .from('[data-preview="rows"] > li', { y: 10, opacity: 0, duration: 0.45, stagger: 0.14 }, 0.95)
+          .from('[data-preview="rows"] > li:last-child', { backgroundColor: 'rgba(0,0,0,0)', duration: 0.7, clearProps: 'backgroundColor' }, 1.5)
+          .from('[data-preview="chat"]', { y: 10, opacity: 0, duration: 0.5 }, 1.55)
 
         gsap.set('[data-reveal]', { opacity: 0, y: 24 })
         ScrollTrigger.batch('[data-reveal]', {
@@ -235,7 +339,7 @@ export default function Landing({ enter, dark, setDark }) {
                 </BlurReveal>
               </span>
               <span className="block pb-1 text-brand">
-                <BlurReveal as="span" className="inline-block" delay={0.55} speedReveal={1.4} speedSegment={0.7}>
+                <BlurReveal as="span" className="inline-block" delay={0.55} speedReveal={1.4} speedSegment={0.7} underlineLast>
                   {t('landing.h1b')}
                 </BlurReveal>
               </span>
@@ -269,7 +373,10 @@ export default function Landing({ enter, dark, setDark }) {
           <ContractPreview t={t} />
         </section>
 
-        <div className="banig h-3 border-y border-line" aria-hidden="true" />
+        {/* banig weave: the top dissolves into the hero, the bottom stays crisp against the trust strip */}
+        <div className="relative h-3" aria-hidden="true">
+          <div className="banig pointer-events-none absolute inset-x-0 bottom-0 h-16 border-b border-line [mask-image:linear-gradient(to_bottom,transparent,black_75%)] sm:h-24" />
+        </div>
 
         <section className="border-b border-line bg-surface">
           <ul className="mx-auto grid w-[min(1240px,calc(100%-32px))] grid-cols-2 gap-x-3 gap-y-5 py-6 md:grid-cols-4">
@@ -375,7 +482,7 @@ export default function Landing({ enter, dark, setDark }) {
       <footer className="border-t border-line bg-surface">
         <div className="mx-auto grid w-[min(1240px,calc(100%-32px))] gap-10 py-12 md:grid-cols-[1.2fr_1fr_1fr]">
           <div>
-            <Brand compact onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} label={t('app.brandHome')} />
+            <Brand compact onClick={() => scrollToTop()} label={t('app.brandHome')} />
             <p className="mt-3 max-w-[32ch] text-subtle">{t('landing.footerTagline')}</p>
             <Button variant="secondary" onClick={enter} className="mt-5">
               {t('landing.footerApp')}

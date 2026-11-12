@@ -41,11 +41,11 @@ const english = {
   'landing.navPrivacy': 'Privacy',
   'landing.navFaq': 'FAQ',
   'landing.start': 'Get started',
-  'landing.pill': 'Free, private, and easy to understand',
+  'landing.pill': 'Free, private, plain language',
   'landing.h1a': 'Clarity in your contract.',
   'landing.h1b': 'Confidence when you sign.',
   'landing.lead':
-    'Understand your employment contract or quitclaim in plain language—so you know the pay, hours, deductions, and what to ask.',
+    'Take a photo of your employment contract or quitclaim. Linaw explains the pay, hours, deductions, and penalties in plain words, then lists what to ask.',
   'landing.cta': 'Check my contract',
   'landing.how': 'See how it works',
   'landing.reassure1': 'Auto-deleted after 24 hours',
