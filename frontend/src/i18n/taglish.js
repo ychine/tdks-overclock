@@ -473,7 +473,7 @@ const taglish = {
   "home.helpDesc": "DOLE, DMW, OWWA, at Public Attorney’s Office.",
   "home.hotlines": "Mabilis na tawag",
   "summary.askBadge": "Dapat itanong",
-  "chat.needsYou": "Hinihintay ang sagot mo",
+  "chat.needsYou": "Para sa iyo",
   "chat.approved": "Ginawa na",
   "chat.later": "Mamaya na lang",
   "chat.checklistDone": "Heto ang checklist mo.",
@@ -485,6 +485,7 @@ const taglish = {
   "chat.responding": "Sumasagot",
   "chat.transcript": "Usapan",
   "chat.clause": "Sugnay",
+  "chat.approvalShort": "Checklist bago pumirma",
 }
 
 export default taglish

@@ -456,7 +456,7 @@ const filipino = {
   "home.helpDesc": "DOLE, DMW, OWWA, at Public Attorney’s Office.",
   "home.hotlines": "Mabilis na tawag",
   "summary.askBadge": "Dapat itanong",
-  "chat.needsYou": "Hinihintay ang sagot mo",
+  "chat.needsYou": "Para sa iyo",
   "chat.approved": "Nagawa na",
   "chat.later": "Mamaya na lamang",
   "chat.checklistDone": "Narito ang iyong checklist.",
@@ -468,6 +468,7 @@ const filipino = {
   "chat.responding": "Sumasagot",
   "chat.transcript": "Usapan",
   "chat.clause": "Sugnay",
+  "chat.approvalShort": "Checklist bago pumirma",
 }
 
 export default filipino

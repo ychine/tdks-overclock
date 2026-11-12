@@ -32,7 +32,7 @@ export function Citation({
       href={`#${citationTargetId(idPrefix, citationId)}`}
       aria-label={label ?? t("viewCitation", { index })}
       className={cn(
-        "mx-0.5 inline-flex min-w-4 -translate-y-0.5 items-center justify-center rounded-md bg-muted/60 px-1 py-0.5 text-[10px] font-semibold leading-none text-muted-foreground no-underline outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+        "mx-0.5 inline-flex min-h-7 min-w-7 -translate-y-0.5 items-center justify-center rounded-md bg-muted/60 px-1.5 text-xs font-semibold leading-none text-muted-foreground no-underline outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
         className
       )}>
       {index}
@@ -106,7 +106,7 @@ function CitationRow({
           {citation.title}
         </span>
         {citation.domain ? (
-          <span className="min-w-0 truncate text-xs text-muted-foreground/60">
+          <span className="min-w-0 text-sm text-muted-foreground">
             {citation.domain}
           </span>
         ) : null}
@@ -124,7 +124,7 @@ function CitationRow({
     </>
   );
   const className =
-    "group/citation flex items-center gap-2 rounded-md px-1.5 py-1 outline-none focus-visible:ring-2 focus-visible:ring-ring";
+    "group/citation flex min-h-11 items-center gap-2 rounded-md px-2 py-2 outline-none focus-visible:ring-2 focus-visible:ring-ring";
   const id = citationTargetId(idPrefix, citation.id);
 
   return citation.url ? (
@@ -210,7 +210,7 @@ export function Citations({
         aria-expanded={currentOpen}
         aria-controls={contentId}
         onClick={() => setOpen(!currentOpen)}
-        className="group -ml-1 flex min-h-8 items-center gap-2 rounded-lg px-1 text-left text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
+        className="group -ml-2 flex min-h-11 items-center gap-2 rounded-lg px-2 text-left text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
         <BookOpenText className="size-4" />
         <span className="font-medium">{title ?? t("title")}</span>
         <span

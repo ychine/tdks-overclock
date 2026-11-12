@@ -446,7 +446,7 @@ const english = {
   "home.helpDesc": "DOLE, DMW, OWWA, and the Public Attorney’s Office.",
   "home.hotlines": "Quick calls",
   "summary.askBadge": "Worth asking",
-  "chat.needsYou": "Waiting for you",
+  "chat.needsYou": "Your call",
   "chat.approved": "Done",
   "chat.later": "Maybe later",
   "chat.checklistDone": "Here is your checklist.",
@@ -458,6 +458,7 @@ const english = {
   "chat.responding": "Responding",
   "chat.transcript": "Conversation",
   "chat.clause": "Clause",
+  "chat.approvalShort": "Pre-signing checklist",
 }
 
 export default english

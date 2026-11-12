@@ -3,7 +3,6 @@ import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 import { EASE_OUT } from '@/lib/ease'
 import ErrorBoundary from './components/ErrorBoundary'
 import Nav from './components/Nav'
-import Topbar from './components/Topbar'
 import { I18nProvider } from './i18n/I18nProvider'
 import { useI18n } from './i18n/useI18n'
 
@@ -73,24 +72,15 @@ function Shell() {
   }
 
   return (
-    <div className="min-h-screen bg-canvas text-ink transition-colors lg:pl-[244px] print:pl-0">
+    <div className="min-h-screen bg-canvas text-ink transition-colors print:pl-0">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:rounded-btn focus:bg-brand focus:px-4 focus:py-3 focus:font-bold focus:text-on-solid"
       >
         {t('app.skip')}
       </a>
-      <Nav screen={screen} go={go} />
+      <Nav screen={screen} go={go} dark={dark} setDark={setDark} />
       <main id="main" className="min-h-screen pb-22 lg:pb-0">
-        <Topbar
-          title={t(`screen.${screen}`)}
-          onHome={() => {
-            setLanded(false)
-            window.scrollTo(0, 0)
-          }}
-          dark={dark}
-          setDark={setDark}
-        />
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={screen}

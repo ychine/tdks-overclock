@@ -53,7 +53,7 @@ function useBeuiMessages(t) {
       messageScroller: { label: t('chat.transcript') },
       citations: { title: t('chat.sources'), viewCitation: t('chat.viewCitation') },
       approvalCard: {
-        title: t('chat.approvalTitle'),
+        title: t('chat.approvalShort'),
         approve: t('chat.approvalYes'),
         reject: t('chat.approvalLater'),
         inputRequired: t('chat.needsYou'),
@@ -163,7 +163,7 @@ export default function Chat({ go }) {
                                 className="w-full max-w-[82%]"
                               />
                             )}
-                            <div className="flex flex-wrap items-center gap-x-1">
+                            <div className="-ml-2 flex flex-wrap items-center gap-x-1">
                               <Button variant="ghost" size="sm" icon={copied === turn.id ? 'check' : 'file'} onClick={() => copy(turn)}>
                                 {copied === turn.id ? t('chat.copied') : t('chat.copy')}
                               </Button>
@@ -195,7 +195,7 @@ export default function Chat({ go }) {
                   <MessageContent>
                     <ApprovalCard
                       status={approval}
-                      description={t('chat.approvalText')}
+                      description={`${t('chat.approvalTitle')} ${t('chat.approvalText')}`}
                       onApprove={() => setApproval('approved')}
                       onReject={() => setApproval('rejected')}
                       result={approval === 'approved' ? t('chat.checklistDone') : undefined}

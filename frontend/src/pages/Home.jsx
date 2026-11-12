@@ -31,7 +31,7 @@ export default function Home({ go }) {
           className="mt-8 max-w-md"
         />
 
-        <Button size="lg" icon="upload" className="mt-4 w-full max-w-md justify-between" onClick={() => go('upload')}>
+        <Button size="lg" icon="upload" className="mt-4 w-full max-w-md" onClick={() => go('upload')}>
           {t('home.upload')}
         </Button>
         <p className="mt-2 ml-1 text-sm text-subtle">{t('home.uploadDesc')}</p>
