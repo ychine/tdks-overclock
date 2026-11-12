@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-13T00:00:00.000Z",
+  "title": "Design System: Linaw",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "canonical": "#FBF7EF",
+        "tonalRamp": ["#1B2433", "#3B4250", "#5C615F", "#8A887A", "#BBB4A3", "#D9D2C3", "#EDE7DA", "#FBF7EF"]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Table Paper",
+        "canonical": "#FFFDFA",
+        "tonalRamp": ["#1B2433", "#3B4250", "#5C615F", "#8A887A", "#BBB4A3", "#D9D2C3", "#EFEAE0", "#FFFDFA"]
+      },
+      "surface-sunk": {
+        "role": "neutral",
+        "displayName": "Banig Shade",
+        "canonical": "#F4EEE3",
+        "tonalRamp": ["#1B2433", "#3B4250", "#5C615F", "#8A887A", "#B7AF9E", "#D3CBB8", "#E6DECF", "#F4EEE3"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Deep Ink",
+        "canonical": "#1B2433",
+        "tonalRamp": ["#1B2433", "#2A3444", "#3B4556", "#565F6E", "#7B8390", "#A3A9B3", "#CBD0D7", "#EEF0F3"]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#586377",
+        "tonalRamp": ["#1B2433", "#2A3444", "#3B4556", "#4A5668", "#586377", "#7D8798", "#A9B1BE", "#DDE1E7"]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline Sand",
+        "canonical": "#DDD8CE",
+        "tonalRamp": ["#4A4438", "#6B6456", "#8C8474", "#ADA594", "#C6BFB0", "#D9D3C6", "#E8E3D9", "#F7F4EE"]
+      },
+      "flag-blue": {
+        "role": "primary",
+        "displayName": "Trust Blue",
+        "canonical": "#0038A8",
+        "tonalRamp": ["#001233", "#001F5C", "#002C80", "#0038A8", "#2455C4", "#5C82DA", "#9DB5EC", "#E4EBFA"]
+      },
+      "blue-soft": {
+        "role": "primary",
+        "displayName": "Blue Wash",
+        "canonical": "#E9F0FF",
+        "tonalRamp": ["#001233", "#00205E", "#0038A8", "#3B67C9", "#7095DE", "#A9C1EF", "#D3E0FA", "#E9F0FF"]
+      },
+      "flag-red": {
+        "role": "tertiary",
+        "displayName": "Alert Red",
+        "canonical": "#CE1126",
+        "tonalRamp": ["#3B0009", "#6B0012", "#9A0C1C", "#CE1126", "#E54052", "#F07E8B", "#F9BAC2", "#FDE8EB"]
+      },
+      "red-soft": {
+        "role": "tertiary",
+        "displayName": "Alert Wash",
+        "canonical": "#FFF0F1",
+        "tonalRamp": ["#3B0009", "#6B0012", "#A8121F", "#D92B3E", "#EB6D7C", "#F4A6B1", "#FCD9DD", "#FFF0F1"]
+      },
+      "sun-yellow": {
+        "role": "secondary",
+        "displayName": "Sun Yellow",
+        "canonical": "#FCD116",
+        "tonalRamp": ["#3B2B00", "#6E5200", "#A57C00", "#D2A400", "#FCD116", "#FDDC58", "#FEE99A", "#FEF7D6"]
+      },
+      "success-green": {
+        "role": "tertiary",
+        "displayName": "Checked Green",
+        "canonical": "#16865B",
+        "tonalRamp": ["#04251A", "#0A4632", "#0E6649", "#16865B", "#28A877", "#5FC9A1", "#A6E5CD", "#E7F5EE"]
+      },
+      "success-soft": {
+        "role": "tertiary",
+        "displayName": "Checked Wash",
+        "canonical": "#E7F5EE",
+        "tonalRamp": ["#04251A", "#0A4632", "#0E6649", "#2A8E66", "#55AD8C", "#8FD0B6", "#C6EADB", "#E7F5EE"]
+      },
+      "midnight-navy": {
+        "role": "neutral",
+        "displayName": "Midnight Navy",
+        "canonical": "#101A33",
+        "tonalRamp": ["#0A101B", "#101A33", "#182440", "#243354", "#38496C", "#5A6B8E", "#96A4BD", "#E0E6F0"]
+      },
+      "on-solid": {
+        "role": "neutral",
+        "displayName": "On Solid",
+        "canonical": "#FFFFFF",
+        "tonalRamp": ["#1B2433", "#404A5A", "#6A7382", "#969DA9", "#C2C7CE", "#DEE1E5", "#F2F4F6", "#FFFFFF"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Fraunces Display", "purpose": "Brand, landing hero, and the largest page titles." },
+      "headline": { "displayName": "Fraunces Headline", "purpose": "Page titles and major section headings." },
+      "title": { "displayName": "Figtree Title", "purpose": "Card, panel, and row headings." },
+      "body": { "displayName": "Figtree Body", "purpose": "All reading copy; never below 16px." },
+      "label": { "displayName": "Figtree Label", "purpose": "Buttons, chips, badges, form labels, and metadata." }
+    },
+    "shadows": [
+      { "name": "card", "value": "0 1px 2px rgb(16 24 40 / 0.05), 0 4px 12px rgb(16 24 40 / 0.05)", "purpose": "A surfaced item that sits above the page without leaving it." },
+      { "name": "float", "value": "0 2px 8px rgb(16 24 40 / 0.08), 0 12px 40px rgb(16 24 40 / 0.12)", "purpose": "Sheets, the landing artifact, the sticky composer, and dialogs." },
+      { "name": "panel-ring", "value": "inset 0 0 0 2px rgb(255 255 255 / 0.85), 0 1px 2px rgb(16 24 40 / 0.05), 0 4px 12px rgb(16 24 40 / 0.05)", "purpose": "The one primary working panel; a lit paper edge." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Entrances and reveals; exponential ease-out." },
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Default state transitions." },
+      { "name": "press", "value": "cubic-bezier(0.34, 1.56, 0.64, 1)", "purpose": "Button and chip press feedback." },
+      { "name": "duration-fast", "value": "150ms", "purpose": "Hover and color changes." },
+      { "name": "duration-base", "value": "220ms", "purpose": "Screen and panel transitions." },
+      { "name": "duration-slow", "value": "700ms", "purpose": "Scroll reveals and staged entrances." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1440px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one main action on a screen: trust blue fill, white label, 12px radius.",
+      "html": "<button class=\"ds-btn ds-btn--primary\">Mag-upload ng kontrata</button>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:48px; padding:0 20px; border-radius:12px; font-family:Figtree,ui-sans-serif,system-ui,sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:background-color .15s ease, filter .15s ease, transform .1s ease; } .ds-btn--primary { background:var(--brand,#0038A8); color:#fff; border:1px solid var(--brand,#0038A8); box-shadow:inset 0 1px 0 rgb(255 255 255 / .18), 0 6px 16px rgb(0 56 168 / .2); } .ds-btn--primary:hover { filter:brightness(1.1); } .ds-btn--primary:active { transform:scale(.97); } .ds-btn--primary:focus-visible { outline:3px solid var(--brand,#0038A8); outline-offset:2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Supporting action: surface fill, hairline border, ink label.",
+      "html": "<button class=\"ds-btn ds-btn--secondary\">Wala akong kontrata</button>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:48px; padding:0 20px; border-radius:12px; font-family:Figtree,ui-sans-serif,system-ui,sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:background-color .15s ease, border-color .15s ease, transform .1s ease; } .ds-btn--secondary { background:var(--surface,#FFFDFA); color:var(--ink,#1B2433); border:1px solid var(--line,#DDD8CE); } .ds-btn--secondary:hover { background:var(--surface-2,#F4EEE3); border-color:rgb(27 36 51 / .3); } .ds-btn--secondary:active { transform:scale(.97); } .ds-btn--secondary:focus-visible { outline:3px solid var(--brand,#0038A8); outline-offset:2px; }"
+    },
+    {
+      "name": "Sun Button",
+      "kind": "button",
+      "refersTo": "button-sun",
+      "description": "Highlight CTA on navy bands: yellow fill with ink label.",
+      "html": "<button class=\"ds-btn ds-btn--sun\">Simulan ngayon</button>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:48px; padding:0 20px; border-radius:12px; font-family:Figtree,ui-sans-serif,system-ui,sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:filter .15s ease, transform .1s ease; } .ds-btn--sun { background:var(--sun,#FCD116); color:#1B2433; border:1px solid #D9B600; box-shadow:inset 0 1px 0 rgb(255 255 255 / .4); } .ds-btn--sun:hover { filter:brightness(1.05); } .ds-btn--sun:active { transform:scale(.97); } .ds-btn--sun:focus-visible { outline:3px solid #FCD116; outline-offset:3px; }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive or emergency action only: alert red fill.",
+      "html": "<button class=\"ds-btn ds-btn--danger\">Delete my data now</button>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:48px; padding:0 20px; border-radius:12px; font-family:Figtree,ui-sans-serif,system-ui,sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:filter .15s ease, transform .1s ease; } .ds-btn--danger { background:var(--alert,#CE1126); color:#fff; border:1px solid var(--alert,#CE1126); } .ds-btn--danger:hover { filter:brightness(1.1); } .ds-btn--danger:active { transform:scale(.97); } .ds-btn--danger:focus-visible { outline:3px solid var(--alert,#CE1126); outline-offset:2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Editable confirmed field: surface fill, hairline, 10px radius, 48px height.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field__label\">Sahod</span><input class=\"ds-field__input\" value=\"₱18,000 / month\"></label>",
+      "css": ".ds-field { display:grid; gap:6px; font-family:Figtree,ui-sans-serif,system-ui,sans-serif; } .ds-field__label { font-size:.875rem; font-weight:600; color:var(--subtle,#586377); } .ds-field__input { min-height:48px; border:1px solid var(--line,#DDD8CE); border-radius:10px; padding:0 14px; font-family:inherit; font-size:1rem; font-weight:600; color:var(--ink,#1B2433); background:var(--surface,#FFFDFA); box-shadow:inset 0 1px 2px rgb(16 24 40 / .06); outline:none; transition:border-color .15s ease, box-shadow .15s ease; } .ds-field__input:focus { border-color:var(--brand,#0038A8); box-shadow:0 0 0 4px rgb(0 56 168 / .2); }"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "The one primary working surface of a screen: 24px radius, lit paper ring.",
+      "html": "<section class=\"ds-panel\"><h2 class=\"ds-panel__title\">Mga detalye</h2><p class=\"ds-panel__text\">Tingnan kung tama ang nabasa namin.</p></section>",
+      "css": ".ds-panel { background:var(--surface,#FFFDFA); border:1px solid var(--line,#DDD8CE); border-radius:24px; padding:20px; box-shadow:inset 0 0 0 2px rgb(255 255 255 / .85), 0 1px 2px rgb(16 24 40 / .05), 0 4px 12px rgb(16 24 40 / .05); font-family:Figtree,ui-sans-serif,system-ui,sans-serif; color:var(--ink,#1B2433); } .ds-panel__title { margin:0 0 6px; font-family:Fraunces,Georgia,serif; font-size:1.5rem; font-weight:600; letter-spacing:-.02em; } .ds-panel__text { margin:0; color:var(--subtle,#586377); }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "A self-contained item: 16px radius, hairline, flat.",
+      "html": "<article class=\"ds-card\"><strong>DOLE</strong><p>Free help with labor concerns.</p></article>",
+      "css": ".ds-card { background:var(--surface,#FFFDFA); border:1px solid var(--line,#DDD8CE); border-radius:16px; padding:16px; font-family:Figtree,ui-sans-serif,system-ui,sans-serif; color:var(--ink,#1B2433); } .ds-card strong { font-size:1.125rem; font-weight:700; } .ds-card p { margin:4px 0 0; color:var(--subtle,#586377); }"
+    },
+    {
+      "name": "Suggestion Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "A tappable suggestion: full pill, hairline, 48px target.",
+      "html": "<button class=\"ds-chip\">May bawas ba sa sahod ko?</button>",
+      "css": ".ds-chip { display:inline-flex; align-items:center; min-height:48px; padding:0 16px; border-radius:999px; border:1px solid var(--line,#DDD8CE); background:var(--surface,#FFFDFA); color:var(--ink,#1B2433); font-family:Figtree,ui-sans-serif,system-ui,sans-serif; font-size:.9375rem; font-weight:500; cursor:pointer; transition:background-color .15s ease, border-color .15s ease; } .ds-chip:hover { background:var(--brand-soft,#E9F0FF); border-color:rgb(0 56 168 / .5); } .ds-chip:focus-visible { outline:3px solid var(--brand,#0038A8); outline-offset:2px; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "A non-interactive status label: tinted pill with icon + text.",
+      "html": "<span class=\"ds-badge\">Pakisuri</span>",
+      "css": ".ds-badge { display:inline-flex; align-items:center; gap:6px; padding:2px 10px; border-radius:999px; background:var(--sun,#FCD116); color:#1B2433; font-family:Figtree,ui-sans-serif,system-ui,sans-serif; font-size:.75rem; font-weight:700; }"
+    },
+    {
+      "name": "Active Navigation",
+      "kind": "nav",
+      "refersTo": "nav-active",
+      "description": "Current section: blue-wash track, brand text, never color alone.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-nav__item\">Home</span><span class=\"ds-nav__item ds-nav__item--active\" aria-current=\"page\">Summary</span><span class=\"ds-nav__item\">Ask</span></nav>",
+      "css": ".ds-nav { display:flex; gap:4px; font-family:Figtree,ui-sans-serif,system-ui,sans-serif; } .ds-nav__item { display:inline-flex; align-items:center; min-height:44px; padding:0 12px; border-radius:12px; font-size:.875rem; font-weight:600; color:var(--subtle,#586377); } .ds-nav__item--active { background:var(--brand-soft,#E9F0FF); color:var(--brand,#0038A8); font-weight:700; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Liwanag sa Kusina",
+    "overview": "Linaw is the warm, well-lit kitchen where a trusted kuya or ate spreads a contract on the table, points at the line that matters, and explains it in words you already know. The light is honest and clear; the room is familiar, not corporate. Paper, woven banig, and the eight-ray sun are the material memory. The interface never performs authority at the worker; it sits beside them. The system is mobile-first and low-bandwidth by instinct, with one obvious action per screen and full states for a stressed user on a cheap phone.",
+    "keyCharacteristics": [
+      "Warm off-white paper, deep ink, flag blue for action, sun yellow as a fill, alert red only for worry.",
+      "Fraunces speaks; Figtree works. The serif is for the brand, page titles, and money; UI chrome stays sans.",
+      "Hairline-first depth: flat surfaces with one restrained shadow where something truly floats.",
+      "Rounded, touchable, 48px controls; 16px body floor; WCAG AA contrast.",
+      "The eight-ray sun and faint banig are seasoning, never wallpaper."
+    ],
+    "rules": [
+      { "name": "The Sun Is a Fill Rule", "body": "Yellow never appears as text on a light surface and never as a thin outline around light text. It is a fill with ink on top, or a small icon tile, or the sun.", "section": "colors" },
+      { "name": "The One Blue Rule", "body": "Trust blue is spent on the single most important action, the active navigation state, and source links. It is not a decorative wash.", "section": "colors" },
+      { "name": "The Red Means Worry Rule", "body": "Alert red only appears where the worker should pause: a deduction, a penalty, a worse contract term, an unreadable photo, an emergency.", "section": "colors" },
+      { "name": "The 16px Floor Rule", "body": "No body, hint, input, or legal-term text ships below 16px. 14px is for labels and metadata only.", "section": "typography" },
+      { "name": "The Serif in the Parlor Rule", "body": "Fraunces is the voice at the table: brand, page titles, big money, and the landing's promise. It never sets buttons, form labels, table cells, or navigation.", "section": "typography" },
+      { "name": "The Thumb Rule", "body": "On a phone, the primary action sits in the lower half of the viewport or in a full-width control.", "section": "layout" },
+      { "name": "The Single Panel Rule", "body": "A working screen has one 24px primary panel at most. Everything else is a 16px card or a list group.", "section": "layout" },
+      { "name": "The Hairline First Rule", "body": "At rest, a surface is flat with a 1px border. Reach for a shadow only when the surface actually overlaps or floats.", "section": "elevation" },
+      { "name": "The No Nested Card Rule", "body": "A card inside a card inside a panel is always wrong. Use a list group, a divider, or a tonal section instead.", "section": "elevation" },
+      { "name": "The Banig Restraint Rule", "body": "The woven pattern is used at low contrast in empty states, upload zones, and one divider at most. It never sits under body text.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do keep the paper ground, ink, and one clear primary action per screen.",
+      "Do use the sun as a fill with ink on top, or as the circular mark.",
+      "Do set body copy at 16px or larger and give every control a 48px tap target.",
+      "Do pair every worry signal with a word and an icon, never color alone.",
+      "Do cite the clause for every summary claim and show the formula for every peso.",
+      "Do keep the professional and legal disclaimer visible on summary, compare, and chat surfaces.",
+      "Do use Fraunces for brand, page titles, and big money; Figtree for everything functional.",
+      "Do test 390px and 1440px with real, long Taglish copy."
+    ],
+    "donts": [
+      "Don't use yellow as text on a light surface or red as brand decoration.",
+      "Don't nest cards or put a colored side stripe on a callout.",
+      "Don't use gradient text, glass as decoration, or zero-offset colored halos.",
+      "Don't add an eyebrow/kicker above a heading; the heading carries itself.",
+      "Don't render model output as HTML without sanitization.",
+      "Don't let the LLM calculate or state a peso figure; calculators own money.",
+      "Don't present generated glossary definitions or unverified agency contacts as fact.",
+      "Don't ship a screen without its empty, loading, error, and offline states where the flow needs them."
+    ]
+  }
+}
