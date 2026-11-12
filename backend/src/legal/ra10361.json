@@ -1,0 +1,403 @@
+{
+  "_README": "Legal references for Ask Linaw. `quote` is copied word for word from the IRR of RA 10361 PDF the team provided (OCR'd from a scan, then proofread against the page images). The backend sends ONLY entries with verified=true, and the AI may cite ONLY what is sent. Before the demo, a human must read each quote against the PDF and put their name in verified_by. Entries marked verified=false are NOT sent: they come from the Act via a secondary site because the team's IRR PDF is missing Rule IV Sections 3-7. Replace them with the official text, then set verified=true. `excerpt` (optional) = the key parts of `quote`, each piece an exact substring of it; the server sends the excerpt to the AI to fit Lumen's 2000-character limit, and shows the full quote to the user.",
+  "source": "Implementing Rules and Regulations of Republic Act No. 10361 (Batas Kasambahay), team-provided PDF",
+  "covers": "Domestic workers (kasambahay) in the Philippines only. Not OFWs, not other local employees.",
+  "workerType": "kasambahay",
+  "references": [
+    {
+      "id": "IRR-II-5",
+      "label": "IRR RA 10361, Rule II, Sec. 5 (Employment Contract)",
+      "topics": [
+        "kontrata",
+        "contract",
+        "nakasulat",
+        "kulang",
+        "missing",
+        "pumirma",
+        "sign",
+        "itanong",
+        "dapat",
+        "laman",
+        "wika",
+        "language"
+      ],
+      "fields": [],
+      "quote": "Before the commencement of the service, a written employment contract between the Kasambahay and the employer shall be accomplished in three (3) copies. The contract shall be in a language or dialect understood by both the Kasambahay and the employer, and shall include the following: (a) Duties and responsibilities ... (b) Period of employment; (c) Compensation; (d) Authorized deductions; (e) Hours of work and proportionate additional payment; (f) Rest days and allowable leaves; (g) Board, lodging and medical attention; (h) Agreements on deployment expenses, if any; (i) Loan agreement, if any; (j) Termination of employment; and (k) Any other lawful condition agreed upon by both parties.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.4)",
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "The contract shall be in a language or dialect understood by both the Kasambahay and the employer, and shall include the following: (a) Duties and responsibilities ... (b) Period of employment; (c) Compensation; (d) Authorized deductions; (e) Hours of work and proportionate additional payment; (f) Rest days and allowable leaves; (g) Board, lodging and medical attention"
+      ]
+    },
+    {
+      "id": "IRR-II-7",
+      "label": "IRR RA 10361, Rule II, Sec. 7 (Copies of Contract)",
+      "topics": [
+        "kopya",
+        "copy",
+        "barangay",
+        "kontrata",
+        "contract"
+      ],
+      "fields": [],
+      "quote": "The employer shall have the obligation to furnish a copy of the employment contract to the Kasambahay and to the Office of the Punong Barangay in the barangay where the employer resides.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.4)",
+      "verified_at": "2026-11-13"
+    },
+    {
+      "id": "IRR-IV-8",
+      "label": "IRR RA 10361, Rule IV, Sec. 8 (Thirteenth-Month Pay)",
+      "topics": [
+        "13th",
+        "13 th",
+        "thirteenth",
+        "ika 13",
+        "bonus",
+        "disyembre",
+        "december"
+      ],
+      "fields": [
+        "salary",
+        "start"
+      ],
+      "quote": "The Kasambahay who has rendered at least one (1) month of service is entitled to a thirteenth-month pay which shall not be less than one-twelfth (1/12) of his/her total basic salary earned in a calendar year. The thirteenth-month pay shall be paid not later than December 24 of every year or upon separation from employment.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.8)",
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "The Kasambahay who has rendered at least one (1) month of service is entitled to a thirteenth-month pay which shall not be less than one-twelfth (1/12) of his/her total basic salary earned in a calendar year."
+      ]
+    },
+    {
+      "id": "IRR-IV-9",
+      "label": "IRR RA 10361, Rule IV, Sec. 9 (Social Security Benefits)",
+      "topics": [
+        "sss",
+        "philhealth",
+        "pag ibig",
+        "pagibig",
+        "benefit",
+        "benepisyo",
+        "kontribusyon",
+        "contribution",
+        "hulog",
+        "kaltas",
+        "deduction",
+        "bawas"
+      ],
+      "fields": [
+        "salary",
+        "start"
+      ],
+      "quote": "A Kasambahay who has rendered at least one (1) month of service shall be covered by the Social Security System (SSS), Employees Compensation Commission (ECC), Philippine Health Insurance Corporation (PhilHealth), and Home Development Mutual Fund or Pag-IBIG ... Mandatory premium payments or contributions shall be shouldered by the employer. However, if the Kasambahay is receiving a monthly wage rate of Five Thousand Pesos (Php5,000.00) and above, the Kasambahay shall pay the proportionate share in the premium payments or contributions, as provided by law.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.8)",
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "A Kasambahay who has rendered at least one (1) month of service shall be covered by the Social Security System (SSS)",
+        "Mandatory premium payments or contributions shall be shouldered by the employer. However, if the Kasambahay is receiving a monthly wage rate of Five Thousand Pesos (Php5,000.00) and above, the Kasambahay shall pay the proportionate share in the premium payments or contributions, as provided by law."
+      ]
+    },
+    {
+      "id": "IRR-IV-11",
+      "label": "IRR RA 10361, Rule IV, Sec. 11 (Deduction for Loans)",
+      "topics": [
+        "utang",
+        "loan",
+        "pautang",
+        "kaltas",
+        "deduction",
+        "bawas"
+      ],
+      "fields": [
+        "salary"
+      ],
+      "quote": "By written agreement, the employer may deduct the loans from the wages of the Kasambahay, which amount shall not exceed 20% of his/her wages every month.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.8)",
+      "verified_at": "2026-11-13"
+    },
+    {
+      "id": "IRR-IV-12-13",
+      "label": "IRR RA 10361, Rule IV, Sec. 12-13 (Treatment; Board, Lodging and Medical Attendance)",
+      "topics": [
+        "abuso",
+        "abuse",
+        "sinasaktan",
+        "sinaktan",
+        "pananakit",
+        "trato",
+        "treatment",
+        "pagkain",
+        "meals",
+        "kain",
+        "tulugan",
+        "tirahan",
+        "lodging",
+        "medical",
+        "medikal",
+        "gamot",
+        "sakit",
+        "ospital"
+      ],
+      "fields": [],
+      "quote": "The Kasambahay shall be treated with respect by the employer or any member of the household. He/she shall not be subjected to any kind of abuse ... The employer shall provide ... (a) At least three (3) adequate meals a day ... (b) Humane sleeping condition that respects the person's privacy for live-in arrangement; and (c) Appropriate rest and medical assistance in the form of first-aid medicines ... At no instance shall the employer withdraw or hold in abeyance the provision of these basic necessities as punishment to, or disciplinary action against the Kasambahay.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.8-9)",
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "He/she shall not be subjected to any kind of abuse",
+        "At no instance shall the employer withdraw or hold in abeyance the provision of these basic necessities as punishment to, or disciplinary action against the Kasambahay."
+      ]
+    },
+    {
+      "id": "IRR-V-2",
+      "label": "IRR RA 10361, Rule V, Sec. 2 (Pay Slip)",
+      "topics": [
+        "payslip",
+        "pay slip",
+        "resibo",
+        "sahod",
+        "sweldo",
+        "suweldo",
+        "salary",
+        "kaltas",
+        "deduction",
+        "bawas"
+      ],
+      "fields": [
+        "salary"
+      ],
+      "quote": "The employer shall, at all times, provide the Kasambahay with a copy of the pay slip (Form BK-2) containing the amount paid in cash every pay day, and indicating all deductions made, if any.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.10)",
+      "verified_at": "2026-11-13"
+    },
+    {
+      "id": "IRR-V-4-5",
+      "label": "IRR RA 10361, Rule V, Sec. 4-5 (Withholding and Disposal of Wages)",
+      "topics": [
+        "hindi binabayaran",
+        "hindi pinapasahod",
+        "withhold",
+        "pigil",
+        "sahod",
+        "sweldo",
+        "suweldo",
+        "salary",
+        "bilhin",
+        "tindahan"
+      ],
+      "fields": [
+        "salary"
+      ],
+      "quote": "It shall be unlawful for the employer to withhold the wages of the Kasambahay directly or indirectly, except as provided for under Section 2, Rule VII of this IRR. ... It shall be unlawful for the employer to interfere with the freedom of the Kasambahay in the disposition of his/her wages ...",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.10)",
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "It shall be unlawful for the employer to withhold the wages of the Kasambahay directly or indirectly"
+      ]
+    },
+    {
+      "id": "IRR-V-6-7",
+      "label": "IRR RA 10361, Rule V, Sec. 6-7 (Deductions and Deposits for Loss or Damage)",
+      "topics": [
+        "kaltas",
+        "deduction",
+        "bawas",
+        "nasira",
+        "nawala",
+        "damage",
+        "loss",
+        "deposit",
+        "deposito",
+        "multa",
+        "penalty",
+        "fine",
+        "masira",
+        "sira",
+        "nasiraan",
+        "nabasag",
+        "basag",
+        "makabasag",
+        "break",
+        "broke",
+        "broken",
+        "nawalan"
+      ],
+      "fields": [
+        "salary",
+        "penalty"
+      ],
+      "quote": "Other than those mandated by law, the employer shall not deduct any amount from the wages of the Kasambahay without his/her written consent or authorization; provided that, deduction for loss or damage shall only be made under the following conditions: (a) The Kasambahay is clearly shown to be responsible ... (d) The deduction ... does not exceed 20% of his/her wages in a month. ... It shall be unlawful for the employer or any other person to require a Kasambahay to make deposits from which deductions shall be made for the reimbursement of loss or damage ...",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.10-11)",
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "Other than those mandated by law, the employer shall not deduct any amount from the wages of the Kasambahay without his/her written consent or authorization",
+        "(d) The deduction ... does not exceed 20% of his/her wages in a month."
+      ]
+    },
+    {
+      "id": "IRR-V-9",
+      "label": "IRR RA 10361, Rule V, Sec. 9 (Debt Bondage)",
+      "topics": [
+        "utang",
+        "debt",
+        "bondage",
+        "hindi makaalis",
+        "can't leave",
+        "loan"
+      ],
+      "fields": [],
+      "quote": "It shall be unlawful for the employer or any person acting on his/her behalf to place the Kasambahay under debt bondage as defined under Section 3(b), Rule I of this IRR.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.11)",
+      "verified_at": "2026-11-13"
+    },
+    {
+      "id": "IRR-VII-1",
+      "label": "IRR RA 10361, Rule VII, Sec. 1 (Pre-Termination)",
+      "topics": [
+        "umalis",
+        "aalis",
+        "alis",
+        "resign",
+        "quit",
+        "maaga",
+        "early",
+        "tapusin",
+        "matapos",
+        "terminate",
+        "abiso",
+        "notice",
+        "tagal",
+        "duration",
+        "term"
+      ],
+      "fields": [
+        "term"
+      ],
+      "quote": "(a) In case the duration of employment is specified in the contract, the Kasambahay and the employer may mutually agree upon notice to terminate the contract of employment before the expiration of its term. (b) In case the duration is not determined by stipulation or by nature of service, the employer or the Kasambahay may give notice to end the employment relationship five (5) days before the intended termination of employment.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.13)",
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "(a) In case the duration of employment is specified in the contract, the Kasambahay and the employer may mutually agree upon notice to terminate the contract of employment before the expiration of its term.",
+        "(b) In case the duration is not determined by stipulation or by nature of service, the employer or the Kasambahay may give notice to end the employment relationship five (5) days before the intended termination of employment."
+      ]
+    },
+    {
+      "id": "IRR-VII-2",
+      "label": "IRR RA 10361, Rule VII, Sec. 2 (Termination by the Kasambahay)",
+      "topics": [
+        "umalis",
+        "aalis",
+        "alis",
+        "resign",
+        "quit",
+        "maaga",
+        "early",
+        "multa",
+        "penalty",
+        "parusa",
+        "abuso",
+        "abuse",
+        "forfeit",
+        "liquidated"
+      ],
+      "fields": [
+        "penalty",
+        "term"
+      ],
+      "quote": "The Kasambahay may terminate the employment relationship at any time before the expiration of the contract for any of the following causes: (a) Verbal or emotional abuse ... (b) Inhuman treatment including physical abuse ... (c) Commission of a crime or offense against the Kasambahay ... (d) Violation by the employer of the terms and conditions of the employment contract ... If the Kasambahay leaves without cause, any unpaid salary due, not exceeding the equivalent of fifteen (15) days work, shall be forfeited. In addition, the employer may recover from the Kasambahay deployment expenses, if any, if the services have been terminated within six (6) months from employment.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.13)",
+      "verified_at": "2026-11-13",
+      "excerpt": [
+        "The Kasambahay may terminate the employment relationship at any time before the expiration of the contract for any of the following causes: (a) Verbal or emotional abuse ... (b) Inhuman treatment including physical abuse",
+        "If the Kasambahay leaves without cause, any unpaid salary due, not exceeding the equivalent of fifteen (15) days work, shall be forfeited."
+      ]
+    },
+    {
+      "id": "IRR-VII-3-4",
+      "label": "IRR RA 10361, Rule VII, Sec. 3-4 (Termination by the Employer; Invalid Grounds)",
+      "topics": [
+        "tinanggal",
+        "tanggal",
+        "fired",
+        "dismiss",
+        "terminate",
+        "buntis",
+        "pregnant",
+        "kasal",
+        "married"
+      ],
+      "fields": [
+        "term"
+      ],
+      "quote": "If the employer dismissed the Kasambahay for reasons other than the above, he/she shall pay the Kasambahay the earned compensation plus indemnity in the amount equivalent to fifteen (15) days work. ... Pregnancy and Marriage of the Kasambahay are not valid grounds for termination of employment.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.13-14)",
+      "verified_at": "2026-11-13"
+    },
+    {
+      "id": "IRR-IX-1",
+      "label": "IRR RA 10361, Rule IX, Sec. 1 (Registration in the Barangay)",
+      "topics": [
+        "barangay",
+        "register",
+        "rehistro",
+        "registration"
+      ],
+      "fields": [],
+      "quote": "Every employer shall register a Kasambahay under his/her employment in the barangay where his/her residence is located.",
+      "verified": true,
+      "verified_by": "Miah (verbatim from PDF p.15)",
+      "verified_at": "2026-11-13"
+    },
+    {
+      "id": "RA10361-S20",
+      "label": "RA 10361, Sec. 20 (Daily Rest Period)",
+      "topics": [
+        "pahinga",
+        "rest",
+        "oras",
+        "hours",
+        "overtime",
+        "tulog"
+      ],
+      "fields": [
+        "hours",
+        "rest"
+      ],
+      "quote": "NOT YET VERIFIED. Secondary source says: the domestic worker shall be entitled to an aggregate daily rest period of eight (8) hours per day. Replace with the official text.",
+      "verified": false,
+      "verified_by": "",
+      "verified_at": ""
+    },
+    {
+      "id": "RA10361-S21",
+      "label": "RA 10361, Sec. 21 (Weekly Rest Period)",
+      "topics": [
+        "pahinga",
+        "rest",
+        "day off",
+        "dayoff",
+        "linggo",
+        "weekly",
+        "sunday"
+      ],
+      "fields": [
+        "rest"
+      ],
+      "quote": "NOT YET VERIFIED. Secondary source says: the domestic worker shall be entitled to at least twenty-four (24) consecutive hours of rest in a week. Replace with the official text.",
+      "verified": false,
+      "verified_by": "",
+      "verified_at": ""
+    }
+  ]
+}
