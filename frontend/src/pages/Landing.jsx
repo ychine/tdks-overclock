@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -117,6 +117,8 @@ function BrushSun() {
 
 /** The hero visual reuses the real ListGroup / ListRow / Badge, so the preview is the product. */
 function ContractPreview({ t }) {
+  const [open] = useState(false)
+  const spring = { type: 'spring', stiffness: 200, damping: 24, mass: 0.9 }
   return (
     <div data-hero="visual" className="relative mx-auto w-full max-w-[480px] py-10">
       <div data-parallax className="relative">
@@ -146,7 +148,13 @@ function ContractPreview({ t }) {
           </div>
         </div>
 
-        <div className="relative z-[2] mt-14 ml-auto w-[min(400px,90%)] rotate-[1.5deg]">
+        <motion.div
+          initial={false}
+          animate={open ? { x: '7%', y: -14, rotate: 3.5, rotateY: -10 } : { x: 0, y: 0, rotate: 1.5, rotateY: 0 }}
+          transition={spring}
+          style={{ transformOrigin: '0% 50%' }}
+          className="relative z-[2] mt-14 ml-auto w-[min(400px,90%)]"
+        >
         <BrushSun />
         <Panel className="relative z-[1] p-4 shadow-float">
           <div className="flex items-center gap-3 border-b border-line pb-4">
@@ -177,8 +185,9 @@ function ContractPreview({ t }) {
             <p className="text-sm leading-snug">{t('landing.previewChat')}</p>
           </div>
         </Panel>
-        </div>
-      </div>
+        </motion.div>
+          </div>
+          
     </div>
   )
 }
@@ -230,8 +239,79 @@ function Audiences({ t, enter }) {
   )
 }
 
+/** Human fallback under the FAQ: a free call to DOLE, or start checking the contract. */
+function StillHelp({ t, enter, className }) {
+  return (
+    <div className={cn('rounded-card bg-navy p-6 text-[#f8f4ec]', className)}>
+      <p className="font-display text-2xl font-semibold">{t('landing.faqStillTitle')}</p>
+      <p className="mt-2 text-[#f8f4ec]/80">{t('landing.faqStillText')}</p>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <Button variant="sun" href={telHref('1349')} icon="phone">
+          {t('landing.faqCall')}
+        </Button>
+        <Button variant="ghost" onClick={enter} trailingIcon="arrow" className="text-[#f8f4ec] hover:bg-white/10">
+          {t('landing.cta')}
+        </Button>
+      </div>
+    </div>
+  )
+}
+/** FAQ: topic filter and a human fallback on the left (sticky on desktop), the questions on the right. */
+function Faq({ t, enter }) {
+  const topics = t('landing.faqTopics')
+  const all = t('landing.faq')
+  const [topic, setTopic] = useState(0)
+  const items = topic === 0 ? all : all.filter((item) => item.topic === topic)
+  return (
+    <section id="faq" className={`${wrap} scroll-mt-20 py-16 md:py-24`}>
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.5fr)] lg:gap-16">
+        <div data-reveal className="lg:sticky lg:top-28 lg:self-start">
+          <h2 className={cn(h2, 'max-w-[14ch] text-balance')}>{t('landing.faqTitle')}</h2>
+          <p className="mt-4 max-w-[40ch] text-lg text-subtle">{t('landing.faqText')}</p>
+
+          <div role="group" aria-label={t('landing.faqTitle')} className="mt-7 flex flex-wrap gap-2">
+            {topics.map((label, i) => {
+              const active = topic === i
+              const count = i === 0 ? all.length : all.filter((item) => item.topic === i).length
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setTopic(i)}
+                  className={cn(
+                    'inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition-colors',
+                    active
+                      ? 'border-ink bg-ink text-canvas'
+                      : 'border-line bg-surface text-ink hover:border-brand/50 hover:bg-brand-soft',
+                  )}
+                >
+                  {label}
+                  <span className={cn('tabular-nums', active ? 'text-canvas/70' : 'text-subtle')}>{count}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          <StillHelp t={t} enter={enter} className="mt-8 hidden lg:block" />
+        </div>
+
+        <div data-reveal>
+          <Accordion
+            key={topic}
+            items={items}
+            defaultOpen={topic === 0 ? 0 : null}
+            shortLabel={t('landing.faqShort')}
+          />
+          <StillHelp t={t} enter={enter} className="mt-8 lg:hidden" />
+        </div>
+      </div>
+    </section>
+  )
+}
 export default function Landing({ enter, dark, setDark }) {
   const { t } = useI18n()
+  const info = t('help.agencies')
   const root = useRef(null)
   const trustIcons = ['lock', 'refresh', 'check', 'spark']
   const statValues = [24, 3, 4, 0]
@@ -447,13 +527,7 @@ export default function Landing({ enter, dark, setDark }) {
           </div>
         </section>
 
-        <section id="faq" className="mx-auto w-[min(820px,calc(100%-32px))] scroll-mt-20 py-16 md:py-24">
-          <h2 data-reveal className={h2}>{t('landing.faqTitle')}</h2>
-          <p data-reveal className="mt-3 max-w-[60ch] text-lg text-subtle">{t('landing.faqText')}</p>
-          <div data-reveal className="mt-8">
-            <Accordion items={t('landing.faq')} />
-          </div>
-        </section>
+        <Faq t={t} enter={enter} />
 
         <section className="border-t border-line bg-surface-2/60">
           <div data-reveal className="mx-auto grid w-[min(850px,calc(100%-32px))] justify-items-center py-16 text-center md:py-24">
@@ -471,33 +545,76 @@ export default function Landing({ enter, dark, setDark }) {
       </main>
 
       <footer className="border-t border-line bg-surface">
-        <div className="mx-auto grid w-[min(1240px,calc(100%-32px))] gap-10 py-12 md:grid-cols-[1.2fr_1fr_1fr]">
-          <div>
-            <Brand compact onClick={() => scrollToTop()} label={t('app.brandHome')} />
-            <p className="mt-3 max-w-[32ch] text-subtle">{t('landing.footerTagline')}</p>
-            <Button variant="secondary" onClick={enter} className="mt-5">
-              {t('landing.footerApp')}
-            </Button>
-          </div>
-          <div>
-            <h3 className="font-bold">{t('landing.footerHelp')}</h3>
-            <ul className="mt-3 grid gap-1">
-              {agencies.map((a) => (
-                <li key={a.id}>
+        <div className={`${wrap} py-14 md:py-20`}>
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.7fr)] lg:gap-16">
+            <div>
+              <h2 className="max-w-[16ch] text-3xl leading-[1.08] font-semibold text-balance md:text-4xl">
+                {t('landing.footerHelpTitle')}
+              </h2>
+              <p className="mt-3 max-w-[38ch] text-subtle">{t('landing.footerHelpText')}</p>
+            </div>
+            <ul className="grid gap-px overflow-hidden rounded-card border border-line bg-line sm:grid-cols-2">
+              {agencies.map((a, i) => (
+                <li key={a.id} className="bg-canvas">
                   <a
                     href={telHref(a.phone)}
-                    className="flex min-h-11 items-center justify-between gap-4 rounded-btn text-subtle hover:text-ink"
+                    aria-label={`${a.name} ${a.phone}`}
+                    className="group flex min-h-24 items-center justify-between gap-4 p-4 transition-colors hover:bg-surface-2 md:p-5"
                   >
-                    <span className="font-semibold text-ink">{a.name}</span>
-                    <span className="text-brand">{a.phone}</span>
+                    <span className="min-w-0">
+                      <span className="block text-lg font-bold text-ink">{a.name}</span>
+                      <span className="mt-0.5 block text-sm text-subtle">{info[i]?.for}</span>
+                    </span>
+                    <span className="inline-flex shrink-0 items-center gap-2 rounded-full bg-brand-soft px-3.5 py-2 font-bold text-brand tabular-nums transition-transform group-hover:scale-[1.03]">
+                      <Icon name="phone" size={16} />
+                      {a.phone}
+                    </span>
                   </a>
                 </li>
               ))}
             </ul>
           </div>
-          <div>
-            <h3 className="font-bold">{t('landing.footerNote')}</h3>
-            <p className="mt-3 text-subtle">{t('app.disclaimer')}</p>
+
+          <div className="mt-14 flex flex-col gap-8 border-t border-line pt-8 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+              <Brand compact onClick={() => scrollToTop()} label={t('app.brandHome')} />
+              <p className="text-subtle">{t('landing.footerTagline')}</p>
+            </div>
+            <Button onClick={enter} trailingIcon="arrow" className="self-start md:self-auto">
+              {t('landing.footerApp')}
+            </Button>
+          </div>
+
+          <div className="mt-6 flex flex-col gap-4 text-sm text-subtle md:flex-row md:items-center md:justify-between">
+            <nav aria-label={t('landing.footerLinks')} className="-mx-3 flex flex-wrap">
+              {[
+                ['#paano', 'landing.navHow'],
+                ['#para-kanino', 'landing.navWho'],
+                ['#privacy', 'landing.navPrivacy'],
+                ['#faq', 'landing.navFaq'],
+              ].map(([href, key]) => (
+                <a key={href} href={href} className="rounded-btn px-3 py-3 font-semibold transition-colors hover:text-ink">
+                  {t(key)}
+                </a>
+              ))}
+            </nav>
+            <p className="flex items-center gap-2">
+              <Icon name="lock" size={16} />
+              {t('landing.footerPrivacy')}
+            </p>
+          </div>
+
+          <div className="mt-6 flex flex-col gap-3 border-t border-line pt-6 text-sm text-subtle sm:flex-row sm:items-center sm:justify-between">
+            <p className="tabular-nums">{'\u00a9'} {new Date().getFullYear()} Linaw. {t('landing.footerRights')}</p>
+            <p className="flex items-center gap-3">
+              <span>{t('landing.footerBy')}</span>
+              {/* White-stroke wordmark used as a mask so it takes the theme ink in light and dark mode. */}
+              <span
+                role="img"
+                aria-label="Dead Keys Society"
+                className="block aspect-[790/92] h-[18px] bg-ink [mask:url(/tdks-logo.svg)_center/contain_no-repeat]"
+              />
+            </p>
           </div>
         </div>
       </footer>

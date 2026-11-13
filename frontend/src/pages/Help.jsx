@@ -1,17 +1,9 @@
 import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
 import Button from '../components/ui/Button'
 import { Page, PageHeading } from '../components/ui/Page'
 import { Callout, ListGroup } from '../components/ui/Surfaces'
 import { useI18n } from '../i18n/useI18n'
 import { agencies, telHref } from '../lib/agencies'
-
-const marks = {
-  brand: 'bg-brand text-on-solid',
-  alert: 'bg-alert text-on-solid',
-  sun: 'bg-sun text-[#1b2433]',
-  ink: 'bg-ink text-canvas',
-}
 
 const officeSearch = (name) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name} office`)}`
@@ -59,11 +51,8 @@ export default function Help() {
         {agencies.map((a, i) => (
           <li key={a.id} className="grid gap-4 p-4 md:grid-cols-[1fr_auto] md:items-center md:p-5">
             <div className="flex items-start gap-4">
-              <span
-                aria-hidden="true"
-                className={cn('grid size-14 shrink-0 place-items-center rounded-2xl font-display text-sm font-semibold', marks[a.color])}
-              >
-                {a.name}
+              <span aria-hidden="true" className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-2xl bg-white p-1.5">
+                <img src={a.logo} alt="" className="size-full object-contain" loading="lazy" />
               </span>
               <div className="min-w-0">
                 <h2 className="font-sans text-base font-bold">{info[i].full}</h2>
