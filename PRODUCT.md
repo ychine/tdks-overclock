@@ -16,7 +16,7 @@ Linaw reads a photo or PDF of a contract, lets the worker verify what was read, 
 
 ## Positioning
 
-Linaw explains and never advises; deterministic code owns every peso; the AI only explains confirmed fields; and every answer points back to a clause and onward to a verified agency. A generic AI chatbot cannot truthfully copy that combination of grounded math, human-verification, prompt-injection defense, and privacy-first retention.
+Linaw explains and never advises; deterministic code owns every peso; the AI only explains confirmed fields; and every answer points back to a clause and onward to a verified agency. A generic AI chatbot cannot truthfully copy that combination of grounded math, human-verification, prompt-injection defense, and storing no user data at all.
 
 ## Operating Context
 
@@ -26,7 +26,7 @@ Linaw explains and never advises; deterministic code owns every peso; the AI onl
 - The no-contract path is a short one-question-per-screen questionnaire answered from reviewed kasambahay requirement config.
 - Two contracts can be compared field by field, with better/worse/neutral labels.
 - Help is always one tap away: DOLE, DMW, OWWA, PAO, and 911 for emergencies.
-- The app runs without accounts; a session is anonymous and its data is auto-deleted after a retention window (default 24 hours).
+- The app runs without accounts and stores no user data: the document, fields, summary, and chat live only in the browser tab and are cleared when it closes. Provider copies (Lumen OCR, Lumen Chat) are deleted as soon as they are no longer needed.
 
 ## Capabilities and Constraints
 
@@ -34,7 +34,7 @@ Linaw explains and never advises; deterministic code owns every peso; the AI onl
 - **Deterministic money.** Integer centavos; rates and contribution tables are config-driven and human-verified; missing table dates fail loudly.
 - **Confirmed fields only.** The LLM never receives unverified OCR text; document text is untrusted data wrapped in delimiters.
 - **Languages.** English, Filipino, Taglish. Regional languages only when marked `tested` in config.
-- **Privacy.** Contracts are sensitive personal data under the PH Data Privacy Act: explicit consent before upload, minimum data, no document text in logs, auto-delete, and a "delete my data now" action.
+- **Privacy.** Contracts are sensitive personal data under the PH Data Privacy Act: explicit consent before upload, no server-side storage of documents, fields, summaries, or chat, no document text in logs, provider copies deleted after use, and a "Clear my document" action. Until provider deletion is implemented and verified, the app must not claim more than it does.
 - **Providers.** Lumen OCR and Lumen AI Chat live behind `OcrProvider` and `ChatProvider` adapters; keys stay server-side.
 - **Accessibility.** WCAG AA contrast, 16px minimum body text, 48px minimum tap targets, full keyboard operation, visible focus, screen-reader labels, and `aria-live` for streaming and status.
 - **Resilience.** Low-end Android on throttled networks; resumable upload, client compression, progress and retry states, offline handling.
@@ -62,7 +62,7 @@ Linaw explains and never advises; deterministic code owns every peso; the AI onl
 2. **Explain, never advise.** Referral is part of the answer, not an afterthought.
 3. **Math is deterministic; the AI only explains.** No peso value is ever guessed.
 4. **The worker confirms the facts.** Nothing unverified reaches the explanation.
-5. **Privacy is a feature, not a policy page.** Minimal data, short retention, one-tap deletion.
+5. **Privacy is a feature, not a policy page.** Store nothing, delete provider copies, one-tap clear.
 
 ## Accessibility & Inclusion
 

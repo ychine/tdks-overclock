@@ -4,22 +4,36 @@ import { SPRING_LAYOUT } from '@/lib/ease'
 import { cn } from '@/lib/utils'
 import { useI18n } from '../i18n/useI18n'
 import { agencies, telHref } from '../lib/agencies'
-import { Badge } from './ui/Surfaces'
 import Brand from './Brand'
 import Icon from './Icon'
 import LanguageSelect from './LanguageSelect'
 import ThemeToggle from './ThemeToggle'
 
 const items = [
+  // Home and Summary are one item: the whole document flow (upload, check, summary, salary).
   { id: 'home', icon: 'home' },
-  { id: 'summary', icon: 'spark' },
   { id: 'chat', icon: 'chat' },
   { id: 'compare', icon: 'compare' },
   { id: 'help', icon: 'help' },
 ]
 
 /** Screens that belong to a nav section even though they are not in the menu themselves. */
-const sectionOf = { upload: 'home', reading: 'home', review: 'home', salary: 'summary', questions: 'home' }
+const sectionOf = { upload: 'home', reading: 'home', review: 'home', summary: 'home', salary: 'home', questions: 'home' }
+
+/** Tiny "AI" badge pinned to a nav label's upper right. Decorative: the label already says what it is. */
+function AiTag({ className }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        'pointer-events-none rounded-full border border-current px-1 text-[8px] leading-[12px] font-bold tracking-wide text-brand',
+        className,
+      )}
+    >
+      AI
+    </span>
+  )
+}
 
 function BottomNavButton({ item, active, go, label }) {
   return (
@@ -41,6 +55,7 @@ function BottomNavButton({ item, active, go, label }) {
       )}
       <Icon name={item.icon} size={21} />
       <span>{label}</span>
+      {item.id === 'chat' && <AiTag className="absolute top-1 right-1/2 -mr-8" />}
     </button>
   )
 }
@@ -93,7 +108,7 @@ function HelpMenu({ active, go }) {
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          'grid min-h-11 w-8 place-items-center rounded-btn transition-colors',
+          'grid min-h-11 w-11 place-items-center rounded-btn transition-colors',
           active ? 'text-brand' : 'text-subtle hover:text-ink',
         )}
       >
@@ -117,9 +132,6 @@ function HelpMenu({ active, go }) {
           <div role="menu" className="rounded-card border border-line bg-surface p-2 shadow-lg">
             <div className="flex items-center justify-between px-2 py-1.5">
               <span className="text-xs font-bold tracking-wide text-subtle uppercase">{t('nav.quickCalls')}</span>
-              <Badge tone="ok" icon="phone">
-                {t('nav.quickCallsHours')}
-              </Badge>
             </div>
             <ul>
               {agencies.map((a) => (
@@ -153,9 +165,11 @@ function HelpMenu({ active, go }) {
   )
 }
 
-export default function Nav({ screen, go, dark, setDark, onBrand }) {
+export default function Nav({ screen, go: goScreen, onBrand, dark, setDark, resume = 'home' }) {
   const { t } = useI18n()
   const section = sectionOf[screen] ?? screen
+  // From outside the flow, Home picks up where you left off (e.g. your summary). Inside the flow it starts over.
+  const go = (id) => goScreen(id === 'home' && section !== 'home' ? resume : id)
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-line bg-canvas/85 backdrop-blur print:hidden">
@@ -172,11 +186,12 @@ export default function Nav({ screen, go, dark, setDark, onBrand }) {
                   aria-current={active ? 'page' : undefined}
                   onClick={() => go(item.id)}
                   className={cn(
-                    'min-h-11 rounded-btn px-3 text-sm font-semibold transition-colors',
+                    'relative flex min-h-11 items-center gap-1 rounded-btn px-3 text-sm font-semibold transition-colors',
                     active ? 'text-brand' : 'text-subtle hover:text-ink',
                   )}
                 >
                   {t(`nav.${item.id}`)}
+                  {item.id === 'chat' && <AiTag />}
                 </button>
               )
             })}

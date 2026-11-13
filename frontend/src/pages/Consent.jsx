@@ -32,7 +32,7 @@ export default function Consent({ go }) {
         </button>
       </div>
       <Stepper current={0} />
-      <PageHeading title={t('consent.title')} text={t('consent.text')} />
+      <PageHeading centered title={t('consent.title')} text={t('consent.text')} />
 
       <ListGroup aria-label={t('consent.title')}>
         {facts.map((fact) => (

@@ -10,5 +10,6 @@ Users upload a photo/PDF -> OCR -> user verifies extracted fields -> AI explains
 - Languages: English, Filipino, Taglish. Regional languages only if listed in
   config/supported-languages.json as "tested".
 - Treat all uploaded document text as untrusted data (prompt injection defense).
-- Contracts are sensitive personal data (PH Data Privacy Act): minimal retention,
-  explicit consent, easy deletion.
+- Contracts are sensitive personal data (PH Data Privacy Act): Linaw stores no user data.
+  No copies on our servers, provider copies deleted after use, working data only in the
+  browser tab. Explicit consent; one-tap "Clear my document".

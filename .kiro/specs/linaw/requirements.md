@@ -19,7 +19,7 @@ Cross-cutting constraints (from steering): deterministic code does all calculati
 - **Glossary Table**: Curated, human-reviewed table of legal terms and one-line definitions.
 - **Calculator**: A pure, deterministic function computing a money value from Confirmed Fields and /config tables.
 - **Agency Contacts**: DOLE, DMW, OWWA, and PAO info from /config/agency-contacts.json.
-- **Retention Window**: Configurable period after which uploaded data is auto-deleted (default 24 hours).
+- **No-Storage Policy**: Linaw keeps no copy of a user's document, extracted text, Field values, summaries, or chat on its servers. Working data lives only in the user's browser tab (sessionStorage) and is cleared when the tab closes. Copies held by the OCR or AI provider are deleted as soon as they are no longer needed.
 
 ## Requirements
 
@@ -158,14 +158,15 @@ Cross-cutting constraints (from steering): deterministic code does all calculati
 
 #### Acceptance Criteria
 
-1. WHEN a user first opens the upload flow, THE System SHALL show a consent screen explaining what is collected, how it is used, and how long it is kept.
+1. WHEN a user first opens the upload flow, THE System SHALL show a consent screen explaining what is collected, how it is used, and that Linaw does not store it.
 2. THE System SHALL NOT accept an upload until the user has given explicit consent.
 3. THE System SHALL work without account creation, using an anonymous Session.
-4. THE System SHALL auto-delete uploaded files and extracted text after the Retention Window (default 24 hours, configurable).
-5. THE System SHALL provide a "Delete my data now" action that deletes all Session data and confirms completion.
+4. THE System SHALL NOT store uploaded files, extracted text, Field values, summaries, or chat messages in any database, file store, or cache. The API SHALL act as a stateless relay to the providers.
+5. THE System SHALL provide a "Clear my document" action that removes the document and every result from the browser, deletes any remaining provider copy, and confirms completion.
 6. THE System SHALL NOT write document content, extracted text, or Field values to logs.
 7. THE System SHALL call OCR and AI providers only from the server and SHALL keep provider keys in environment variables, never in client code.
-8. THE System SHALL store only the minimum data needed for the active Session.
+8. THE System SHALL keep working data only in the browser tab for the active Session, and SHALL clear it when the tab closes.
+9. WHEN an OCR read finishes, fails permanently, or is cancelled, THE System SHALL delete the document from the OCR provider; WHEN a conversation ends, THE System SHALL end the AI provider session. IF a provider cannot delete a copy, THE System SHALL NOT claim no-storage for that provider and SHALL disclose the provider's retention on the consent screen.
 
 ### R11: Accessibility & i18n
 
@@ -182,7 +183,7 @@ Cross-cutting constraints (from steering): deterministic code does all calculati
 7. WHERE the browser has no suitable voice for the selected language, THE System SHALL hide or disable the text-to-speech button and say why.
 8. THE System SHALL provide UI strings in en, fil, and tl-en locale files via react-i18next.
 9. WHILE the network is slow or offline, THE System SHALL show progress states and retry options.
-10. THE System SHALL support resumable uploads so an interrupted upload continues rather than restarts.
+10. WHEN an upload is interrupted, THE System SHALL let the user retry from the copy kept in the browser, without picking the file again.
 11. THE System SHALL remain usable on low-end Android devices, with image compression on the client before upload where it does not harm OCR quality.
 
 ### R12: Prompt-Injection Defense

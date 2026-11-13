@@ -153,7 +153,7 @@
       "kind": "button",
       "refersTo": "button-danger",
       "description": "Destructive or emergency action only: alert red fill.",
-      "html": "<button class=\"ds-btn ds-btn--danger\">Delete my data now</button>",
+      "html": "<button class=\"ds-btn ds-btn--danger\">Clear my document</button>",
       "css": ".ds-btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:48px; padding:0 20px; border-radius:12px; font-family:Figtree,ui-sans-serif,system-ui,sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:filter .15s ease, transform .1s ease; } .ds-btn--danger { background:var(--alert,#CE1126); color:#fff; border:1px solid var(--alert,#CE1126); } .ds-btn--danger:hover { filter:brightness(1.1); } .ds-btn--danger:active { transform:scale(.97); } .ds-btn--danger:focus-visible { outline:3px solid var(--alert,#CE1126); outline-offset:2px; }"
     },
     {

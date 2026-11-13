@@ -31,7 +31,7 @@ export default function Accordion({ items, defaultOpen = null, shortLabel, class
                 onClick={() => setOpenIndex(open ? null : i)}
                 className="group flex min-h-16 w-full items-center justify-between gap-5 px-1 py-5 text-left text-lg leading-snug font-bold text-ink sm:px-5"
               >
-                <span className="text-balance transition-colors group-hover:text-brand">{item.q}</span>
+                <span className="text-pretty transition-colors group-hover:text-brand">{item.q}</span>
                 <motion.span
                   aria-hidden="true"
                   className={cn(

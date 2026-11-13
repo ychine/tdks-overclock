@@ -36,9 +36,39 @@ function SummaryLine({ item }) {
   )
 }
 
+/** One upload slot. Empty: a dashed drop target. Filled: the file name with a replace action. */
+function Slot({ title, hint, name, onPick }) {
+  const { t } = useI18n()
+  if (name) {
+    return (
+      <Card className="flex min-h-[230px] flex-col items-center justify-center p-8 text-center">
+        <IconTile icon="file" tone="brand" size={26} className="size-14 rounded-2xl" />
+        <h2 className="mt-4 mb-1 font-sans text-xl font-bold">{title}</h2>
+        <p className="max-w-full truncate text-sm text-subtle">{t('compare.oldDone', { name })}</p>
+        <Button variant="ghost" size="sm" icon="refresh" className="mt-3" onClick={onPick}>
+          {t('compare.replace')}
+        </Button>
+      </Card>
+    )
+  }
+  return (
+    <button
+      type="button"
+      onClick={onPick}
+      className="banig group flex min-h-[230px] flex-col items-center justify-center rounded-panel border-2 border-dashed border-line p-8 text-center transition-colors hover:border-brand hover:bg-brand-soft/40"
+    >
+      <span className="grid size-14 place-items-center rounded-2xl bg-surface-2 text-subtle transition-colors group-hover:bg-brand-soft group-hover:text-brand">
+        <Icon name="plus" size={26} />
+      </span>
+      <h2 className="mt-4 mb-1 font-sans text-xl font-bold">{title}</h2>
+      <p className="text-sm text-subtle">{hint}</p>
+    </button>
+  )
+}
+
 export default function Compare() {
   const { t } = useI18n()
-  const [oldName, setOldName] = useState('Contract_2024.pdf')
+  const [oldName, setOldName] = useState(null)
   const [newName, setNewName] = useState(null)
   const [problem, setProblem] = useState(null)
   const [current, setCurrent] = useState(null) // the row whose sheet is (or was just) open
@@ -83,33 +113,28 @@ export default function Compare() {
         </Callout>
       )}
 
-      {!newName ? (
+      {!(oldName && newName) ? (
         <div className="grid gap-4 md:grid-cols-2">
-          <Card className="flex min-h-[230px] flex-col items-center justify-center p-8 text-center">
-            <IconTile icon="file" tone="brand" size={26} className="size-14 rounded-2xl" />
-            <h2 className="mt-4 mb-1 font-sans text-xl font-bold">{t('compare.old')}</h2>
-            <p className="max-w-full truncate text-sm text-subtle">{t('compare.oldDone', { name: oldName })}</p>
-            <Button variant="ghost" size="sm" icon="refresh" className="mt-3" onClick={() => oldInput.current?.click()}>
-              {t('compare.replace')}
-            </Button>
-          </Card>
-          <button
-            type="button"
-            onClick={() => newInput.current?.click()}
-            className="banig group flex min-h-[230px] flex-col items-center justify-center rounded-panel border-2 border-dashed border-line p-8 text-center transition-colors hover:border-brand hover:bg-brand-soft/40"
-          >
-            <span className="grid size-14 place-items-center rounded-2xl bg-surface-2 text-subtle transition-colors group-hover:bg-brand-soft group-hover:text-brand">
-              <Icon name="plus" size={26} />
-            </span>
-            <h2 className="mt-4 mb-1 font-sans text-xl font-bold">{t('compare.new')}</h2>
-            <p className="text-sm text-subtle">{t('compare.newHint')}</p>
-          </button>
+          <Slot title={t('compare.old')} hint={t('compare.newHint')} name={oldName} onPick={() => oldInput.current?.click()} />
+          <Slot title={t('compare.new')} hint={t('compare.newHint')} name={newName} onPick={() => newInput.current?.click()} />
         </div>
       ) : (
         <>
           {/* Honest about what this is. Always visible, never dismissible, until real extraction exists. */}
           <Callout tone="info" icon="help" title={t('compare.sample.title')} className="mb-4" role="note">
             {t('compare.sample.text')}
+          <Callout tone="info" icon="spark" className="mb-4" role="note">
+            {t('compare.demo')}
+          </Callout>
+          <Callout title={t('compare.alertLabel')} className="mb-5">
+            <p className="font-sans text-lg font-bold text-ink">
+              {t('compare.alertTitle')} <s>₱18,000</s>{' '}
+              <span className="inline-block align-[-3px]">
+                <Icon name="arrow" size={18} />
+              </span>{' '}
+              ₱16,500
+            </p>
+            <p className="mt-1">{t('compare.alertText')}</p>
           </Callout>
 
           {biggest && (
