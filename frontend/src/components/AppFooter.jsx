@@ -4,7 +4,7 @@ import Brand from './Brand'
 import FooterCredits from './FooterCredits'
 import Icon from './Icon'
 
-const LINKS = ['home', 'summary', 'chat', 'compare', 'help']
+const LINKS = ['home',  'chat', 'compare', 'help']
 
 /**
  * In-app footer, the quieter sibling of the landing footer: same brand lockup, credits strip, and type,
