@@ -29,7 +29,7 @@ export default function Reading({ go, upload, onRead }) {
     let active = true
     const promise = attempt ?? readDocument(upload.file, (s) => active && setStage(s))
     promise.then(
-      (result) => active && (onRead(result), go('review')),
+      (result) => active && (onRead({ ...result, fileName: upload.file.name }), go('review')),
       (err) => active && setError(err),
     )
     return () => {
