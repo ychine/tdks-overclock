@@ -153,14 +153,14 @@ function HelpMenu({ active, go }) {
   )
 }
 
-export default function Nav({ screen, go, dark, setDark }) {
+export default function Nav({ screen, go, dark, setDark, onBrand }) {
   const { t } = useI18n()
   const section = sectionOf[screen] ?? screen
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-line bg-canvas/85 backdrop-blur print:hidden">
         <div className="mx-auto flex h-[74px] w-[min(1240px,calc(100%-32px))] items-center justify-between gap-4">
-          <Brand onClick={() => go('home')} label={t('app.brandHome')} />
+          <Brand onClick={onBrand ?? (() => go('home'))} label={t('app.brandLanding')} />
           <nav aria-label={t('nav.menu')} className="hidden items-center gap-1 lg:flex">
             {items.map((item) => {
               const active = section === item.id

@@ -4,6 +4,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { EASE_OUT } from '@/lib/ease'
 import {
   clearFile,
+  clearSession,
   loadConfirmed,
   loadDoc,
   loadFile,
@@ -14,6 +15,7 @@ import {
   saveTheme,
 } from './lib/session'
 import ErrorBoundary from './components/ErrorBoundary'
+import ConfirmDialog from './components/ui/ConfirmDialog'
 import Nav from './components/Nav'
 import { I18nProvider } from './i18n/I18nProvider'
 import { useI18n } from './i18n/useI18n'
@@ -38,6 +40,7 @@ function Loading() {
 
 // Every in-app screen id maps to a real URL. Pages keep calling go('upload') and friends.
 const SCREENS = ['home', 'upload', 'reading', 'review', 'summary', 'salary', 'chat', 'compare', 'questions', 'help']
+const FLOW_SCREENS = ['upload', 'reading', 'review']
 const pathOf = (screen) => `/${screen}`
 
 function Shell() {
@@ -53,6 +56,7 @@ function Shell() {
   const [doc, setDoc] = useState(loadDoc) // OCR result + extracted fields
   const [confirmed, setConfirmed] = useState(loadConfirmed) // fields the user approved
   const [restoring, setRestoring] = useState(true) // the saved file is rebuilt asynchronously
+  const [leaveOpen, setLeaveOpen] = useState(false) // confirm before leaving the upload flow
 
   // Remember an explicit theme choice; until then the page follows the system setting.
   const setDark = useCallback((value) => {
@@ -114,6 +118,28 @@ function Shell() {
     window.scrollTo(0, 0)
   }, [navigate])
 
+  const requestLanding = useCallback(() => {
+    if (FLOW_SCREENS.includes(screen) && (upload || doc)) {
+      setLeaveOpen(true)
+      return
+    }
+    exitToLanding()
+  }, [screen, upload, doc, exitToLanding])
+
+  const confirmLeave = useCallback(() => {
+    setLeaveOpen(false)
+    setUpload((prev) => {
+      if (prev) URL.revokeObjectURL(prev.url)
+      return null
+    })
+    setDoc(null)
+    setConfirmed(null)
+    clearSession()
+    exitToLanding()
+  }, [exitToLanding])
+
+  const closeLeave = useCallback(() => setLeaveOpen(false), [])
+
   if (pathname === '/') {
     return (
       <div className="min-h-screen bg-canvas text-ink">
@@ -135,7 +161,7 @@ function Shell() {
 
   const content = {
     home: <Home go={go} />,
-    upload: <Upload go={go} onFile={onFile} onExit={exitToLanding} />,
+    upload: <Upload go={go} onFile={onFile} onExit={requestLanding} />,
     reading: <Reading go={go} upload={upload} onRead={setDoc} />,
     review: <Review go={go} upload={upload} doc={doc} onConfirm={setConfirmed} />,
     summary: <Summary go={go} doc={doc} confirmed={confirmed} />,
@@ -154,7 +180,7 @@ function Shell() {
       >
         {t('app.skip')}
       </a>
-      <Nav screen={screen} go={go} dark={dark} setDark={setDark} />
+      <Nav screen={screen} go={go} dark={dark} setDark={setDark} onBrand={requestLanding} />
       <main id="main" className="flex min-h-[calc(100dvh-74px)] flex-col pb-22 lg:pb-0">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
@@ -173,6 +199,16 @@ function Shell() {
           <p>{t('app.disclaimer')}</p>
         </footer>
       </main>
+      <ConfirmDialog
+        open={leaveOpen && FLOW_SCREENS.includes(screen)}
+        onClose={closeLeave}
+        onConfirm={confirmLeave}
+        title={t('exit.title')}
+        text={t('exit.text')}
+        cancelLabel={t('exit.cancel')}
+        confirmLabel={t('exit.confirm')}
+        closeLabel={t('app.close')}
+      />
     </div>
   )
 }
