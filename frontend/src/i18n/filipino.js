@@ -364,33 +364,10 @@ const filipino = {
     },
   ],
   'summary.termsTitle': 'Hindi mo kailangang manghula.',
-  'summary.termsHint': 'I-tap ang salitang hindi mo maunawaan.',
-  'summary.terms': [
-    {
-      name: 'Quitclaim',
-      def: 'Dokumentong nagsasabing natanggap mo na ang bayad at wala ka nang ibang hahabulin sa employer.',
-    },
-    {
-      name: 'Probationary',
-      def: 'Panahon ng pagsubok kung kailan tinitingnan kung pasado ka sa malinaw na pamantayan ng trabaho.',
-    },
-    {
-      name: 'Liquidated damages',
-      def: 'Halagang napagkasunduang bayaran kapag may hindi nasunod sa kontrata.',
-    },
-    {
-      name: 'Regular na empleyado',
-      def: 'Empleyadong tuloy-tuloy ang trabaho at may karapatan at benepisyong ayon sa batas.',
-    },
-    {
-      name: 'Fixed-term',
-      def: 'Kontratang may malinaw na petsa ng simula at katapusan, gaya ng 2 taon.',
-    },
-    {
-      name: 'Notice period',
-      def: 'Panahong dapat ipaalam nang maaga kung aalis ka o tatapusin ang trabaho.',
-    },
-  ],
+  'summary.termsHint': 'May {n} mahirap na terminong legal sa dokumento mo. I-tap para malaman ang kahulugan.',
+  'summary.termsNone': 'Wala kaming nakitang mahirap na terminong legal sa dokumentong ito.',
+  'summary.termsCount': 'Lumabas nang {n} beses',
+  'summary.termsWhere': 'Sa dokumento mo, pahina {page}:',
   'summary.toSalary': 'Tingnan ang hati ng sahod',
   'summary.toChat': 'May itatanong ako',
   'summary.gotIt': 'Naunawaan ko na',

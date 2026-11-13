@@ -358,33 +358,10 @@ const english = {
     },
   ],
   'summary.termsTitle': 'No need to guess.',
-  'summary.termsHint': 'Tap any word you don’t get.',
-  'summary.terms': [
-    {
-      name: 'Quitclaim',
-      def: 'A document saying you’ve received your pay and won’t claim anything more from the employer.',
-    },
-    {
-      name: 'Probationary',
-      def: 'A trial period when you’re checked against clear job standards.',
-    },
-    {
-      name: 'Liquidated damages',
-      def: 'An amount agreed in advance that must be paid if part of the contract isn’t followed.',
-    },
-    {
-      name: 'Regular employee',
-      def: 'An employee with continuing work who has the rights and benefits set by law.',
-    },
-    {
-      name: 'Fixed-term',
-      def: 'A contract with a clear start and end date, like 2 years.',
-    },
-    {
-      name: 'Notice period',
-      def: 'The time you must give in advance if you’re leaving or ending the work.',
-    },
-  ],
+  'summary.termsHint': 'We found {n} legal terms in your document that are hard to understand. Tap one to see what it means.',
+  'summary.termsNone': 'We didn’t find any hard legal terms in this document.',
+  'summary.termsCount': 'Appears {n} times',
+  'summary.termsWhere': 'In your document, page {page}:',
   'summary.toSalary': 'See the salary breakdown',
   'summary.toChat': 'I have a question',
   'summary.gotIt': 'Got it',

@@ -9,7 +9,20 @@ import Sheet from '../components/ui/Sheet'
 import { Badge, Callout, ListGroup, ListRow, Panel } from '../components/ui/Surfaces'
 import { LANGUAGE_TAGS } from '../i18n/messages'
 import { useI18n } from '../i18n/useI18n'
-import { fullText } from '../lib/extract'
+import { findTerms } from '../lib/glossary'
+
+/** Renders an OCR line with the matched term highlighted. */
+function Quote({ text, match }) {
+  const at = text.toLowerCase().indexOf(match.toLowerCase())
+  if (at === -1) return text
+  return (
+    <>
+      {text.slice(0, at)}
+      <mark className="rounded-sm bg-sun px-0.5 text-[#1b2433]">{text.slice(at, at + match.length)}</mark>
+      {text.slice(at + match.length)}
+    </>
+  )
+}
 
 /** Builds the rows and the "things to ask" purely from the fields the user confirmed in Step 2. */
 function buildSummary(fields, t) {
@@ -84,14 +97,8 @@ export default function Summary({ go, doc, confirmed }) {
     () => (confirmed ? buildSummary(confirmed, t) : { items: [], asks: [] }),
     [confirmed, t],
   )
-  // Only explain terms that actually appear in the document; fall back to all of them.
-  const terms = useMemo(() => {
-    const all = t('summary.terms')
-    if (!doc) return all
-    const text = fullText(doc.lines).toLowerCase()
-    const found = all.filter((entry) => text.includes(entry.name.toLowerCase()))
-    return found.length ? found : all
-  }, [doc, t])
+  // Terms come from scanning the OCR text of this document. Nothing is shown that isn't in it.
+  const terms = useMemo(() => (doc ? findTerms(doc.lines) : []), [doc])
 
   const summaryText = items.map((i) => `${i.title}: ${i.value}. ${i.detail}.`).join('\n')
 
@@ -184,15 +191,26 @@ export default function Summary({ go, doc, confirmed }) {
         <div className="grid gap-4 lg:sticky lg:top-24">
           <Panel className="p-5">
             <h2 className="font-sans text-xl font-bold">{t('summary.termsTitle')}</h2>
-            <p className="mt-1 text-subtle">{t('summary.termsHint')}</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {terms.map((entry, i) => (
-                <Chip key={entry.name} onClick={() => setTerm(i)} className="inline-flex items-center gap-1.5">
-                  {entry.name}
-                  <span className="text-brand"><Icon name="plus" size={15} /></span>
-                </Chip>
-              ))}
-            </div>
+            {terms.length > 0 ? (
+              <>
+                <p className="mt-1 text-subtle">{t('summary.termsHint', { n: terms.length })}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {terms.map((entry, i) => (
+                    <Chip key={entry.id} onClick={() => setTerm(i)} className="inline-flex items-center gap-1.5">
+                      {entry.name}
+                      {entry.count > 1 && (
+                        <span className="text-xs text-subtle" aria-label={t('summary.termsCount', { n: entry.count })}>
+                          ×{entry.count}
+                        </span>
+                      )}
+                      <span className="text-brand"><Icon name="plus" size={15} /></span>
+                    </Chip>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p className="mt-1 text-subtle">{t('summary.termsNone')}</p>
+            )}
           </Panel>
           <div className="grid gap-2.5 print:hidden">
             <Button icon="wallet" onClick={() => go('salary')}>
@@ -212,7 +230,15 @@ export default function Summary({ go, doc, confirmed }) {
             <h2 id="term-title" className="mt-1 pr-12 text-3xl font-semibold">
               {terms[term].name}
             </h2>
-            <p className="mt-3 mb-6 text-lg text-subtle">{terms[term].def}</p>
+            <p className="mt-3 text-lg text-subtle">{terms[term].def[language] ?? terms[term].def.English}</p>
+            <figure className="mt-5 mb-6 rounded-card bg-surface-2 px-4 py-3">
+              <figcaption className="text-xs font-bold text-subtle">
+                {t('summary.termsWhere', { page: terms[term].page })}
+              </figcaption>
+              <blockquote className="mt-1 font-serif text-ink">
+                “<Quote text={terms[term].quote} match={terms[term].match} />”
+              </blockquote>
+            </figure>
             <Button className="w-full" onClick={closeSheet}>
               {t('summary.gotIt')}
             </Button>

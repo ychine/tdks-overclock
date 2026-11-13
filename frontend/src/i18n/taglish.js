@@ -371,33 +371,10 @@ const taglish = {
     },
   ],
   'summary.termsTitle': 'Hindi kailangang manghula.',
-  'summary.termsHint': 'I-tap ang salitang hindi mo gets.',
-  'summary.terms': [
-    {
-      name: 'Quitclaim',
-      def: 'Dokumentong nagsasabing natanggap mo na ang bayad at wala ka nang ibang hahabulin sa employer.',
-    },
-    {
-      name: 'Probationary',
-      def: 'Trial period kung kailan tinitingnan kung pasado ka sa malinaw na standards ng trabaho.',
-    },
-    {
-      name: 'Liquidated damages',
-      def: 'Halagang napagkasunduang bayaran kapag may hindi nasunod sa kontrata.',
-    },
-    {
-      name: 'Regular employee',
-      def: 'Empleyadong tuloy-tuloy ang trabaho at may mga karapatan at benepisyong ayon sa batas.',
-    },
-    {
-      name: 'Fixed-term',
-      def: 'Kontratang may malinaw na petsa ng simula at katapusan, gaya ng 2 taon.',
-    },
-    {
-      name: 'Notice period',
-      def: 'Panahong dapat ipaalam nang maaga kung aalis ka o tatapusin ang trabaho.',
-    },
-  ],
+  'summary.termsHint': 'May {n} mahirap na legal terms sa dokumento mo. I-tap para malaman ang ibig sabihin.',
+  'summary.termsNone': 'Wala kaming nakitang mahirap na legal term sa dokumentong ito.',
+  'summary.termsCount': 'Lumabas nang {n} beses',
+  'summary.termsWhere': 'Sa dokumento mo, page {page}:',
   'summary.toSalary': 'Tingnan ang salary breakdown',
   'summary.toChat': 'May itatanong ako',
   'summary.gotIt': 'Gets ko na',
