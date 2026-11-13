@@ -15,6 +15,7 @@ import {
   saveTheme,
 } from './lib/session'
 import ErrorBoundary from './components/ErrorBoundary'
+import AppFooter from './components/AppFooter'
 import ConfirmDialog from './components/ui/ConfirmDialog'
 import Nav from './components/Nav'
 import Stepper from './components/ui/Stepper'
@@ -175,6 +176,7 @@ function Shell() {
     summary: <Summary go={go} doc={doc} confirmed={confirmed} />,
     salary: <Salary go={go} confirmed={confirmed} />,
     chat: <Chat go={go} doc={doc} confirmed={confirmed} onFile={onFile} />,
+    chat: <Chat go={go} doc={doc} confirmed={confirmed} upload={upload} />,
     compare: <Compare />,
     questions: <Questions go={go} />,
     help: <Help />,
@@ -230,10 +232,7 @@ function Shell() {
             )}
           </motion.div>
         </AnimatePresence>
-        <footer className="mx-10 mt-auto hidden h-24 items-center justify-between border-t border-line text-sm text-subtle lg:flex print:hidden">
-          <span className="font-display text-xl text-ink">Linaw</span>
-          <p>{t('app.disclaimer')}</p>
-        </footer>
+        <AppFooter screen={screen} go={go} onBrand={requestLanding} />
       </main>
       <ConfirmDialog
         open={leaveOpen && FLOW_SCREENS.includes(screen)}

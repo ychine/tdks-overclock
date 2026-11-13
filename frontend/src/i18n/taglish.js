@@ -1,5 +1,7 @@
-﻿// Taglish is the reference language. Every key here must exist in english.js and filipino.js.
+// Taglish is the reference language. Every key here must exist in english.js and filipino.js.
 // `**text**` marks bold text; `{name}` is replaced with a value.
+import compareTaglish from './compareTaglish.js'
+
 const taglish = {
   'app.skip': 'Lumaktaw sa nilalaman',
   'app.disclaimer': 'Nagpapaliwanag lang kami, hindi legal advice.',
@@ -458,6 +460,8 @@ const taglish = {
   'chat.copy': 'Kopyahin',
   'chat.copied': 'Nakopya na',
   'chat.followUps': 'Puwede mo ring itanong',
+  'chat.suggestions': 'Mga suggested na tanong',
+  'chat.basedOn': 'Base sa {name}',
   'chat.helpLink': 'Pumunta sa Tulong',
   'chat.approvalTitle': 'Gumawa ng checklist ng itatanong bago pumirma?',
   'chat.approvalText': 'May nakita akong 3 bahagi na mas mabuting malinaw muna sa employer.',
@@ -556,26 +560,10 @@ const taglish = {
   'compare.newHint': 'I-tap para mag-upload',
   'compare.newAria': 'Piliin ang bagong kontrata',
   'compare.alertLabel': 'Pinakamahalagang pagbabago',
-  'compare.alertTitle': 'Mas mababa ang sahod sa bago:',
-  'compare.alertText': '₱1,500 less bawat buwan, o ₱18,000 less kada taon.',
-  'compare.added': 'Added / better',
-  'compare.changed': 'Changed',
-  'compare.removed': 'Removed / worse',
   'compare.tableAria': 'Luma at bagong kontrata',
   'compare.detail': 'Detalye',
   'compare.colOld': 'Luma',
   'compare.colNew': 'Bago',
-  'compare.rowSalary': 'Sahod',
-  'compare.rowRest': 'Day off',
-  'compare.rowMedical': 'Medical',
-  'compare.rowPenalty': 'Penalty',
-  'compare.restOld': 'Sunday',
-  'compare.restNew': 'Flexible day',
-  'compare.medicalOld': 'Hindi nakalagay',
-  'compare.medicalNew': 'Covered',
-  'compare.summaryTitle': 'May isang improvement, pero mas mababa ang overall value.',
-  'compare.summaryText':
-    'Covered na ang medical, pero bababa ang sahod at mas mataas ang penalty. Linawin din kung kailan ang “flexible” day off.',
   'compare.changeNew': 'Palitan ang bagong kontrata',
 
   // ---------- no-contract flow ----------
@@ -670,6 +658,7 @@ const taglish = {
   "chat.transcript": "Usapan",
   "chat.clause": "Sugnay",
   "chat.approvalShort": "Checklist",
+  ...compareTaglish,
 }
 
 export default taglish

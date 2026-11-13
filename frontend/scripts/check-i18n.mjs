@@ -3,6 +3,7 @@ import path from 'node:path'
 import english from '../src/i18n/english.js'
 import filipino from '../src/i18n/filipino.js'
 import taglish from '../src/i18n/taglish.js'
+import { compareDynamicKeys } from '../src/lib/compare/copyKeys.js'
 import { LANGUAGES } from '../src/i18n/messages.js'
 import { GLOSSARY } from '../src/lib/glossary.js'
 
@@ -53,9 +54,10 @@ const dynamic = [
   ...['home', 'upload', 'reading', 'review', 'summary', 'salary', 'chat', 'compare', 'questions', 'help'].map((x) => `screen.${x}`),
   ...['salary', 'start', 'term', 'hours', 'rest'].flatMap((x) => [`review.${x}`, `review.${x}Value`]),
   ...['blurry', 'type', 'size'].flatMap((x) => [`file.${x}.title`, `file.${x}.text`]),
-  ...['added', 'changed', 'removed'].map((x) => `compare.${x}`),
   ...['salary', 'deductions', 'hours', 'dayoff', 'term', 'early', 'medical', 'thirteenth', 'checklist', 'quitclaim', 'probationary', 'help'].flatMap((x) => [`q.${x}`, `qa.${x}`]),
   'qa.fallback',
+  // Compare screen: keys built at run time (see src/lib/compare/copyKeys.js)
+  ...compareDynamicKeys(),
   ...['Kasambahay', 'Local', 'Ofw'].flatMap((x) => [`questions.title${x}`, `questions.rights${x}`]),
 ]
 for (const k of dynamic) if (!base.has(k)) (problems++, console.log(`dynamic key undefined: ${k}`))
