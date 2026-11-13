@@ -282,6 +282,12 @@ export const GLOSSARY = [
   },
 ]
 
+/** The glossary entry a typed question is about (e.g. "ano ang force majeure?"), or null. */
+export function matchGlossary(question) {
+  const text = String(question ?? '')
+  return GLOSSARY.find((entry) => entry.pattern.test(text)) ?? null
+}
+
 /**
  * Scans the OCR lines and returns the glossary terms that appear in the document,
  * in the order they first appear. Each hit carries where it was read.
