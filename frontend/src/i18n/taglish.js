@@ -24,7 +24,6 @@ const taglish = {
   'exit.confirm': 'Bumalik sa landing',
 
   'nav.menu': 'Pangunahing menu',
-  'nav.kicker': 'Ang kontrata mo, malinaw.',
   'nav.private': 'Private at ligtas ang dokumento mo.',
   'nav.home': 'Home',
   'nav.summary': 'Buod',
@@ -237,10 +236,10 @@ const taglish = {
   'landing.footerPrivacy': 'Auto-delete after 24 hours. Walang signup.',
 
   // ---------- home ----------
-  'home.h1a': 'Intindihin ang kontrata mo',
-  'home.h1b': 'bago ka pumirma.',
+  'home.h1a': 'Start dito.',
+  'home.h1b': 'I-upload ang contract mo.',
   'home.lead':
-    'I-upload ang kontrata o quitclaim mo. Ipapaliwanag namin ang mahalaga—sa salitang madaling maintindihan.',
+    'Kunan ng photo o pumili ng file. Babasahin namin, iche-check mo, tapos ie-explain namin ang importante sa simpleng salita.',
   'home.language': 'Piliin ang wika',
   'home.upload': 'Mag-upload ng kontrata',
   'home.none': 'Wala akong kontrata',
@@ -254,6 +253,18 @@ const taglish = {
   'upload.text': 'Contract, quitclaim, offer letter—kahit photo lang, puwede.',
   'upload.zoneTitle': 'Ilagay dito ang kontrata',
   'upload.zoneHint': 'PDF, JPG, o PNG · hanggang 20 MB',
+  'upload.drop': 'I-drop dito para mag-start',
+  'upload.dragHint': 'O i-drag ang file papunta sa box na ito.',
+  'upload.limitTitle': 'Isang file lang muna',
+  'upload.limitText': 'Alisin ang file na ito para pumili ng iba.',
+  'upload.status.queued': 'Waiting',
+  'upload.status.uploading': 'Inihahanda',
+  'upload.status.success': 'Ready na',
+  'upload.status.error': 'Hindi magagamit ang file na ito',
+  'upload.retry': 'Subukan ulit ang {name}',
+  'upload.remove': 'Alisin ang {name}',
+  'upload.progress': 'Progress ng {name}',
+  'upload.readError': 'Hindi namin ma-open ang file na ito. Subukan ulit.',
   'upload.camera': 'Kunan ng photo',
   'upload.pick': 'Pumili sa phone',
   'upload.cameraAria': 'Kunan ng photo ang kontrata',
@@ -333,6 +344,7 @@ const taglish = {
   'review.prevPage': 'Nakaraang pahina',
   'review.nextPage': 'Susunod na pahina',
   'review.noText': 'Walang nabasang text sa pahinang ito.',
+  'review.pageAlt': 'Page {n} ng {name}',
 
   // ---------- summary ----------
   'summary.step': 'Step 3 of 3 · Tapos na',
@@ -600,6 +612,7 @@ const taglish = {
 
   // ---------- v3 additions ----------
   "stepper.label": "Mga hakbang",
+  "stepper.scanning": "Sina-scan…",
   "stepper.upload": "Upload",
   "stepper.review": "Check",
   "stepper.summary": "Buod",
@@ -610,6 +623,10 @@ const taglish = {
   "home.helpDesc": "DOLE, DMW, OWWA, at Public Attorney’s Office.",
   "home.hotlines": "Mabilis na tawag",
   "summary.askBadge": "Dapat itanong",
+  "summary.peekTitle": "{title}: kung saan ito nakasulat",
+  "summary.peekPage": "Page {n}",
+  "summary.peekMissing": "Hindi namin ito nakita sa document mo. Kaya worth itanong.",
+  "summary.peekWhyPenalty": "Alamin kung kailan ito sisingilin, magkano, at kung ibabawas sa sahod mo. Itanong bago pumirma.",
   "chat.needsYou": "Para sa iyo",
   "chat.approved": "Ginawa na",
   "chat.later": "Mamaya na lang",

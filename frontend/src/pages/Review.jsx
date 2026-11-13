@@ -9,7 +9,6 @@ import OriginalView from '../components/OriginalView'
 import Button from '../components/ui/Button'
 import { Field } from '../components/ui/Controls'
 import { Page, PageHeading } from '../components/ui/Page'
-import Stepper from '../components/ui/Stepper'
 import { Badge, Callout, ListGroup } from '../components/ui/Surfaces'
 import { Segmented } from '../components/ui/Controls'
 import { useI18n } from '../i18n/useI18n'
@@ -34,8 +33,7 @@ export default function Review({ go, upload, doc, onConfirm }) {
 
   return (
     <Page>
-      <Stepper current={1} />
-      <PageHeading title={t('review.title')} text={t('review.text')}>
+      <PageHeading centered title={t('review.title')} text={t('review.text')}>
         <Badge tone={toCheck ? 'sun' : 'ok'} icon={toCheck ? 'alert' : 'check'} className="w-max px-3.5 py-2 text-sm" role="status">
           {toCheck ? t('review.toCheck', { n: toCheck }) : t('review.allChecked')}
         </Badge>

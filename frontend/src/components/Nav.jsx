@@ -11,15 +11,15 @@ import LanguageSelect from './LanguageSelect'
 import ThemeToggle from './ThemeToggle'
 
 const items = [
+  // Home and Summary are one item: the whole document flow (upload, check, summary, salary).
   { id: 'home', icon: 'home' },
-  { id: 'summary', icon: 'spark' },
   { id: 'chat', icon: 'chat' },
   { id: 'compare', icon: 'compare' },
   { id: 'help', icon: 'help' },
 ]
 
 /** Screens that belong to a nav section even though they are not in the menu themselves. */
-const sectionOf = { upload: 'home', reading: 'home', review: 'home', salary: 'summary', questions: 'home' }
+const sectionOf = { upload: 'home', reading: 'home', review: 'home', summary: 'home', salary: 'home', questions: 'home' }
 
 function BottomNavButton({ item, active, go, label }) {
   return (
@@ -153,9 +153,11 @@ function HelpMenu({ active, go }) {
   )
 }
 
-export default function Nav({ screen, go, dark, setDark, onBrand }) {
+export default function Nav({ screen, go: goScreen, onBrand, dark, setDark, resume = 'home' }) {
   const { t } = useI18n()
   const section = sectionOf[screen] ?? screen
+  // From outside the flow, Home picks up where you left off (e.g. your summary). Inside the flow it starts over.
+  const go = (id) => goScreen(id === 'home' && section !== 'home' ? resume : id)
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-line bg-canvas/85 backdrop-blur print:hidden">

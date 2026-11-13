@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { cn } from '@/lib/utils'
 import Icon from './Icon'
+import PdfPage from './PdfPage'
 import { useI18n } from '../i18n/useI18n'
 
 // Shows the uploaded document and highlights where the active field was read.
 // Images: the real photo with a box drawn over the source line.
-// PDFs: the OCR text laid out as a page with the source line highlighted, plus a link to the real PDF.
+// PDFs: the real page rendered with pdf.js and the same box drawn over it. If pdf.js can't render it,
+// fall back to the OCR text laid out as a page with the source line highlighted. Both link to the real PDF.
 const located = 'bg-[#eaf1ff] outline-3 outline-[#0038a8]'
 const uncertain = 'bg-[#fff8cf] outline-3 outline-[#d2a900]'
 
@@ -24,12 +26,15 @@ export default function OriginalView({ upload, lines, field, label }) {
   const tone = field?.low ? uncertain : located
   const pageLines = lines.find((p) => p.pageNumber === page)?.lines ?? []
   const index = pageNumbers.indexOf(page)
+  const [pdfFailed, setPdfFailed] = useState(false)
+  const onPdfError = useCallback(() => setPdfFailed(true), [])
+  const tint = field?.low ? 'rgb(255 233 154 / 0.35)' : 'rgb(0 56 168 / 0.12)'
 
   return (
     <div
       role="group"
       aria-label={label}
-      className="relative grid min-h-[600px] place-items-start justify-center overflow-hidden rounded-card bg-[#dbe0e5] p-[18px] pb-16 lg:min-h-[680px] dark:bg-[#293342]"
+      className="relative grid min-h-[600px] grid-cols-[minmax(0,1fr)] place-items-start justify-items-center overflow-hidden rounded-card bg-[#dbe0e5] p-[18px] pb-16 lg:min-h-[680px] dark:bg-[#293342]"
     >
       {isImage ? (
         <div className="relative w-full max-w-[520px] bg-white shadow-[0_12px_35px_rgb(0_0_0/0.18)]">
@@ -47,6 +52,18 @@ export default function OriginalView({ upload, lines, field, label }) {
               }}
             />
           )}
+        </div>
+      ) : !pdfFailed ? (
+        <div className="mx-auto max-h-[78vh] w-full max-w-[680px] justify-self-stretch overflow-y-auto overscroll-contain rounded-[2px]">
+          <PdfPage
+            url={upload.url}
+            page={page}
+            box={onPage ? field.box : null}
+            toneClass={tone}
+            tint={tint}
+            label={t('review.pageAlt', { n: page, name: upload.file.name })}
+            onError={onPdfError}
+          />
         </div>
       ) : (
         <div className="max-h-[70vh] min-h-[540px] w-full max-w-[440px] overflow-y-auto bg-white p-8 font-serif text-[0.8125rem] leading-[1.55] break-words text-[#222] shadow-[0_12px_35px_rgb(0_0_0/0.18)] lg:px-11 lg:py-12 lg:text-sm">
