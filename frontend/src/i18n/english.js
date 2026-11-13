@@ -1,4 +1,6 @@
-﻿// English: plain, friendly. Keys mirror taglish.js.
+// English: plain, friendly. Keys mirror taglish.js.
+import compareEnglish from './compareEnglish.js'
+
 const english = {
   'app.skip': 'Skip to content',
   'app.disclaimer': 'We explain, we don’t give legal advice.',
@@ -442,6 +444,8 @@ const english = {
   'chat.copy': 'Copy',
   'chat.copied': 'Copied',
   'chat.followUps': 'You could also ask',
+  'chat.suggestions': 'Suggested questions',
+  'chat.basedOn': 'Based on {name}',
   'chat.helpLink': 'Go to Help',
   'chat.approvalTitle': 'Make a checklist of questions to ask before signing?',
   'chat.approvalText': 'I found 3 parts that are better cleared up with the employer first.',
@@ -525,26 +529,10 @@ const english = {
   'compare.newHint': 'Tap to upload',
   'compare.newAria': 'Choose the new contract',
   'compare.alertLabel': 'Biggest change',
-  'compare.alertTitle': 'Pay is lower in the new one:',
-  'compare.alertText': '₱1,500 less every month, or ₱18,000 less a year.',
-  'compare.added': 'Added / better',
-  'compare.changed': 'Changed',
-  'compare.removed': 'Removed / worse',
   'compare.tableAria': 'Old and new contract',
   'compare.detail': 'Detail',
   'compare.colOld': 'Old',
   'compare.colNew': 'New',
-  'compare.rowSalary': 'Pay',
-  'compare.rowRest': 'Day off',
-  'compare.rowMedical': 'Medical',
-  'compare.rowPenalty': 'Penalty',
-  'compare.restOld': 'Sunday',
-  'compare.restNew': 'Flexible day',
-  'compare.medicalOld': 'Not stated',
-  'compare.medicalNew': 'Covered',
-  'compare.summaryTitle': 'One improvement, but lower overall value.',
-  'compare.summaryText':
-    'Medical is now covered, but pay goes down and the penalty goes up. Also ask when the “flexible” day off applies.',
   'compare.changeNew': 'Replace the new contract',
 
   'questions.progress': 'Question {n} of {total}',
@@ -637,6 +625,7 @@ const english = {
   "chat.transcript": "Conversation",
   "chat.clause": "Clause",
   "chat.approvalShort": "Checklist",
+  ...compareEnglish,
 }
 
 export default english
