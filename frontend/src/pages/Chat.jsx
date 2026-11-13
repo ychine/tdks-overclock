@@ -15,8 +15,8 @@ import {
 import { PromptInput } from '@/components/agents/prompt-input'
 import { LocaleProvider } from '@/lib/i18n'
 import { askChat, getCoverage, openChat } from '../api/chat'
+import { Paperclip } from 'lucide-react'
 import Icon from '../components/Icon'
-import NeedsUpload from '../components/NeedsUpload'
 import Rich from '../components/Rich'
 import Button from '../components/ui/Button'
 import { Chip } from '../components/ui/Controls'
@@ -27,6 +27,8 @@ import { useI18n } from '../i18n/useI18n'
 import { matchIntent } from '../lib/contractQa'
 import { SPRING_SWAP } from '../lib/ease'
 import { fullText } from '../lib/extract'
+import { checkContractFile } from '../lib/files'
+import { matchGlossary } from '../lib/glossary'
 import { detectWorkerType } from '../lib/workerType'
 
 const stripBold = (text) => text.replaceAll('**', '')
@@ -34,6 +36,9 @@ const hasValue = (field) => String(field?.value ?? '').trim() !== ''
 
 // Definitions are the same for everyone, so they use the prewritten answers and cost no credits.
 const FIXED_INTENTS = ['quitclaim', 'probationary']
+
+// Before any contract is attached: term questions we can answer without the AI.
+const GENERAL_SUGGESTIONS = ['whatQuitclaim', 'whatProbationary', 'whatLiquidated']
 
 // Fields that have a "what does the law say" suggestion, in priority order.
 const FIELD_SUGGESTIONS = ['penalty', 'rest', 'hours', 'salary', 'start']
@@ -91,9 +96,15 @@ function useBeuiMessages(t) {
   )
 }
 
+export default function Chat({ go, doc, confirmed, onFile }) {
 export default function Chat({ go, doc, confirmed, upload }) {
   const { t, language } = useI18n()
   const messages = useBeuiMessages(t)
+  // Only a contract that was actually read AND confirmed counts. Without one the chat never
+  // claims to have read anything and never calls the AI.
+  const hasContract = Boolean(doc && Array.isArray(confirmed) && confirmed.length)
+  const docName = doc?.record?.Name || t('chat.basisContract').toLowerCase()
+  const fileInput = useRef(null)
   const [thread, setThread] = useState([])
   const [asked, setAsked] = useState([]) // suggestion ids already used
   const [showSuggestions, setShowSuggestions] = useState(true)
@@ -129,16 +140,30 @@ export default function Chat({ go, doc, confirmed, upload }) {
     }
   }, [])
 
-  const suggestions = useMemo(
-    () => (confirmed ? buildSuggestions(confirmed, t, workerType).filter((s) => !asked.includes(s.id)) : []),
-    [confirmed, t, asked, workerType],
-  )
-
-  // Chat only exists for a confirmed contract. No upload -> no AI call, no credits.
-  if (!confirmed) return <NeedsUpload go={go} />
+  const suggestions = useMemo(() => {
+    const list = hasContract
+      ? buildSuggestions(confirmed, t, workerType)
+      : GENERAL_SUGGESTIONS.map((id) => ({ id, text: t(`chat.sugg.${id}`) }))
+    return list.filter((s) => !asked.includes(s.id))
+  }, [hasContract, confirmed, t, asked, workerType])
 
   const busy = thread.some((turn) => turn.status === 'loading')
   const update = (id, patch) => setThread((list) => list.map((x) => (x.id === id ? { ...x, ...patch } : x)))
+
+  // Paperclip: a picked file goes through the same flow as Home/Upload (OCR -> check -> summary).
+  const attach = (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    const problem = checkContractFile(file)
+    if (problem) {
+      const id = nextId.current++
+      setThread((list) => [...list, { id, question: file.name, status: 'done', kind: 'fileProblem', problem }])
+      return
+    }
+    onFile(file)
+    go('reading')
+  }
 
   const ask = async (text, suggestionId) => {
     const question = text.trim()
@@ -149,6 +174,19 @@ export default function Chat({ go, doc, confirmed, upload }) {
     const intent = matchIntent(question)
     if (FIXED_INTENTS.includes(intent)) {
       setThread((list) => [...list, { id, question, status: 'done', kind: 'fixed', intent }])
+      return
+    }
+
+    // No contract yet: explain known legal terms for free, otherwise ask for the contract.
+    // Nothing is sent to the AI without a contract, so no credits are spent and nothing is guessed.
+    if (!hasContract) {
+      const entry = matchGlossary(question)
+      setThread((list) => [
+        ...list,
+        entry
+          ? { id, question, status: 'done', kind: 'glossary', entry }
+          : { id, question, status: 'done', kind: 'needsDoc' },
+      ])
       return
     }
 
@@ -181,7 +219,38 @@ export default function Chat({ go, doc, confirmed, upload }) {
     ask(turn.question)
   }
 
-  const answerText = (turn) => (turn.kind === 'fixed' ? t(`qa.${turn.intent}`) : turn.text)
+  const answerText = (turn) => {
+    if (turn.kind === 'fixed') return t(`qa.${turn.intent}`)
+    if (turn.kind === 'glossary') return `**${turn.entry.name}**: ${turn.entry.def[language] ?? turn.entry.def.English}`
+    if (turn.kind === 'needsDoc') return t('chat.needsDoc')
+    if (turn.kind === 'fileProblem') return `**${t(`file.${turn.problem}.title`)}** ${t(`file.${turn.problem}.text`)}`
+    return turn.text
+  }
+  const isGeneral = (turn) => turn.kind === 'fixed' || turn.kind === 'glossary'
+  const wantsDoc = (turn) => turn.kind === 'needsDoc' || turn.kind === 'fileProblem'
+  const attachButton = (
+    <>
+      <input
+        ref={fileInput}
+        type="file"
+        accept="application/pdf,image/jpeg,image/png"
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden="true"
+        onChange={attach}
+      />
+      <button
+        type="button"
+        onClick={() => fileInput.current?.click()}
+        disabled={busy}
+        aria-label={hasContract ? t('chat.attachNew') : t('chat.attach')}
+        title={hasContract ? t('chat.attachNew') : t('chat.attach')}
+        className="grid size-11 shrink-0 place-items-center rounded-full text-subtle transition-colors hover:bg-brand-soft hover:text-brand disabled:opacity-50"
+      >
+        <Paperclip className="size-[18px]" aria-hidden="true" />
+      </button>
+    </>
+  )
 
   const copy = async (turn) => {
     try {
@@ -230,8 +299,19 @@ export default function Chat({ go, doc, confirmed, upload }) {
                 <MessageContent>
                   <MessageBubble variant="soft">
                     <MessageBubbleContent>
-                      <p>{t('chat.greeting')}</p>
-                      {noLawFor(workerType) && <p className="mt-2 text-sm text-subtle">{t('chat.noLawYet')}</p>}
+                      {hasContract ? (
+                        <>
+                          <p>{t('chat.greetingDoc', { name: docName })}</p>
+                          {noLawFor(workerType) && <p className="mt-2 text-sm text-subtle">{t('chat.noLawYet')}</p>}
+                        </>
+                      ) : (
+                        <>
+                          <p>{t('chat.greetingNoDoc')}</p>
+                          <Button variant="secondary" size="sm" icon="upload" className="mt-3" onClick={() => fileInput.current?.click()}>
+                            {t('chat.attachCta')}
+                          </Button>
+                        </>
+                      )}
                     </MessageBubbleContent>
                   </MessageBubble>
                 </MessageContent>
@@ -286,7 +366,12 @@ export default function Chat({ go, doc, confirmed, upload }) {
                                     <Citation key={c.id} citationId={c.id} index={i + 1} idPrefix={prefix} />
                                   ))}
                                 </p>
-                                {turn.kind === 'fixed' && <p className="mt-2 text-sm text-subtle">{t('chat.generalAnswer')}</p>}
+                                {isGeneral(turn) && <p className="mt-2 text-sm text-subtle">{t('chat.generalAnswer')}</p>}
+                                {wantsDoc(turn) && (
+                                  <Button variant="secondary" size="sm" icon="upload" className="mt-3" onClick={() => fileInput.current?.click()}>
+                                    {t('chat.attachCta')}
+                                  </Button>
+                                )}
                                 {turn.degraded && <p className="mt-2 text-sm text-subtle">{t('chat.degraded')}</p>}
                                 {turn.noLaw && <p className="mt-2 text-sm text-subtle">{t('chat.noLawYet')}</p>}
                               </MessageBubbleContent>
@@ -353,9 +438,11 @@ export default function Chat({ go, doc, confirmed, upload }) {
               maxRows={4}
               disabled={busy}
               onSubmit={(prompt) => ask(prompt)}
+              leadingAction={attachButton}
+              placeholder={hasContract ? undefined : t('chat.placeholderNoDoc')}
               className="rounded-card border-line shadow-card"
             />
-            <p className="mt-2 px-1 text-sm text-subtle">{t('chat.footer')}</p>
+            <p className="mt-2 px-1 text-sm text-subtle">{hasContract ? t('chat.footer') : t('chat.footerNoDoc')}</p>
           </div>
         </Panel>
       </Page>

@@ -175,6 +175,7 @@ function Shell() {
     review: <Review go={go} upload={upload} doc={doc} onConfirm={setConfirmed} />,
     summary: <Summary go={go} doc={doc} confirmed={confirmed} />,
     salary: <Salary go={go} confirmed={confirmed} />,
+    chat: <Chat go={go} doc={doc} confirmed={confirmed} onFile={onFile} />,
     chat: <Chat go={go} doc={doc} confirmed={confirmed} upload={upload} />,
     compare: <Compare />,
     questions: <Questions go={go} />,
