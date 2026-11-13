@@ -7,6 +7,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScro
 import { EASE_OUT } from '@/lib/ease'
 import { cn } from '@/lib/utils'
 import Brand from '../components/Brand'
+import FooterCredits from '../components/FooterCredits'
 import Icon from '../components/Icon'
 import LanguageSelect from '../components/LanguageSelect'
 import ThemeToggle from '../components/ThemeToggle'
@@ -658,18 +659,7 @@ export default function Landing({ enter, dark, setDark }) {
             </p>
           </div>
 
-          <div className="mt-6 flex flex-col gap-3 border-t border-line pt-6 text-sm text-subtle sm:flex-row sm:items-center sm:justify-between">
-            <p className="tabular-nums">{'\u00a9'} {new Date().getFullYear()} Linaw. {t('landing.footerRights')}</p>
-            <p className="flex items-center gap-3">
-              <span>{t('landing.footerBy')}</span>
-              {/* White-stroke wordmark used as a mask so it takes the theme ink in light and dark mode. */}
-              <span
-                role="img"
-                aria-label="Dead Keys Society"
-                className="block aspect-[790/92] h-[18px] bg-ink [mask:url(/tdks-logo.svg)_center/contain_no-repeat]"
-              />
-            </p>
-          </div>
+          <FooterCredits className="mt-6 border-t border-line pt-6" />
         </div>
       </footer>
     </div>
