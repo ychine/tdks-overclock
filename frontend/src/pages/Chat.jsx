@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { motion } from 'motion/react'
+import { AgentDisclosure } from '@/components/agents/agent-disclosure'
 import { Citation, Citations } from '@/components/agents/citations'
 import { ThinkingShimmer } from '@/components/agents/loading-states/thinking-shimmer'
 import {
@@ -23,6 +25,7 @@ import { Badge, Panel } from '../components/ui/Surfaces'
 import { LANGUAGE_TAGS } from '../i18n/messages'
 import { useI18n } from '../i18n/useI18n'
 import { matchIntent } from '../lib/contractQa'
+import { SPRING_SWAP } from '../lib/ease'
 import { fullText } from '../lib/extract'
 import { detectWorkerType } from '../lib/workerType'
 
@@ -88,13 +91,15 @@ function useBeuiMessages(t) {
   )
 }
 
-export default function Chat({ go, doc, confirmed }) {
+export default function Chat({ go, doc, confirmed, upload }) {
   const { t, language } = useI18n()
   const messages = useBeuiMessages(t)
   const [thread, setThread] = useState([])
   const [asked, setAsked] = useState([]) // suggestion ids already used
+  const [showSuggestions, setShowSuggestions] = useState(true)
   const [sessionId, setSessionId] = useState(null) // one Lumen conversation per confirmed contract
   const [contract, setContract] = useState(confirmed)
+  const fileName = doc?.fileName ?? upload?.file?.name ?? ''
   // Who the contract is for, read from the OCR text: 'kasambahay' | 'ofw' | 'local'. Never asked.
   const workerType = useMemo(() => detectWorkerType(doc ? fullText(doc.lines) : ''), [doc])
   const [coverage, setCoverage] = useState(null) // verified law entries per worker type
@@ -107,6 +112,7 @@ export default function Chat({ go, doc, confirmed }) {
     setContract(confirmed)
     setThread([])
     setAsked([])
+    setShowSuggestions(true)
     setSessionId(null)
   }
 
@@ -307,14 +313,40 @@ export default function Chat({ go, doc, confirmed }) {
           </MessageScroller>
 
           <div className="border-t border-line bg-surface-2/50 px-3 pt-3 pb-3 md:px-4">
-            {suggestions.length > 0 && !busy && (
-              <div className="scrollbar-hide -mx-3 mb-2.5 flex gap-2 overflow-x-auto px-3 md:mx-0 md:flex-wrap md:px-0">
-                {suggestions.map((s) => (
-                  <Chip key={s.id} onClick={() => ask(s.text, s.id)}>
-                    {s.text}
-                  </Chip>
-                ))}
+            {(fileName || (suggestions.length > 0 && !busy)) && (
+              <div className="mb-2.5 flex flex-wrap items-center gap-2">
+                {fileName && (
+                  <span className="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-sm text-subtle">
+                    <Icon name="file" size={15} />
+                    <span className="truncate">{t('chat.basedOn', { name: fileName })}</span>
+                  </span>
+                )}
+                {suggestions.length > 0 && !busy && (
+                  <button
+                    type="button"
+                    aria-expanded={showSuggestions}
+                    aria-controls="chat-suggestions"
+                    onClick={() => setShowSuggestions((open) => !open)}
+                    className="ml-auto inline-flex min-h-9 shrink-0 items-center gap-1 rounded-full px-2.5 text-sm font-semibold text-subtle transition-colors hover:bg-brand-soft hover:text-brand focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:outline-none"
+                  >
+                    {t('chat.suggestions')}
+                    <motion.span aria-hidden="true" animate={{ rotate: showSuggestions ? 90 : 0 }} transition={SPRING_SWAP}>
+                      <Icon name="chevron" size={16} />
+                    </motion.span>
+                  </button>
+                )}
               </div>
+            )}
+            {suggestions.length > 0 && !busy && (
+              <AgentDisclosure open={showSuggestions} className="-mx-3 md:mx-0">
+                <div id="chat-suggestions" className="scrollbar-hide flex gap-2 overflow-x-auto px-3 pb-2.5 md:flex-wrap md:px-0">
+                  {suggestions.map((s) => (
+                    <Chip key={s.id} onClick={() => ask(s.text, s.id)}>
+                      {s.text}
+                    </Chip>
+                  ))}
+                </div>
+              </AgentDisclosure>
             )}
             <PromptInput
               minRows={2}

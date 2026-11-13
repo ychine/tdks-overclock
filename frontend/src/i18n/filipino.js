@@ -1,4 +1,6 @@
-﻿// Filipino: natural, full Tagalog. Keys mirror taglish.js.
+// Filipino: natural, full Tagalog. Keys mirror taglish.js.
+import compareFilipino from './compareFilipino.js'
+
 const filipino = {
   'app.skip': 'Lumaktaw sa nilalaman',
   'app.disclaimer': 'Nagpapaliwanag lamang kami at hindi ito legal na payo.',
@@ -449,6 +451,8 @@ const filipino = {
   'chat.copy': 'Kopyahin',
   'chat.copied': 'Nakopya na',
   'chat.followUps': 'Puwede mo ring itanong',
+  'chat.suggestions': 'Mga mungkahing tanong',
+  'chat.basedOn': 'Batay sa {name}',
   'chat.helpLink': 'Pumunta sa Tulong',
   'chat.approvalTitle': 'Gumawa ng checklist ng itatanong bago pumirma?',
   'chat.approvalText': 'May nakita akong 3 bahaging mas mabuting linawin muna sa employer.',
@@ -533,26 +537,10 @@ const filipino = {
   'compare.newHint': 'I-tap para mag-upload',
   'compare.newAria': 'Piliin ang bagong kontrata',
   'compare.alertLabel': 'Pinakamahalagang pagbabago',
-  'compare.alertTitle': 'Mas mababa ang sahod sa bago:',
-  'compare.alertText': '₱1,500 na kulang bawat buwan, o ₱18,000 kada taon.',
-  'compare.added': 'Idinagdag / mas maganda',
-  'compare.changed': 'Nagbago',
-  'compare.removed': 'Inalis / mas masama',
   'compare.tableAria': 'Luma at bagong kontrata',
   'compare.detail': 'Detalye',
   'compare.colOld': 'Luma',
   'compare.colNew': 'Bago',
-  'compare.rowSalary': 'Sahod',
-  'compare.rowRest': 'Araw ng pahinga',
-  'compare.rowMedical': 'Gastusing medikal',
-  'compare.rowPenalty': 'Parusa',
-  'compare.restOld': 'Linggo',
-  'compare.restNew': 'Nababagong araw',
-  'compare.medicalOld': 'Hindi nakasulat',
-  'compare.medicalNew': 'Sagot ng employer',
-  'compare.summaryTitle': 'May isang pagbuti, ngunit mas mababa ang kabuuang halaga.',
-  'compare.summaryText':
-    'Sagot na ng employer ang gastusing medikal, ngunit bababa ang sahod at mas mataas ang parusa. Linawin din kung kailan ang “nababagong” araw ng pahinga.',
   'compare.changeNew': 'Palitan ang bagong kontrata',
 
   'questions.progress': 'Tanong {n} sa {total}',
@@ -645,6 +633,7 @@ const filipino = {
   "chat.transcript": "Usapan",
   "chat.clause": "Sugnay",
   "chat.approvalShort": "Checklist",
+  ...compareFilipino,
 }
 
 export default filipino

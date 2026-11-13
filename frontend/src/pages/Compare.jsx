@@ -1,30 +1,38 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
+import CompareDetailSheet from '../components/CompareDetailSheet'
+import CellValue from '../components/compare/CellValue'
+import { ImpactChip, StatusChip } from '../components/compare/Chips'
+import { IMPACT_STYLE } from '../components/compare/styles'
 import Icon from '../components/Icon'
 import Button from '../components/ui/Button'
 import { Page, PageHeading } from '../components/ui/Page'
-import { Callout, Card, IconTile, Panel } from '../components/ui/Surfaces'
+import { Callout, Card, IconTile, ListGroup, ListRow, Panel } from '../components/ui/Surfaces'
 import { useI18n } from '../i18n/useI18n'
+import { agencies, telHref } from '../lib/agencies'
+import { biggestChange, buildComparison, summaryLists } from '../lib/compare/buildComparison'
+import { lineVars } from '../lib/compare/detailVars'
+import { IMPACTS, STATUSES, SUMMARY_LINES } from '../lib/compare/copyKeys'
+import { NEW_TERMS, OLD_TERMS } from '../lib/compare/sample'
 import { checkContractFile } from '../lib/files'
 
-// Color is never the only signal: each change also carries an icon and hidden text.
-const kinds = {
-  added: { icon: 'plus', cell: 'bg-brand-soft', dot: 'bg-brand-soft' },
-  changed: { icon: 'refresh', cell: 'bg-sun/35', dot: 'bg-sun/60' },
-  removed: { icon: 'close', cell: 'bg-alert-soft', dot: 'bg-alert-soft' },
-}
-
-function Cell({ kind, children }) {
+/** One short sentence for a row in the Level 3 lists. Falls back to a generic line for unusual combinations. */
+function SummaryLine({ item }) {
   const { t } = useI18n()
-  const { icon, cell } = kinds[kind]
+  const vars = lineVars(item)
+  // A missing amount reads as "None", not as an empty gap in the sentence.
+  for (const key of Object.keys(vars)) if (vars[key] === '') vars[key] = t('compare.cell.none')
+  const known = SUMMARY_LINES[item.id]?.includes(item.impact)
+  const text = known
+    ? t(`compare.summary.line.${item.id}.${item.impact}`, vars)
+    : t('compare.summary.generic', { name: t(`compare.row.${item.id}`), impact: t(`compare.impact.${item.impact}`) })
   return (
-    <td className={cn('px-3 py-4 font-bold md:px-4', cell)}>
-      <span className="flex items-center gap-1.5 md:gap-2">
-        <Icon name={icon} size={16} />
-        <span className="sr-only">{t(`compare.${kind}`)}: </span>
-        {children}
+    <li className="flex items-start gap-2.5">
+      <span className="mt-0.5 shrink-0" aria-hidden="true">
+        <Icon name={IMPACT_STYLE[item.impact].icon} size={20} />
       </span>
-    </td>
+      <span>{text}</span>
+    </li>
   )
 }
 
@@ -63,8 +71,16 @@ export default function Compare() {
   const [oldName, setOldName] = useState(null)
   const [newName, setNewName] = useState(null)
   const [problem, setProblem] = useState(null)
+  const [current, setCurrent] = useState(null) // the row whose sheet is (or was just) open
+  const [open, setOpen] = useState(false)
   const oldInput = useRef(null)
   const newInput = useRef(null)
+  const trigger = useRef(null) // the row button that opened the sheet; focus returns to it
+
+  // Nothing is really compared yet: this is the sample fixture (Phase 3 will build these from the uploads).
+  const items = useMemo(() => buildComparison(OLD_TERMS, NEW_TERMS), [])
+  const biggest = useMemo(() => biggestChange(items), [items])
+  const { better, check } = useMemo(() => summaryLists(items), [items])
 
   const pick = (setName) => (e) => {
     const file = e.target.files?.[0]
@@ -76,9 +92,14 @@ export default function Compare() {
     setName(file.name)
   }
 
+  const openRow = (item) => (e) => {
+    trigger.current = e.currentTarget
+    setCurrent(item)
+    setOpen(true)
+  }
+
   const accept = 'application/pdf,image/jpeg,image/png'
   const th = 'px-3 py-3.5 text-left text-sm font-bold md:px-4'
-  const rowHead = 'px-3 py-4 text-left font-normal text-subtle md:px-4'
 
   return (
     <Page>
@@ -99,6 +120,9 @@ export default function Compare() {
         </div>
       ) : (
         <>
+          {/* Honest about what this is. Always visible, never dismissible, until real extraction exists. */}
+          <Callout tone="info" icon="help" title={t('compare.sample.title')} className="mb-4" role="note">
+            {t('compare.sample.text')}
           <Callout tone="info" icon="spark" className="mb-4" role="note">
             {t('compare.demo')}
           </Callout>
@@ -113,14 +137,33 @@ export default function Compare() {
             <p className="mt-1">{t('compare.alertText')}</p>
           </Callout>
 
-          <ul className="mb-2.5 flex flex-wrap gap-x-4 gap-y-2 text-sm text-subtle">
-            {Object.keys(kinds).map((kind) => (
-              <li key={kind} className="flex items-center gap-1.5">
-                <i className={cn('size-3 rounded-[3px] ring-1 ring-line', kinds[kind].dot)} />
-                {t(`compare.${kind}`)}
-              </li>
-            ))}
-          </ul>
+          {biggest && (
+            <Callout title={t('compare.alertLabel')} className="mb-5">
+              <p className="font-sans text-lg font-bold text-ink">{t(`compare.biggest.${biggest.id}.title`)}</p>
+              <p className="mt-1">{t(`compare.biggest.${biggest.id}.text`, lineVars(biggest))}</p>
+            </Callout>
+          )}
+
+          <section aria-labelledby="legend-title" className="mb-3">
+            <h2 id="legend-title" className="font-sans text-base font-bold">{t('compare.legend.title')}</h2>
+            <p className="mt-2 mb-1.5 text-sm font-bold text-subtle">{t('compare.legend.impact')}</p>
+            <ul className="flex flex-wrap gap-2">
+              {IMPACTS.map((impact) => (
+                <li key={impact}>
+                  <ImpactChip impact={impact} />
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 mb-1 text-sm font-bold text-subtle">{t('compare.legend.status')}</p>
+            <ul className="grid gap-1 text-sm text-subtle">
+              {STATUSES.map((status) => (
+                <li key={status}>{t(`compare.def.${status}`)}</li>
+              ))}
+              <li>{t('compare.def.notStated')}</li>
+            </ul>
+          </section>
+
+          <p className="mb-2 font-semibold">{t('compare.hint')}</p>
 
           <div className="overflow-hidden rounded-card border border-line bg-surface">
             <table className="w-full table-fixed border-collapse">
@@ -133,37 +176,97 @@ export default function Compare() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
-                <tr>
-                  <th scope="row" className={rowHead}>{t('compare.rowSalary')}</th>
-                  <td className="px-3 py-4 font-bold md:px-4">₱18,000</td>
-                  <Cell kind="removed">₱16,500</Cell>
-                </tr>
-                <tr>
-                  <th scope="row" className={rowHead}>{t('compare.rowRest')}</th>
-                  <td className="px-3 py-4 font-bold md:px-4">{t('compare.restOld')}</td>
-                  <Cell kind="changed">{t('compare.restNew')}</Cell>
-                </tr>
-                <tr>
-                  <th scope="row" className={rowHead}>{t('compare.rowMedical')}</th>
-                  <td className="px-3 py-4 font-bold md:px-4">{t('compare.medicalOld')}</td>
-                  <Cell kind="added">{t('compare.medicalNew')}</Cell>
-                </tr>
-                <tr>
-                  <th scope="row" className={rowHead}>{t('compare.rowPenalty')}</th>
-                  <td className="px-3 py-4 font-bold md:px-4">₱5,000</td>
-                  <Cell kind="removed">₱8,000</Cell>
-                </tr>
+                {items.map((item) => {
+                  const name = t(`compare.row.${item.id}`)
+                  return (
+                    <tr key={item.id}>
+                      <th scope="row" className="p-0 text-left font-normal">
+                        {/* A real button, at least 48px tall. Not an onClick on the <tr>. */}
+                        <button
+                          type="button"
+                          aria-haspopup="dialog"
+                          aria-label={t('compare.rowAria', { name, impact: t(`compare.impact.${item.impact}`) })}
+                          onClick={openRow(item)}
+                          className="flex min-h-14 w-full items-center justify-between gap-1 px-3 py-3 text-left font-semibold text-ink transition-colors hover:bg-surface-2 md:px-4"
+                        >
+                          <span className="min-w-0 break-words">{name}</span>
+                          <span className="shrink-0 text-subtle" aria-hidden="true">
+                            <Icon name="chevron" size={18} />
+                          </span>
+                        </button>
+                      </th>
+                      <td className="px-3 py-4 align-top font-bold break-words md:px-4">
+                        <CellValue cell={item.old} />
+                      </td>
+                      <td className={cn('px-3 py-4 align-top font-bold break-words md:px-4', IMPACT_STYLE[item.impact].cell)}>
+                        <span className="flex items-start gap-1.5 md:gap-2">
+                          <span className="mt-0.5 shrink-0" aria-hidden="true">
+                            <Icon name={IMPACT_STYLE[item.impact].icon} size={16} />
+                          </span>
+                          <span className="min-w-0">
+                            <span className="sr-only">{t(`compare.impact.${item.impact}`)}: </span>
+                            <CellValue cell={item.new} />
+                            <span className="mt-1.5 block">
+                              <StatusChip status={item.status} className="px-2 py-0.5 text-xs" />
+                            </span>
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
 
           <Panel className="mt-5 p-5 md:p-6">
-            <h2 className="text-2xl font-semibold">{t('compare.summaryTitle')}</h2>
-            <p className="mt-2 text-subtle">{t('compare.summaryText')}</p>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div>
+                <h2 className="text-2xl font-semibold">{t('compare.summary.better.title')}</h2>
+                {better.length ? (
+                  <ul className="mt-3 grid gap-2.5">
+                    {better.map((item) => (
+                      <SummaryLine key={item.id} item={item} />
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-3 text-subtle">{t('compare.summary.none')}</p>
+                )}
+              </div>
+              <div>
+                <h2 className="text-2xl font-semibold">{t('compare.summary.check.title')}</h2>
+                {check.length ? (
+                  <ul className="mt-3 grid gap-2.5">
+                    {check.map((item) => (
+                      <SummaryLine key={item.id} item={item} />
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-3 text-subtle">{t('compare.summary.none')}</p>
+                )}
+              </div>
+            </div>
+            <div className="mt-6 border-t border-line pt-5">
+              <p className="mb-3 font-semibold">{t('app.disclaimer')}</p>
+              <ListGroup aria-label={t('compare.detail.common.footer')}>
+                {agencies.map((a) => (
+                  <ListRow
+                    key={a.id}
+                    href={telHref(a.phone)}
+                    title={a.name}
+                    trailing={<span className="font-bold text-brand tabular-nums">{a.phone}</span>}
+                    className="min-h-14"
+                  />
+                ))}
+              </ListGroup>
+            </div>
           </Panel>
+
           <Button variant="ghost" icon="refresh" className="mt-3" onClick={() => setNewName(null)}>
             {t('compare.changeNew')}
           </Button>
+
+          <CompareDetailSheet item={current} open={open} onClose={() => setOpen(false)} returnFocusRef={trigger} />
         </>
       )}
     </Page>
