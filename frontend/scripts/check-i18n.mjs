@@ -3,6 +3,8 @@ import path from 'node:path'
 import english from '../src/i18n/english.js'
 import filipino from '../src/i18n/filipino.js'
 import taglish from '../src/i18n/taglish.js'
+import { LANGUAGES } from '../src/i18n/messages.js'
+import { GLOSSARY } from '../src/lib/glossary.js'
 
 const langs = { english, filipino, taglish }
 const base = new Set(Object.keys(taglish))
@@ -58,5 +60,23 @@ const dynamic = [
 ]
 for (const k of dynamic) if (!base.has(k)) (problems++, console.log(`dynamic key undefined: ${k}`))
 
-console.log(problems ? `${problems} problem(s)` : `i18n OK — ${base.size} keys × 3 languages, ${used.size} literal keys used`)
+// glossary definitions must match LANGUAGES so every term renders in every locale
+const seenIds = new Set()
+for (const entry of GLOSSARY) {
+  if (seenIds.has(entry.id)) (problems++, console.log(`glossary duplicate id: ${entry.id}`))
+  seenIds.add(entry.id)
+  if (!entry.name || !entry.pattern) (problems++, console.log(`glossary missing name/pattern: ${entry.id}`))
+  for (const l of LANGUAGES) {
+    if (!entry.def?.[l]?.trim()) (problems++, console.log(`glossary missing def: ${entry.id} [${l}]`))
+  }
+  for (const k of Object.keys(entry.def ?? {})) {
+    if (!LANGUAGES.includes(k)) (problems++, console.log(`glossary extra def: ${entry.id} [${k}]`))
+  }
+}
+
+console.log(
+  problems
+    ? `${problems} problem(s)`
+    : `i18n OK — ${base.size} keys × 3 languages, ${used.size} literal keys used, ${GLOSSARY.length} glossary terms × ${LANGUAGES.length}`,
+)
 process.exit(problems ? 1 : 0)

@@ -39,13 +39,16 @@ export default function Help() {
           </div>
         </Callout>
       )}
-      <button
-        type="button"
-        onClick={() => setOffline(true)}
-        className="mb-4 min-h-12 rounded-btn px-1 text-sm text-subtle underline hover:text-ink"
-      >
-        {t('help.demo')}
-      </button>
+      {/* Dev-only: force the offline banner for testing. Never shown to workers. */}
+      {import.meta.env.DEV && (
+        <button
+          type="button"
+          onClick={() => setOffline(true)}
+          className="mb-4 min-h-12 rounded-btn px-1 text-sm text-subtle underline hover:text-ink"
+        >
+          {t('help.demo')}
+        </button>
+      )}
 
       <ListGroup>
         {agencies.map((a, i) => (
@@ -59,7 +62,7 @@ export default function Help() {
                 <p className="mt-0.5 text-sm text-subtle">{info[i].for}</p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-2 md:flex">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 md:flex">
               <Button href={telHref(a.phone)} icon="phone" size="sm" className="tabular-nums">
                 {a.phone}
               </Button>

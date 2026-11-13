@@ -8,7 +8,7 @@ const filipino = {
   'app.close': 'Isara',
   'app.back': 'Bumalik',
   'app.backHome': 'Bumalik sa Simula',
-  'app.backLanding': 'Bumalik sa landing page',
+  'app.backLanding': 'Kanselahin at lumabas',
   'app.retry': 'Subukan muli',
   'app.step': 'Hakbang {n} sa 3',
   'app.errorTitle': 'May nangyaring mali.',
@@ -70,7 +70,7 @@ const filipino = {
   'landing.noteAsk': 'Magtanong sa Filipino',
   'landing.trust': [
     'Pribado bilang default',
-    'Buburahin sa loob ng 24 oras',
+    'Hindi namin itinatago ang dokumento mo',
     'Walang pagpaparehistro',
     'Simple, hindi legalese',
   ],
@@ -117,8 +117,9 @@ const filipino = {
   ],
   'landing.privacyTitle': 'Sa iyo ang dokumento mo.',
   'landing.privacyText':
-    'Naka-encrypt habang sinusuri at kusang buburahin pagkalipas ng 24 oras. Hindi ito ibebenta o gagamitin sa pagsasanay ng AI.',
-  'landing.statLabels': ["kusang pagbura","wika","hotline","ads o spam"],
+    'Hindi itinatago ng Linaw ang dokumento mo. Nasa telepono mo lang ito at nabubura kapag isinara mo ang pahina. Hindi ito ibebenta o gagamitin sa pagsasanay ng AI.',
+  'landing.statLabels': ["dokumentong itinatago","wika","hotline","ads o spam"],
+  'landing.statNone': 'Wala',
   'landing.faqTitle': 'Mga tanong ng mga manggagawa',
   'landing.faqText': 'Simpleng sagot, maikli muna. Pindutin ang tanong para makita ang buong paliwanag.',
   'landing.faqTopics': ['Lahat', 'Ang mga batayan', 'Privacy', 'Paggamit ng Linaw', 'Paghingi ng tulong'],
@@ -156,8 +157,8 @@ const filipino = {
     {
       topic: 2,
       q: 'Ano ang nangyayari sa dokumento ko pagkatapos i-upload?',
-      short: 'Protektado ito habang binabasa, saka binubura pagkalipas ng 24 oras.',
-      a: 'Naka-encrypt ang file mo habang sinusuri ng Linaw. Pagkalipas ng 24 oras, kusa itong binubura kasama ang buod.',
+      short: 'Hindi ito itinatago ng Linaw. Nasa telepono mo lang ito hanggang isara mo ang pahina.',
+      a: 'Ipinapadala ang file nang isang beses sa aming serbisyong bumabasa para mabasa ang teksto, saka binubura ang kopyang iyon. Walang itinatago ang Linaw sa mga server nito, at nabubura ang lahat sa telepono mo kapag isinara mo ang pahina.',
       points: ['Hindi namin ibinebenta o ibinabahagi kaninuman ang dokumento mo', 'Hindi namin ginagamit ang dokumento mo sa pagsasanay ng AI', 'Walang account na ginagawa, kaya walang nakakabit sa pangalan mo'],
     },
     {
@@ -231,7 +232,7 @@ const filipino = {
   'landing.footerRights': 'Lahat ng karapatan ay nakalaan.',
   'landing.footerBy': 'Gawa ng',
   'landing.footerLinks': 'Footer',
-  'landing.footerPrivacy': 'Awtomatikong binubura pagkalipas ng 24 oras. Walang pagpaparehistro.',
+  'landing.footerPrivacy': 'Hindi namin itinatago ang dokumento mo. Walang pagpaparehistro.',
 
   'home.h1a': 'Magsimula rito.',
   'home.h1b': 'I-upload ang kontrata mo.',
@@ -241,9 +242,26 @@ const filipino = {
   'home.upload': 'Mag-upload ng kontrata',
   'home.none': 'Wala akong kontrata',
   'home.compare': 'Paghambingin ang dalawang kontrata',
-  'home.trust1': 'Buburahin sa loob ng 24 oras',
+  'home.trust1': 'Hindi namin itinatago ang dokumento mo',
   'home.trust2': 'Simple at walang panghuhusga',
   'home.trust3': 'May tunay na ahensyang malalapitan',
+
+  // ---------- consent ----------
+  'consent.title': 'Bago namin basahin ang dokumento mo',
+  'consent.text':
+    'Kailangan muna namin ng pahintulot mo. Narito ang eksaktong kinokolekta namin, paano namin ito ginagamit, at bakit hindi namin ito itinatago.',
+  'consent.whatTitle': 'Ano ang kinokolekta namin',
+  'consent.what': 'Ang larawan o PDF na pinili mo. Wala nang iba mula sa telepono mo.',
+  'consent.useTitle': 'Paano namin ito ginagamit',
+  'consent.use':
+    'Para basahin ang kontrata at ipaliwanag ito sa iyo. Hindi namin ito ibinebenta o ginagamit sa pagsasanay ng AI.',
+  'consent.keepTitle': 'Itinatago ba namin ito?',
+  'consent.keep': 'Hindi ito itinatago ng Linaw. Nabubura ito sa telepono mo kapag isinara mo ang pahina.',
+  'consent.noAccount': 'Walang kailangang account, email, o pangalan.',
+  'consent.agree': 'Naiintindihan ko at pumapayag ako sa paraan ng pagkolekta at paggamit ng dokumento ko.',
+  'consent.cta': 'Sumang-ayon at magpatuloy',
+  'consent.notNow': 'Mamaya na',
+  'consent.help': 'Humingi ng tulong',
 
   'upload.title': 'I-upload ang dokumento',
   'upload.text': 'Kontrata, quitclaim, offer letter—kahit larawan lamang, puwede.',
@@ -270,7 +288,7 @@ const filipino = {
   'upload.tips': ['Ipatag ang papel', 'Iwasan ang anino at silaw', 'Isama ang buong pahina sa larawan'],
   'upload.privacyTitle': 'Sa iyo ang dokumento mo.',
   'upload.privacyText':
-    'Naka-encrypt habang binabasa. Kusang buburahin ang file at pagsusuri pagkalipas ng 24 oras.',
+    'Hindi itinatago ng Linaw ang file o ang pagsusuri nito. Binabasa ito nang isang beses, saka nabubura kapag isinara mo ang pahina.',
   'upload.dismiss': 'Isara ang mensahe',
   'file.blurry.title': 'Medyo malabo ang larawan.',
   'file.blurry.text': 'Subukang kunan muli sa maliwanag at patag na lugar.',
@@ -510,6 +528,7 @@ const filipino = {
   'compare.oldDone': 'Na-upload · {name}',
   'compare.oldAria': 'Piliin ang lumang kontrata',
   'compare.replace': 'Palitan',
+  'compare.demo': 'Halimbawang resulta: ganito ang magiging hitsura ng paghahambing. Darating na ang tunay na pagbasa ng dalawang kontrata.',
   'compare.new': 'Bagong kontrata',
   'compare.newHint': 'I-tap para mag-upload',
   'compare.newAria': 'Piliin ang bagong kontrata',

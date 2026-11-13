@@ -3,7 +3,7 @@
   (Prompt Input, Message, Message Bubble, Message Scroller, Streaming Response,
   Citations, Agent Loading States, Agent Activity, Approval Card, Todo List).
 - Backend: Node + Express + TypeScript, zod validation.
-- DB: PostgreSQL (migrations with a tool like node-pg-migrate or Drizzle).
+- DB: PostgreSQL for curated reference data only, never user documents (migrations with a tool like node-pg-migrate or Drizzle).
 - i18n: react-i18next, locale files: en, fil, tl-en (Taglish).
 - Money: integer centavos or decimal.js, never floats.
 - External AI: Lumen OCR and Lumen AI Chat, ONLY behind adapter interfaces

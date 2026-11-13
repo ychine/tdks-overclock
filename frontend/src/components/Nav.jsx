@@ -4,7 +4,6 @@ import { SPRING_LAYOUT } from '@/lib/ease'
 import { cn } from '@/lib/utils'
 import { useI18n } from '../i18n/useI18n'
 import { agencies, telHref } from '../lib/agencies'
-import { Badge } from './ui/Surfaces'
 import Brand from './Brand'
 import Icon from './Icon'
 import LanguageSelect from './LanguageSelect'
@@ -93,7 +92,7 @@ function HelpMenu({ active, go }) {
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          'grid min-h-11 w-8 place-items-center rounded-btn transition-colors',
+          'grid min-h-11 w-11 place-items-center rounded-btn transition-colors',
           active ? 'text-brand' : 'text-subtle hover:text-ink',
         )}
       >
@@ -117,9 +116,6 @@ function HelpMenu({ active, go }) {
           <div role="menu" className="rounded-card border border-line bg-surface p-2 shadow-lg">
             <div className="flex items-center justify-between px-2 py-1.5">
               <span className="text-xs font-bold tracking-wide text-subtle uppercase">{t('nav.quickCalls')}</span>
-              <Badge tone="ok" icon="phone">
-                {t('nav.quickCallsHours')}
-              </Badge>
             </div>
             <ul>
               {agencies.map((a) => (
