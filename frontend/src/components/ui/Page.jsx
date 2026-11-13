@@ -31,13 +31,22 @@ export function Page({ narrow = false, className, children }) {
   )
 }
 
-/** Page title block. `children` is an optional action area, right-aligned on wide screens. */
-export function PageHeading({ title, text, children, className }) {
+/**
+ * Page title block. `children` is an optional action area, right-aligned on wide screens.
+ * `centered` centers the title and text (and stacks any actions under them).
+ */
+export function PageHeading({ title, text, children, centered = false, className }) {
   return (
-    <div className={cn('mt-1 mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between', className)}>
-      <div className="max-w-[780px]">
-        <h1 className="text-4xl leading-[1.05] font-semibold md:text-5xl">{title}</h1>
-        {text && <p className="mt-3 max-w-[60ch] text-lg text-subtle">{text}</p>}
+    <div
+      className={cn(
+        'mt-1 mb-8 flex flex-col gap-5',
+        centered ? 'items-center text-center' : 'md:flex-row md:items-end md:justify-between',
+        className,
+      )}
+    >
+      <div className={cn('max-w-[780px]', centered && 'mx-auto')}>
+        <h1 className="text-4xl leading-[1.05] font-semibold text-balance md:text-5xl">{title}</h1>
+        {text && <p className={cn('mt-3 max-w-[60ch] text-lg text-pretty text-subtle', centered && 'mx-auto')}>{text}</p>}
       </div>
       {children}
     </div>

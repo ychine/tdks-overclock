@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import Icon from '../components/Icon'
+import SourcePeek from '../components/SourcePeek'
 import NeedsUpload from '../components/NeedsUpload'
 import Button from '../components/ui/Button'
 import { Chip } from '../components/ui/Controls'
 import { Page, PageHeading } from '../components/ui/Page'
 import Sheet from '../components/ui/Sheet'
-import Stepper from '../components/ui/Stepper'
 import { Badge, Callout, ListGroup, ListRow, Panel } from '../components/ui/Surfaces'
 import { LANGUAGE_TAGS } from '../i18n/messages'
 import { useI18n } from '../i18n/useI18n'
@@ -41,25 +41,25 @@ function buildSummary(fields, t, language) {
 
   const items = [
     {
-      icon: 'wallet', tone: 'brand', worry: !salary,
+      key: 'salary', icon: 'wallet', tone: 'brand', worry: !salary,
       title: t('summary.itemSalary'),
       value: salary || missing,
       detail: salary ? fromContract : t('summary.salaryAsk'),
     },
     {
-      icon: 'sun', tone: 'sun', worry: !hours || overHours,
+      key: 'hours', icon: 'sun', tone: 'sun', worry: !hours || overHours,
       title: t('summary.itemHours'),
       value: hours || missing,
       detail: overHours ? t('summary.hoursOver') : hours ? fromContract : t('summary.hoursAsk'),
     },
     {
-      icon: 'home', tone: 'brand', worry: !rest,
+      key: 'rest', icon: 'home', tone: 'brand', worry: !rest,
       title: t('summary.itemRest'),
       value: rest ? t('summary.restValue', { day: rest }) : missing,
       detail: rest ? t('summary.restDetail') : t('summary.restAsk'),
     },
     {
-      icon: 'file', tone: 'brand', worry: !term && !start,
+      key: term ? 'term' : 'start', icon: 'file', tone: 'brand', worry: !term && !start,
       title: t('summary.itemTerm'),
       value: term || missing,
       detail: start ? t('summary.termFrom', { date: start }) : t('summary.termNoStart'),
@@ -67,10 +67,11 @@ function buildSummary(fields, t, language) {
   ]
   if (penalty) {
     items.push({
-      icon: 'alert', tone: 'alert', worry: true,
+      key: 'penalty', icon: 'alert', tone: 'alert', worry: true,
       title: t('summary.itemPenalty'),
       value: penalty,
       detail: t('summary.penaltyDetail'),
+      why: t('summary.peekWhyPenalty'),
     })
   }
 
@@ -132,9 +133,8 @@ export default function Summary({ go, doc, confirmed }) {
 
   return (
     <Page>
-      <Stepper current={2} />
-      <PageHeading title={t('summary.title')} text={t('summary.text')}>
-        <div className="flex flex-wrap gap-2.5 print:hidden">
+      <PageHeading centered title={t('summary.title')} text={t('summary.text')}>
+        <div className="flex flex-wrap justify-center gap-2.5 print:hidden">
           {canSpeak && (
             <Button variant="secondary" icon="sound" onClick={toggleSpeech}>
               {speaking ? t('summary.stop') : t('summary.speak')}
@@ -161,7 +161,7 @@ export default function Summary({ go, doc, confirmed }) {
         <ListGroup aria-label={t('summary.title')}>
           {items.map((item, i) => {
             const { icon, tone, worry } = item
-            return (
+            const row = (
               <ListRow
                 key={item.title}
                 icon={icon}
@@ -170,8 +170,21 @@ export default function Summary({ go, doc, confirmed }) {
                 detail={item.detail}
                 value={item.value}
                 badge={worry ? <Badge tone="alert">{t('summary.askBadge')}</Badge> : null}
-                className={worry ? 'bg-alert-soft' : i === 0 ? 'py-5' : undefined}
+                className={worry ? 'bg-alert-soft hover:bg-alert-soft/70' : i === 0 ? 'py-5' : undefined}
               />
+            )
+            if (!worry) return row
+            // Worth-asking rows open a peek at the exact part of the document they came from.
+            return (
+              <SourcePeek
+                key={item.title}
+                pages={doc.lines}
+                field={confirmed.find((f) => f.key === item.key)}
+                title={item.title}
+                why={item.why ?? item.detail}
+              >
+                {row}
+              </SourcePeek>
             )
           })}
         </ListGroup>

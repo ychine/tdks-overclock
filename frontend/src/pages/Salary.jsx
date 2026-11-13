@@ -59,7 +59,7 @@ export default function Salary({ go, confirmed }) {
 
   return (
     <Page>
-      <PageHeading title={t('salary.title')} text={t('salary.text')} />
+      <PageHeading centered title={t('salary.title')} text={t('salary.text')} />
 
       <div className="mb-6 max-w-sm">
         <Field

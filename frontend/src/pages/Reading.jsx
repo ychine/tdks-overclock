@@ -5,9 +5,9 @@ import { SPRING_SWAP } from '@/lib/ease'
 import { cn } from '@/lib/utils'
 import Icon from '../components/Icon'
 import NeedsUpload from '../components/NeedsUpload'
+import ScanIllustration from '../components/ScanIllustration'
 import Button from '../components/ui/Button'
 import { Page } from '../components/ui/Page'
-import Stepper from '../components/ui/Stepper'
 import { Callout, Card } from '../components/ui/Surfaces'
 import { useI18n } from '../i18n/useI18n'
 import { readDocument, retryRead } from '../lib/readDocument'
@@ -15,7 +15,7 @@ import { readDocument, retryRead } from '../lib/readDocument'
 const STAGES = ['upload', 'read', 'extract']
 const RETRYABLE_STATUS = [0, 429, 502, 503, 504]
 
-export default function Reading({ go, upload, onRead }) {
+export default function Reading({ go, upload, onRead, onFailedChange }) {
   const { t, language } = useI18n()
   const statuses = t('reading.stages')
   const [stage, setStage] = useState('upload')
@@ -36,6 +36,10 @@ export default function Reading({ go, upload, onRead }) {
       active = false
     }
   }, [upload, attempt, onRead, go, language])
+
+  useEffect(() => {
+    onFailedChange?.(Boolean(error))
+  }, [error, onFailedChange])
 
   if (!upload) return <NeedsUpload go={go} />
 
@@ -64,7 +68,6 @@ export default function Reading({ go, upload, onRead }) {
     }
     return (
       <Page narrow>
-        <Stepper current={0} />
         <Callout
           title={error.kind === 'unreadable' ? t('reading.unreadableTitle') : t('reading.errorTitle')}
           className="mt-6"
@@ -88,18 +91,9 @@ export default function Reading({ go, upload, onRead }) {
 
   return (
     <Page narrow>
-      <Stepper current={0} />
       <div className="grid content-center gap-10 md:min-h-[420px] md:grid-cols-[1fr_1.3fr] md:items-center">
-        <div aria-hidden="true" className="relative grid h-60 place-items-center">
-          <div className="relative h-[210px] w-40 -rotate-2 overflow-hidden rounded-xl border border-line bg-surface px-5 py-[30px] shadow-card">
-            {['w-full', 'w-[78%]', 'w-[90%]', 'w-[62%]'].map((w) => (
-              <div key={w} className={`mb-[18px] h-[7px] rounded bg-line ${w}`} />
-            ))}
-            <span className="absolute inset-x-2 top-5 h-0.5 animate-scan bg-brand shadow-[0_0_15px_5px_color-mix(in_srgb,var(--brand)_20%,transparent)] motion-reduce:animate-none" />
-          </div>
-          <div className="absolute size-[215px] animate-orbit rounded-full border border-dashed border-brand/45 motion-reduce:animate-none">
-            <span className="absolute top-3.5 left-5 text-brand"><Icon name="spark" size={22} /></span>
-          </div>
+        <div className="grid place-items-center">
+          <ScanIllustration />
         </div>
         <div>
           <h1 className="text-4xl leading-tight font-semibold">{t('reading.title')}</h1>
