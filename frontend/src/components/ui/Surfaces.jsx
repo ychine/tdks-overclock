@@ -46,7 +46,7 @@ export function IconTile({ icon, tone = 'brand', size = 22, className }) {
 }
 
 /** One row inside a ListGroup. Renders a button or link when it is interactive. */
-export function ListRow({ icon, tone, title, detail, value, badge, trailing, onClick, href, className, children }) {
+export function ListRow({ icon, tone, title, detail, value, badge, trailing, onClick, href, className, children, ref, ...buttonProps }) {
   const inner = (
     <>
       {icon && <IconTile icon={icon} tone={tone} />}
@@ -77,7 +77,14 @@ export function ListRow({ icon, tone, title, detail, value, badge, trailing, onC
   if (onClick) {
     return (
       <li>
-        <button type="button" onClick={onClick} className={cn(row, 'min-h-14 transition-colors hover:bg-surface-2', className)}>
+        {/* Extra props and the ref land on the button, so a row can be a Radix trigger (asChild). */}
+        <button
+          ref={ref}
+          type="button"
+          onClick={onClick}
+          className={cn(row, 'min-h-14 transition-colors hover:bg-surface-2', className)}
+          {...buttonProps}
+        >
           {inner}
         </button>
       </li>
