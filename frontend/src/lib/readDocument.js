@@ -11,7 +11,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms))
  * `onStage` receives 'upload' | 'read' | 'extract'.
  * Pass `existingId` to resume (e.g. after a retry) without uploading again.
  */
-async function run(file, onStage, existingId) {
+async function run(file, onStage, existingId, language) {
   let record
   if (existingId) {
     record = await getDocument(existingId)
@@ -49,7 +49,7 @@ async function run(file, onStage, existingId) {
   ])
   const items = (pages.Items || []).slice().sort((a, b) => a.PageNumber - b.PageNumber)
   const thresholds = envelope?.thresholds || { high: 0.9, medium: 0.7 }
-  const { fields, lines } = extractFields(items, thresholds.high)
+  const { fields, lines } = extractFields(items, thresholds.high, language)
 
   if (!lines.some((p) => p.lines.length)) {
     const err = new Error('No text found')
@@ -70,7 +70,7 @@ async function run(file, onStage, existingId) {
 // One read per file/attempt, so React StrictMode's double effects never upload twice (uploads cost credits).
 const inflight = new WeakMap()
 
-export function readDocument(file, onStage, existingId) {
+export function readDocument(file, onStage, existingId, language) {
   if (!existingId && inflight.has(file)) {
     const entry = inflight.get(file)
     entry.listeners.add(onStage)
@@ -82,7 +82,7 @@ export function readDocument(file, onStage, existingId) {
     entry.stage = s
     entry.listeners.forEach((fn) => fn(s))
   }
-  entry.promise = run(file, notify, existingId)
+  entry.promise = run(file, notify, existingId, language)
   if (!existingId) {
     inflight.set(file, entry)
     // A failed attempt must not be replayed: let "Subukan ulit" upload fresh.
@@ -91,7 +91,7 @@ export function readDocument(file, onStage, existingId) {
   return entry.promise
 }
 
-export async function retryRead(file, documentId, onStage) {
+export async function retryRead(file, documentId, onStage, language) {
   onStage('read')
   try {
     await retryDocument(documentId)
@@ -99,5 +99,5 @@ export async function retryRead(file, documentId, onStage) {
     // 409 = still reading (not stale yet) or already done: just keep waiting on it.
     if (err.status !== 409) throw Object.assign(err, { documentId, retryable: true })
   }
-  return readDocument(file, onStage, documentId)
+  return readDocument(file, onStage, documentId, language)
 }

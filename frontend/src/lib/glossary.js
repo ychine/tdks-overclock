@@ -17,7 +17,7 @@ export const GLOSSARY = [
     def: {
       English: 'An amount agreed in advance that one side pays if they break part of the contract, like leaving early.',
       Filipino: 'Halagang napagkasunduan nang maaga na babayaran kapag may hindi tinupad sa kontrata, gaya ng maagang pag-alis.',
-      Taglish: 'Halagang napagkasunduan na in advance na babayaran kapag may hindi nasunod sa kontrata, gaya ng maagang pag-alis.',
+      Taglish: 'Halagang napagkasunduan in advance na babayaran kapag may hindi nasunod sa kontrata, gaya ng maagang pag-alis.',
     },
   },
   {
@@ -37,7 +37,7 @@ export const GLOSSARY = [
     def: {
       English: 'Giving up a right or a claim on purpose. Once signed, it can be hard to take back.',
       Filipino: 'Kusang pagbitaw sa isang karapatan o paghahabol. Kapag napirmahan na, mahirap na itong bawiin.',
-      Taglish: 'Kusang pag-give up ng isang karapatan o claim. Kapag napirmahan na, mahirap na itong bawiin.',
+      Taglish: 'Kusang pag-give up ng isang karapatan o paghahabol. Kapag napirmahan na, mahirap na itong bawiin.',
     },
   },
   {
@@ -66,8 +66,8 @@ export const GLOSSARY = [
     pattern: /\bco-?terminous\b|\bco-?terminus\b|\bproject[-\s]?based\b|\bproject\s+employ(?:ee|ment)\b/i,
     def: {
       English: 'Your job ends at the same time as a project or another contract. When that ends, your work ends too.',
-      Filipino: 'Kasabay na natatapos ng trabaho mo ang isang proyekto o ibang kontrata. Kapag natapos iyon, tapos din ang trabaho mo.',
-      Taglish: 'Kasabay na natatapos ng trabaho mo ang isang project o ibang kontrata. Kapag tapos na iyon, tapos din ang trabaho mo.',
+      Filipino: 'Natatapos ang trabaho mo kasabay ng isang proyekto o ibang kontrata. Kapag natapos iyon, tapos din ang trabaho mo.',
+      Taglish: 'Natatapos ang trabaho mo kasabay ng isang project o ibang kontrata. Kapag tapos na iyon, tapos din ang trabaho mo.',
     },
   },
   {
@@ -77,7 +77,7 @@ export const GLOSSARY = [
     def: {
       English: 'A reason to dismiss that comes from the worker’s own fault, like serious misconduct. The employer must still give notice and a chance to explain.',
       Filipino: 'Dahilan ng pagtanggal na mula sa sariling pagkakamali ng manggagawa, gaya ng malubhang maling asal. Kailangan pa rin ng abiso at pagkakataong magpaliwanag.',
-      Taglish: 'Dahilan ng pagtanggal na galing sa sariling mali ng worker, gaya ng serious misconduct. Kailangan pa rin ng notice at chance na magpaliwanag.',
+      Taglish: 'Dahilan ng pagtanggal na galing sa sariling mali ng worker, gaya ng malubhang maling asal. Kailangan pa rin ng notice at chance na magpaliwanag.',
     },
   },
   {
@@ -97,7 +97,7 @@ export const GLOSSARY = [
     def: {
       English: 'When the employer makes work so unbearable, or cuts pay or rank, that you are forced to quit. The law treats it like being fired.',
       Filipino: 'Kapag ginawang di-matiis ng employer ang trabaho, o binawasan ang sahod o ranggo, kaya napilitan kang umalis. Itinuturing ito ng batas na parang tinanggal ka.',
-      Taglish: 'Kapag ginawang hindi na kaya ng employer ang trabaho, o binawasan ang sahod o posisyon, kaya napilitan kang umalis. Tinuturing ito ng batas na parang tinanggal ka.',
+      Taglish: 'Kapag ginawang hindi na kaya ng employer ang trabaho, o binawasan ang sahod o ranggo, kaya napilitan kang umalis. Tinuturing ito ng batas na parang tinanggal ka.',
     },
   },
   {
@@ -116,7 +116,7 @@ export const GLOSSARY = [
     pattern: /\bfloating\s+status\b|\bbench(?:ed|ing)?\s+status\b|\boff-?detail\b/i,
     def: {
       English: 'A temporary period with no assignment, usually for agency or security workers. By law it should not go beyond 6 months.',
-      Filipino: 'Pansamantalang panahon na walang assignment, kadalasan sa agency o security guard. Ayon sa batas, hindi ito dapat lumampas sa 6 na buwan.',
+      Filipino: 'Pansamantalang panahon na walang assignment, kadalasan sa agency o security worker. Ayon sa batas, hindi ito dapat lumampas sa 6 na buwan.',
       Taglish: 'Pansamantalang walang assignment, madalas sa agency o security workers. Ayon sa batas, hindi dapat lumampas ng 6 na buwan.',
     },
   },
@@ -126,7 +126,7 @@ export const GLOSSARY = [
     pattern: /\bforfeit(?:s|ed|ure)?\b/i,
     def: {
       English: 'Losing something you would otherwise get, such as unpaid salary or a deposit, as a consequence written in the contract.',
-      Filipino: 'Pagkawala ng bagay na dapat sana ay makukuha mo, gaya ng hindi pa naibibigay na sahod o deposito, bilang parusang nakasaad sa kontrata.',
+      Filipino: 'Pagkawala ng bagay na dapat sana ay makukuha mo, gaya ng hindi pa naibibigay na sahod o deposito, bilang kahihinatnan na nakasaad sa kontrata.',
       Taglish: 'Pagkawala ng dapat sana ay makukuha mo, gaya ng hindi pa nabibigay na sahod o deposit, bilang consequence na nakasulat sa kontrata.',
     },
   },
@@ -276,7 +276,7 @@ export const GLOSSARY = [
     pattern: /\bcovenants?\b/i,
     def: {
       English: 'A formal promise written in the contract. Breaking it can have the consequences the contract lists.',
-      Filipino: 'Pormal na pangakong nakasulat sa kontrata. Ang paglabag dito ay maaaring may parusang nakasaad.',
+      Filipino: 'Pormal na pangakong nakasulat sa kontrata. Ang paglabag dito ay maaaring may kahihinatnan na nakasaad.',
       Taglish: 'Formal na pangakong nakasulat sa kontrata. Kapag nilabag, puwedeng may consequence na nakasulat.',
     },
   },

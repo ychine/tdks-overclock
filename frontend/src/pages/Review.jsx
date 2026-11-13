@@ -7,15 +7,15 @@ import Icon from '../components/Icon'
 import NeedsUpload from '../components/NeedsUpload'
 import OriginalView from '../components/OriginalView'
 import Button from '../components/ui/Button'
-import { Field } from '../components/ui/Controls'
+import { Field, Segmented } from '../components/ui/Controls'
 import { Page, PageHeading } from '../components/ui/Page'
 import { Badge, Callout, ListGroup } from '../components/ui/Surfaces'
-import { Segmented } from '../components/ui/Controls'
 import { useI18n } from '../i18n/useI18n'
+import { localizeFieldValue } from '../lib/extract'
 
 // Fields come from the real OCR read (lib/extract.js). `low` = below Lumen's confidence threshold or not found.
 export default function Review({ go, upload, doc, onConfirm }) {
-  const { t } = useI18n()
+  const { t, language } = useI18n()
   const [tab, setTab] = useState('fields')
   const [fields, setFields] = useState(() => doc?.fields ?? [])
   const [active, setActive] = useState(() => Math.max(0, (doc?.fields ?? []).findIndex((f) => f.low)))
@@ -69,7 +69,7 @@ export default function Review({ go, upload, doc, onConfirm }) {
             {fields.map((field, i) => {
               const open = active === i
               const label = t(`review.${field.key}`)
-              const value = field.value
+              const value = localizeFieldValue(field.value, language)
               return (
                 <li key={field.key} className={cn('transition-colors', open && 'bg-brand-soft/60', field.low && !open && 'bg-sun/15')}>
                   <button

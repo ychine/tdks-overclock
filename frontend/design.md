@@ -11,7 +11,7 @@ BRAND & STYLE
 
 SCREENS (design all, mobile 390px first, then desktop)
 1. Home: logo, one-line promise ("Intindihin ang kontrata mo bago ka pumirma."), language switcher (English / Filipino / Taglish), big buttons "Mag-upload ng kontrata" and "Wala akong kontrata". A persistent small note: "Nagpapaliwanag lang kami, hindi legal advice."
-2. Upload: camera capture or choose photo/PDF, tips for a clear photo, privacy reassurance (what we store, auto-delete).
+2. Upload: camera capture or choose photo/PDF, tips for a clear photo, privacy reassurance (we don't store your document; it stays on your phone).
 3. Reading: loading state with shimmering status text cycling through "Binabasa ang pahina 1...", "Hinahanap ang sahod...", an activity list of steps ticking off.
 4. Check & Correct: original document image on one side, extracted text/fields on the other (on mobile, a swipeable split or tabs). Key fields (salary, start date, duration, working hours, days off) shown as editable chips. Low-confidence fields get a yellow highlight and a "Pakisuri" badge. Tapping a field highlights its location on the image. Primary CTA: "Tama na ito, ipaliwanag".
 5. 30-Second Summary: six cards: Sahod, Bawas, Oras ng trabaho, Day off, Haba ng kontrata, Parusa/penalties. Red accent on anything worrying. A "Basahin nang malakas" button. Tricky terms (quitclaim, probationary, etc.) underlined with dotted lines; tapping opens a bottom sheet with a one-line definition.

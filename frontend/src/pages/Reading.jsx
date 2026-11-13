@@ -16,7 +16,7 @@ const STAGES = ['upload', 'read', 'extract']
 const RETRYABLE_STATUS = [0, 429, 502, 503, 504]
 
 export default function Reading({ go, upload, onRead, onFailedChange }) {
-  const { t } = useI18n()
+  const { t, language } = useI18n()
   const statuses = t('reading.stages')
   const [stage, setStage] = useState('upload')
   const [error, setError] = useState(null)
@@ -27,7 +27,7 @@ export default function Reading({ go, upload, onRead, onFailedChange }) {
   useEffect(() => {
     if (!upload) return undefined
     let active = true
-    const promise = attempt ?? readDocument(upload.file, (s) => active && setStage(s))
+    const promise = attempt ?? readDocument(upload.file, (s) => active && setStage(s), undefined, language)
     promise.then(
       (result) => active && (onRead(result), go('review')),
       (err) => active && setError(err),
@@ -35,7 +35,7 @@ export default function Reading({ go, upload, onRead, onFailedChange }) {
     return () => {
       active = false
     }
-  }, [upload, attempt, onRead, go])
+  }, [upload, attempt, onRead, go, language])
 
   useEffect(() => {
     onFailedChange?.(Boolean(error))
@@ -61,7 +61,9 @@ export default function Reading({ go, upload, onRead, onFailedChange }) {
     const retry = () => {
       setError(null)
       setAttempt(
-        error.documentId ? retryRead(upload.file, error.documentId, setStage) : readDocument(upload.file, setStage),
+        error.documentId
+          ? retryRead(upload.file, error.documentId, setStage, language)
+          : readDocument(upload.file, setStage, undefined, language),
       )
     }
     return (

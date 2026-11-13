@@ -31,11 +31,11 @@
 - [ ] 4. API foundation
   - [ ] 4.1 Express app with zod validation middleware, error handler, allowlist structured logger (no bodies)
     - _Requirements: R10.6_
-  - [ ] 4.2 PostgreSQL schema and migrations (sessions, documents, document_fields, summaries, calc_results, comparisons, chat_messages, glossary_terms) with cascade deletes
-    - _Requirements: R10_
-  - [ ] 4.3 Anonymous session via HttpOnly SameSite cookie; consent endpoint; middleware that blocks uploads without consent and scopes documents to session
+  - [ ] 4.2 PostgreSQL schema and migrations for reference data only (glossary_terms); no tables for documents, fields, summaries, comparisons, or chat
+    - _Requirements: R4.3, R10.4_
+  - [ ] 4.3 No accounts and no server session; consent captured in the browser; middleware that rejects uploads without the current consent version
     - _Requirements: R10.1, R10.2, R10.3_
-  - [ ] 4.4 Write supertest tests for consent-required upload and cross-session access returning 404
+  - [ ] 4.4 Write supertest tests for consent-required upload and unknown document ids returning 404
     - _Requirements: R10_
   - [ ] 4.5 Write a log-leak test asserting document text never appears in captured logs
     - _Requirements: R10.6_
@@ -52,21 +52,21 @@
     - _Requirements: R1, R12_
 
 - [ ] 6. Upload and OCR
-  - [ ] 6.1 UploadService: type/size/page validation from config, temp file store, resumable chunk assembly
-    - _Requirements: R1.1, R1.2, R1.3_
-  - [ ] 6.2 ExtractionService: call OcrProvider, flag low-confidence fields by threshold, map `unreadable` to retake response, handle timeouts with retained file
+  - [ ] 6.1 UploadService: type/size/page validation from config; stream bytes to the OcrProvider without writing to disk
+    - _Requirements: R1.1, R1.2, R1.3, R10.4_
+  - [ ] 6.2 ExtractionService: call OcrProvider, flag low-confidence fields by threshold, map `unreadable` to retake response, return a retryable error on timeout (the browser keeps the file)
     - _Requirements: R1.5, R1.6, R1.7_
-  - [ ] 6.3 Routes `POST /documents`, `GET /documents/:id`, `GET /config/public`
+  - [ ] 6.3 Routes `POST /documents`, `GET /documents/:id`, `DELETE /documents/:id`, `GET /config/public`
     - _Requirements: R1_
   - [ ] 6.4 Write tests for rejected types/sizes/pages, unreadable response, and retry after provider failure
     - _Requirements: R1_
 
 - [ ] 7. Verify, correct, and confirm
-  - [ ] 7.1 `PUT /documents/:id/fields` storing edits with `source = user`
-    - _Requirements: R2.5, R2.8_
-  - [ ] 7.2 `POST /documents/:id/confirm` setting `confirmed_at` and building the confirmed-only payload
+  - [ ] 7.1 Keep field edits in browser state with `source = user` (no server write)
+    - _Requirements: R2.5, R2.8, R10.4_
+  - [ ] 7.2 `POST /explain` accepting only confirmed fields in the body and building the confirmed-only payload
     - _Requirements: R2.6, R2.7_
-  - [ ] 7.3 Enforce 409 on explain/chat-with-document when unconfirmed
+  - [ ] 7.3 Enforce 409 on explain/compare/chat when a payload carries unconfirmed fields or raw OCR text
     - _Requirements: R2.6_
   - [ ] 7.4 Write tests that unconfirmed documents never reach the ChatProvider and that raw OCR text is excluded from the payload
     - _Requirements: R2.7, R12_
@@ -119,12 +119,14 @@
   - [ ] 12.5 Write tests for distress detection phrases (en/fil/tl), help surfacing without ending the conversation, and legal-judgment referral
     - _Requirements: R8, R9_
 
-- [ ] 13. Privacy lifecycle
-  - [ ] 13.1 PurgeService with configurable retention (default 24h) deleting rows and files
-    - _Requirements: R10.4_
-  - [ ] 13.2 `DELETE /session` immediate deletion with confirmation response
+- [ ] 13. Privacy: no storage
+  - [ ] 13.1 Confirm the Lumen OCR and Chat APIs support deleting a document and ending a session; if either cannot, update the consent copy to disclose that provider's retention
+    - _Requirements: R10.9_
+  - [ ] 13.2 ProviderCleanup: delete the OCR provider copy when a read finishes, fails permanently, or is cancelled; end the chat session when a conversation closes
+    - _Requirements: R10.4, R10.9_
+  - [ ] 13.3 "Clear my document": clear sessionStorage and call `DELETE /documents/:id`, then confirm completion
     - _Requirements: R10.5_
-  - [ ] 13.3 Write purge tests with a fake clock and a delete-now test
+  - [ ] 13.4 Write a no-persistence test (nothing user-owned in DB, disk, or logs after a full run) and ProviderCleanup tests for every exit path
     - _Requirements: R10_
 
 - [ ] 14. Web app foundation
@@ -140,7 +142,7 @@
 - [ ] 15. Web screens
   - [ ] 15.1 Consent screen
     - _Requirements: R10.1_
-  - [ ] 15.2 Upload screen with client compression, progress, retry, resumable chunked upload, retake tips
+  - [ ] 15.2 Upload screen with client compression, progress, retry from the browser copy, retake tips
     - _Requirements: R1.6, R1.8, R11.9, R11.10, R11.11_
   - [ ] 15.3 Verify screen: side-by-side image and fields, editable fields, low-confidence label, bbox highlight on focus, explicit confirm button
     - _Requirements: R2_
@@ -152,7 +154,7 @@
     - _Requirements: R7.1, R7.3_
   - [ ] 15.7 Chat screen: streaming with retry, citations, suggested questions, help banner on distress, sanitized rendering
     - _Requirements: R8, R9.4, R12.5_
-  - [ ] 15.8 Get Help page and "Delete my data now" action
+  - [ ] 15.8 Get Help page and "Clear my document" action
     - _Requirements: R9.2, R10.5_
   - [ ] 15.9 Component and axe tests for Verify highlight, low-confidence flag, and key screens
     - _Requirements: R2, R11_
