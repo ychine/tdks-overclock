@@ -96,8 +96,7 @@ function useBeuiMessages(t) {
   )
 }
 
-export default function Chat({ go, doc, confirmed, onFile }) {
-export default function Chat({ go, doc, confirmed, upload }) {
+export default function Chat({ go, doc, confirmed, onFile, upload }) {
   const { t, language } = useI18n()
   const messages = useBeuiMessages(t)
   // Only a contract that was actually read AND confirmed counts. Without one the chat never
