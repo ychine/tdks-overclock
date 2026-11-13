@@ -1,72 +1,103 @@
+<div align="center">
+
+<img src="https://cdn.discordapp.com/attachments/1180089240986583060/1570663355398492170/linaw.png?ex=6af7e9bd&is=6af6983d&hm=a7c4bfb6ed4ec99514d4ec3bfd0d45397fa534e0439e40421f8b3a8a7c9ecb68&" alt="Linaw logo" width="160" />
+
 # Linaw
 
-Linaw helps Filipino workers understand their employment contract or quitclaim.
-Upload a photo or PDF, check what the app read, and get a plain-language explanation in English, Filipino, or Taglish.
+**Understand your contract before you sign it.**
 
-> Linaw **explains**. It does not give legal advice. Every summary and chat screen shows a disclaimer and links to DOLE, DMW, OWWA, and the Public Attorney's Office (PAO).
+Upload a photo or PDF of an employment contract or quitclaim, check what the app read, and get a plain-language explanation in English, Filipino, or Taglish.
 
-## How it works
+![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js&logoColor=white)
+![React](https://img.shields.io/badge/React-Vite-61DAFB?logo=react&logoColor=black)
+![Tailwind](https://img.shields.io/badge/Tailwind-CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![Express](https://img.shields.io/badge/Express-API-000000?logo=express&logoColor=white)
+![Powered by Lumen](https://img.shields.io/badge/Powered%20by-Lumen%20OCR%20%26%20AI-8A5CF6)
 
-1. **Consent**: the user agrees to how their document is collected, used, and kept.
-2. **Upload**: JPG, PNG, or PDF. Limits on size and page count come from configuration.
-3. **OCR**: text, per-field confidence, and bounding boxes are extracted (Lumen OCR, behind an `OcrProvider` adapter).
-4. **Verify and correct**: the user reviews the original image next to the extracted fields, fixes mistakes, and confirms.
-5. **Explain**: only confirmed fields go to the AI (Lumen AI Chat, behind a `ChatProvider` adapter). Output includes a 30-second summary with clause citations, glossary terms, and follow-up chat.
+[The Problem](#-the-problem) •
+[The Solution](#-the-solution) •
+[How Lumen Is Used](#-how-lumen-is-used) •
+[Getting Started](#-getting-started) •
+[Project Layout](#-project-layout)
 
-Also supported: contract comparison, a no-contract questionnaire (Batas Kasambahay), and a Get Help page.
+</div>
 
-## Non-negotiables
+> [!IMPORTANT]
+> **Linaw explains. It does not give legal advice.** It never says a contract is legal or illegal, or whether you should sign.
 
-- **No legal advice.** The app explains and refers users to agencies.
-- **No LLM money math.** Pure, deterministic calculators compute pay, deductions, and 13th-month pay. The LLM only explains the results. Money uses integer centavos or `decimal.js`, never floats.
-- **Confirmed fields only.** The LLM never sees unverified OCR output.
-- **Untrusted documents.** Document text is wrapped as untrusted data in every prompt, and model output is validated with zod before use.
-- **Privacy first.** Contracts are sensitive personal data under the PH Data Privacy Act. The app requires explicit consent, works without an account, and **stores no user data**: the document and its results live only in the browser tab and are cleared when it closes, provider copies are deleted after use, "Clear my document" removes everything at once, and document content is never logged.
-- **Languages.** English, Filipino, and Taglish. A regional language is offered only if marked "tested" in `config/supported-languages.json`.
+---
 
-## Tech stack
+## 🧩 The Problem
 
-| Area | Choice |
-| --- | --- |
-| Frontend | React, Vite, Tailwind CSS 4, React Router, GSAP and Motion, beUI agent components |
-| Backend | Node, Express 5 |
-| Data | Supabase (current), PostgreSQL |
-| i18n | `react-i18next` with `en`, `fil`, and `tl-en` locales |
-| AI | Lumen OCR and Lumen AI Chat, only behind adapter interfaces, called from the server only |
-| Testing | Vitest. Every calculator needs unit and property tests |
-| Fonts | Fraunces (headlines, brand), Figtree (body) |
-| Palette | paper `#FBF7EF`, ink `#1B2433`, blue `#0038A8`, red `#CE1126`, yellow `#FCD116` |
+Employment contracts and quitclaims are written in dense legal English, and workers are often asked to sign on the spot. Professional review is expensive and hard to reach, especially for **kasambahay**, **local employees**, and **OFWs**.
 
-## Project structure
+The result: people agreeing to terms they don't understand, such as low or unclear pay, excessive penalties, long hours, or giving up their rights in a quitclaim.
 
-Current layout:
+## 💡 The Solution
 
-```
-backend/     Express API (server.js, supabase.js)
-frontend/    React app
-  src/pages/       Landing, Home, Consent, Upload, Reading, Review, Summary,
-                   Salary, Chat, Compare, Questions, Help
-  src/components/  UI and agent components
-  src/i18n/        Locale files
-  scripts/         check-i18n.mjs
-figma-make/  Design prototype
-.kiro/       Steering (product, tech, structure) and the `linaw` spec
-```
+Linaw turns the document into something a worker can actually check.
 
-Target layout from the steering docs:
+| Step | What happens |
+| :--: | :-- |
+| 1️⃣ **Consent** | The user agrees to how the document is handled. |
+| 2️⃣ **Upload** | JPG, PNG, or PDF (20 MB default, configurable). |
+| 3️⃣ **Read** | Lumen OCR extracts text and per-field confidence. |
+| 4️⃣ **Verify & correct** | The user compares the original page against the extracted salary, start date, term, hours, rest day, and penalty, fixes mistakes, and confirms. |
+| 5️⃣ **Understand** | A short summary, glossary, deterministic salary breakdown, and **Ask Linaw** chat about the confirmed contract. |
+| 6️⃣ **Get help** | Referrals to **DOLE**, **DMW**, **OWWA**, and **PAO**. |
 
-```
-/apps/web         React app
-/apps/api         Express app
-/packages/shared  Types, zod schemas, calculators (shared by web and api)
-/config           supported-languages.json, wage-and-contribution-tables.json,
-                  kasambahay-requirements.json, agency-contacts.json
-/prompts          Versioned LLM prompt templates
+**Also included:** worker-type guidance (kasambahay, OFW, local), contract comparison, and a no-contract questionnaire.
+
+```mermaid
+flowchart LR
+    A[Consent] --> B[Upload]
+    B --> C[Lumen OCR]
+    C --> D[Verify & Correct]
+    D --> E[Summary · Glossary · Salary · Chat]
+    E --> F[Referrals]
 ```
 
-## Getting started
+### 🛡️ Guardrails
 
-Requirements: Node.js 20 or newer and a Supabase project.
+- ✅ **Confirmed fields only.** The AI never sees unverified OCR text.
+- 🧮 **No AI money math.** `frontend/src/lib/payroll.js` computes pay, deductions, and 13th-month pay deterministically.
+- ⚖️ **Verified law only.** Chat is grounded in human-verified provisions from `backend/src/legal/`, filtered by worker type.
+- 🔒 **No accounts, no app-side document database.** Working state lives in the browser tab and is cleared when it closes. Secrets stay on the server and document text is never logged.
+
+---
+
+## 🔆 How Lumen Is Used
+
+Both integrations are called from the Node backend, so `LUMEN_API_KEY` and `LUMEN_API_SECRET` never reach the browser.
+
+<details open>
+<summary><b>📄 Lumen OCR</b> — <code>backend/src/services/lumenOcr.js</code> (proxied through <code>/api/ocr</code>)</summary>
+
+<br />
+
+- Uploads the raw PDF/JPEG/PNG with `POST /documents`, then polls `GET /documents/:id` until the read finishes.
+- Fetches `GET /documents/:id/pages?IncludeWords=true` for words plus layout, and exposes Lumen's review endpoints for corrections.
+- The frontend (`frontend/src/lib/extract.js`) converts pages into the six contract fields with confidence scores and source lines.
+
+</details>
+
+<details open>
+<summary><b>💬 Lumen AI Chat</b> — <code>backend/src/services/lumenChat.js</code> (proxied through <code>/api/chat</code>)</summary>
+
+<br />
+
+- Opens one Lumen session per contract, then sends one message per question.
+- The server builds that message (`chatMessage.js`): explanation rules, the user's confirmed fields (with corrected flags), and at most two verified law excerpts selected for the question and worker type (`legalRefs.js`). If verified law is unavailable, the answer explains the contract only.
+- Lumen tags facts with `[C:key]` / `[L:id]`. The server keeps only citations to fields and law it actually sent, drops invented ones, and returns the answer with its basis.
+- Timeouts, busy responses, and expired sessions are mapped to a consistent error envelope so the UI can offer a retry.
+
+</details>
+
+---
+
+## 🚀 Getting Started
+
+**Requirements:** Node.js 20+ and Lumen API credentials.
 
 ### Backend
 
@@ -78,17 +109,25 @@ npm install
 Create `backend/.env`:
 
 ```env
+PORT=5000
 SUPABASE_URL=
 SUPABASE_SECRET_KEY=
-PORT=5000
+LUMEN_OCR_BASE_URL=
+LUMEN_CHAT_BASE_URL=
+LUMEN_CHAT_INSTANCE_ID=
+LUMEN_API_KEY=
+LUMEN_API_SECRET=
 ```
 
 ```bash
-npm run dev     # watch mode
+npm run dev     # node --watch, reads .env
 npm start       # production
 ```
 
-The API runs at `http://localhost:5000`.
+The API runs at `http://localhost:5000`. OCR and chat return a clear "not configured" error if the Lumen values are missing.
+
+> [!NOTE]
+> Supabase is only used by the demo `/api/todos` route in `server.js`.
 
 ### Frontend
 
@@ -102,40 +141,37 @@ Create `frontend/.env`:
 ```env
 VITE_SUPABASE_URL=
 VITE_SUPABASE_PUBLISHABLE_KEY=
+# VITE_API_URL=http://localhost:5000
 ```
 
-```bash
-npm run dev            # http://localhost:5173
-npm run build
-npm run preview
-npm run lint
-npm run check:i18n     # verify locale files stay in sync
+| Command | Description |
+| :-- | :-- |
+| `npm run dev` | Start dev server at `http://localhost:5173` |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Run the linter |
+| `npm run check:i18n` | Keep locale + glossary keys in sync |
+
+> [!TIP]
+> CORS accepts any `http://localhost:<port>`, so Vite can fall back from 5173 to 5174 and still work.
+
+---
+
+## 🗂️ Project Layout
+
+```
+backend/     Express API: Lumen OCR/chat proxies, legal references
+frontend/    React + Vite + Tailwind app: pages, i18n, extractors, calculators
+figma-make/  Design prototype
+.kiro/       Product/tech steering and specs
 ```
 
-Keep secrets (Supabase secret key, OCR and AI provider keys) in server environment variables. Never put them in client code or commit `.env` files.
+Product rules and specs live in `.kiro/steering/` and `.kiro/specs/`. Visual direction is in `DESIGN.md`.
 
-## Specs and design
+---
 
-- Product rules: `.kiro/steering/product.md`
-- Tech choices: `.kiro/steering/tech.md`
-- Folder layout: `.kiro/steering/structure.md`
-- Requirements (R1 to R12), design, and tasks: `.kiro/specs/linaw/`
-- Visual design: `DESIGN.md`, `frontend/design.md`
+<div align="center">
 
-## Accessibility
+Made for Filipino workers 🇵🇭 — *linaw* means "clarity."
 
-- WCAG AA contrast, body text of at least 16px, tap targets of at least 48px
-- Full keyboard operation with visible focus, and screen-reader labels
-- Text-to-speech on summaries, hidden with an explanation when no suitable voice exists
-- Progress states, retries, and resumable uploads for slow networks and low-end Android devices
-
-## Get help
-
-If you are in a difficult or unsafe work situation, contact:
-
-- **DOLE**: Department of Labor and Employment
-- **DMW**: Department of Migrant Workers
-- **OWWA**: Overseas Workers Welfare Administration
-- **PAO**: Public Attorney's Office
-
-Contact details live in `config/agency-contacts.json`. Each entry has a `verified` flag, and production builds fail if any entry is unverified.
+</div>
