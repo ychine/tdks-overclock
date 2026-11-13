@@ -21,7 +21,7 @@ Also supported: contract comparison, a no-contract questionnaire (Batas Kasambah
 - **No LLM money math.** Pure, deterministic calculators compute pay, deductions, and 13th-month pay. The LLM only explains the results. Money uses integer centavos or `decimal.js`, never floats.
 - **Confirmed fields only.** The LLM never sees unverified OCR output.
 - **Untrusted documents.** Document text is wrapped as untrusted data in every prompt, and model output is validated with zod before use.
-- **Privacy first.** Contracts are sensitive personal data under the PH Data Privacy Act. The app requires explicit consent, works without an account, auto-deletes data after a retention window (default 24 hours), offers "Delete my data now", and never logs document content.
+- **Privacy first.** Contracts are sensitive personal data under the PH Data Privacy Act. The app requires explicit consent, works without an account, and **stores no user data**: the document and its results live only in the browser tab and are cleared when it closes, provider copies are deleted after use, "Clear my document" removes everything at once, and document content is never logged.
 - **Languages.** English, Filipino, and Taglish. A regional language is offered only if marked "tested" in `config/supported-languages.json`.
 
 ## Tech stack

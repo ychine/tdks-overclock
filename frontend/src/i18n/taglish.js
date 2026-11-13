@@ -9,7 +9,7 @@ const taglish = {
   'app.close': 'Isara',
   'app.back': 'Bumalik',
   'app.backHome': 'Bumalik sa Home',
-  'app.backLanding': 'Bumalik sa landing page',
+  'app.backLanding': 'Cancel at lumabas',
   'app.retry': 'Retry',
   'app.step': 'Step {n} of 3',
   'app.errorTitle': 'May nangyaring mali.',
@@ -73,7 +73,7 @@ const taglish = {
   'landing.noteAsk': 'Magtanong sa Taglish',
   'landing.trust': [
     'Private by default',
-    'Auto-delete after 24 hours',
+    'Hindi namin sine-save ang document mo',
     'Walang signup',
     'Simple, hindi legalese',
   ],
@@ -120,8 +120,9 @@ const taglish = {
   ],
   'landing.privacyTitle': 'Ang dokumento mo ay sa iyo.',
   'landing.privacyText':
-    'Encrypted habang sinusuri at awtomatikong binubura matapos ang 24 oras. Hindi ibebenta o gagamitin para mag-train ng AI ang personal mong dokumento.',
-  'landing.statLabels': ["auto-delete","wika","hotline","ads o spam"],
+    'Hindi sine-save ng Linaw ang document mo. Nasa phone mo lang ito at nabubura kapag sinara mo ang page. Hindi ibebenta o gagamitin para mag-train ng AI ang personal mong dokumento.',
+  'landing.statLabels': ["document na sine-save","wika","hotline","ads o spam"],
+  'landing.statNone': 'Wala',
   'landing.faqTitle': 'Mga tanong ng workers',
   'landing.faqText': 'Simpleng sagot, short answer muna. I-tap ang tanong para makita ang buong explanation.',
   'landing.faqTopics': ['Lahat', 'Basics', 'Privacy', 'Paggamit ng Linaw', 'Paghingi ng tulong'],
@@ -159,8 +160,8 @@ const taglish = {
     {
       topic: 2,
       q: 'Ano ang nangyayari sa document ko after i-upload?',
-      short: 'Protected ito habang binabasa, tapos auto-delete after 24 hours.',
-      a: 'Naka-encrypt ang file mo habang chine-check ng Linaw. After 24 hours, automatic itong dine-delete kasama ang summary.',
+      short: 'Hindi ito sine-save ng Linaw. Nasa phone mo lang ito hanggang isara mo ang page.',
+      a: 'Ipinapadala ang file nang isang beses sa reading service namin para mabasa ang text, tapos dine-delete ang kopyang iyon. Walang sine-save ang Linaw sa servers nito, at nabubura lahat sa phone mo kapag sinara mo ang page.',
       points: ['Hindi namin binebenta o shine-share kaninuman ang document mo', 'Hindi namin ginagamit ang document mo para mag-train ng AI', 'Walang account na ginagawa, kaya walang naka-link sa pangalan mo'],
     },
     {
@@ -234,7 +235,7 @@ const taglish = {
   'landing.footerRights': 'All rights reserved.',
   'landing.footerBy': 'Gawa ng',
   'landing.footerLinks': 'Footer',
-  'landing.footerPrivacy': 'Auto-delete after 24 hours. Walang signup.',
+  'landing.footerPrivacy': 'Hindi namin sine-save ang document mo. Walang signup.',
 
   // ---------- home ----------
   'home.h1a': 'Intindihin ang kontrata mo',
@@ -245,9 +246,26 @@ const taglish = {
   'home.upload': 'Mag-upload ng kontrata',
   'home.none': 'Wala akong kontrata',
   'home.compare': 'Ikumpara ang dalawang kontrata',
-  'home.trust1': 'Auto-delete after 24 hours',
+  'home.trust1': 'Hindi namin sine-save ang document mo',
   'home.trust2': 'Simple at walang judgment',
   'home.trust3': 'May totoong ahensyang matatakbuhan',
+
+  // ---------- consent ----------
+  'consent.title': 'Before namin basahin ang document mo',
+  'consent.text':
+    'Kailangan muna namin ng okay mo. Heto exactly ang kinocollect namin, paano namin ito ginagamit, at bakit hindi namin ito tinatago.',
+  'consent.whatTitle': 'What we collect',
+  'consent.what': 'Ang photo o PDF na pinili mo. Wala nang iba mula sa phone mo.',
+  'consent.useTitle': 'How we use it',
+  'consent.use':
+    'Para basahin ang contract at i-explain ito sa iyo. Hindi namin ito ibinebenta o ginagamit para mag-train ng AI.',
+  'consent.keepTitle': 'Sine-save ba namin ito?',
+  'consent.keep': 'Hindi ito sine-save ng Linaw. Nabubura ito sa phone mo kapag sinara mo ang page.',
+  'consent.noAccount': 'Walang account, email, o pangalan na kailangan.',
+  'consent.agree': 'Naiintindihan ko at agree ako sa paano kinocollect at ginagamit ang document ko.',
+  'consent.cta': 'Agree at magpatuloy',
+  'consent.notNow': 'Mamaya na',
+  'consent.help': 'Humingi ng tulong',
 
   // ---------- upload ----------
   'upload.title': 'I-upload ang dokumento',
@@ -263,7 +281,7 @@ const taglish = {
   'upload.tips': ['Ipatag ang papel', 'Iwasan ang anino at glare', 'Isama ang buong page sa photo'],
   'upload.privacyTitle': 'Sa iyo ang dokumento mo.',
   'upload.privacyText':
-    'Encrypted habang binabasa. Awtomatikong buburahin ang file at analysis matapos ang 24 oras.',
+    'Hindi sine-save ng Linaw ang file at analysis. Binabasa ito nang isang beses, tapos nabubura kapag sinara mo ang page.',
   'upload.dismiss': 'Isara ang mensahe',
   'file.blurry.title': 'Medyo malabo ang photo.',
   'file.blurry.text': 'Subukang kunan ulit sa maliwanag at patag na lugar.',
@@ -510,6 +528,7 @@ const taglish = {
   'compare.oldDone': 'Na-upload · {name}',
   'compare.oldAria': 'Piliin ang lumang kontrata',
   'compare.replace': 'Palitan',
+  'compare.demo': 'Sample result: ganito ang magiging itsura ng comparison. Coming soon ang totoong pagbasa ng dalawang contract.',
   'compare.new': 'Bagong kontrata',
   'compare.newHint': 'I-tap para mag-upload',
   'compare.newAria': 'Piliin ang bagong kontrata',

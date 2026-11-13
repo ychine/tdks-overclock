@@ -2,7 +2,7 @@ import Icon from '../components/Icon'
 import { Segmented } from '../components/ui/Controls'
 import Button from '../components/ui/Button'
 import { Page } from '../components/ui/Page'
-import { Badge, IconTile, ListGroup, ListRow, Panel } from '../components/ui/Surfaces'
+import { IconTile, ListGroup, ListRow, Panel } from '../components/ui/Surfaces'
 import { LANGUAGES } from '../i18n/messages'
 import { useI18n } from '../i18n/useI18n'
 import { agencies, telHref } from '../lib/agencies'
@@ -75,7 +75,8 @@ export default function Home({ go }) {
             </li>
           ))}
         </ul>
-        <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-2 text-sm text-subtle">
+        {/* On desktop the app footer already carries this note. */}
+        <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-2 text-sm text-subtle lg:hidden">
           <Icon name="alert" size={17} />
           {t('app.disclaimer')}
         </p>
@@ -85,7 +86,6 @@ export default function Home({ go }) {
         <Panel className="p-5">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-sans text-lg font-bold">{t('home.hotlines')}</h2>
-            <Badge tone="ok" icon="phone">24/7</Badge>
           </div>
           <ListGroup>
             {agencies.map((a) => (

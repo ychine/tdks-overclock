@@ -115,13 +115,16 @@ export default function Upload({ go, onFile, onExit }) {
             {t('upload.pick')}
           </Button>
         </div>
-        <button
-          type="button"
-          onClick={() => setProblem('blurry')}
-          className="mt-3 min-h-12 rounded-btn px-3 text-sm text-subtle underline hover:text-ink"
-        >
-          {t('upload.demo')}
-        </button>
+        {/* Dev-only: preview the blurry-photo error without a real bad file. Never shown to workers. */}
+        {import.meta.env.DEV && (
+          <button
+            type="button"
+            onClick={() => setProblem('blurry')}
+            className="mt-3 min-h-12 rounded-btn px-3 text-sm text-subtle underline hover:text-ink"
+          >
+            {t('upload.demo')}
+          </button>
+        )}
       </Panel>
 
       <Callout tone="sun" icon="sun" title={t('upload.tipsTitle')} className="mt-5">

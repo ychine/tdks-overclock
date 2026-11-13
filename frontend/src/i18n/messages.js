@@ -1,6 +1,6 @@
-import english from './english'
-import filipino from './filipino'
-import taglish from './taglish'
+import english from './english.js'
+import filipino from './filipino.js'
+import taglish from './taglish.js'
 
 export const LANGUAGES = ['English', 'Filipino', 'Taglish']
 export const DEFAULT_LANGUAGE = 'Taglish'

@@ -50,9 +50,18 @@ export default function Button({
       {...props}
       {...rest}
     >
-      {icon && <Icon name={icon} size={size === 'lg' ? 22 : 20} />}
-      <span>{children}</span>
-      {trailingIcon && <Icon name={trailingIcon} size={size === 'lg' ? 22 : 20} />}
+      {/* Icons never shrink: long labels (e.g. a full phone number) squeeze the text, not the glyph. */}
+      {icon && (
+        <span className="grid shrink-0 place-items-center">
+          <Icon name={icon} size={size === 'lg' ? 22 : 20} />
+        </span>
+      )}
+      <span className="min-w-0">{children}</span>
+      {trailingIcon && (
+        <span className="grid shrink-0 place-items-center">
+          <Icon name={trailingIcon} size={size === 'lg' ? 22 : 20} />
+        </span>
+      )}
     </Comp>
   )
 }

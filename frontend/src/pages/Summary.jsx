@@ -9,6 +9,7 @@ import Stepper from '../components/ui/Stepper'
 import { Badge, Callout, ListGroup, ListRow, Panel } from '../components/ui/Surfaces'
 import { LANGUAGE_TAGS } from '../i18n/messages'
 import { useI18n } from '../i18n/useI18n'
+import { localizeFieldValue } from '../lib/extract'
 import { findTerms } from '../lib/glossary'
 
 /** Renders an OCR line with the matched term highlighted. */
@@ -25,8 +26,8 @@ function Quote({ text, match }) {
 }
 
 /** Builds the rows and the "things to ask" purely from the fields the user confirmed in Step 2. */
-function buildSummary(fields, t) {
-  const get = (key) => fields.find((f) => f.key === key)?.value?.trim() || ''
+function buildSummary(fields, t, language) {
+  const get = (key) => localizeFieldValue(fields.find((f) => f.key === key)?.value?.trim() || '', language)
   const salary = get('salary')
   const hours = get('hours')
   const rest = get('rest')
@@ -93,8 +94,8 @@ export default function Summary({ go, doc, confirmed }) {
   const [speaking, setSpeaking] = useState(false)
 
   const { items, asks } = useMemo(
-    () => (confirmed ? buildSummary(confirmed, t) : { items: [], asks: [] }),
-    [confirmed, t],
+    () => (confirmed ? buildSummary(confirmed, t, language) : { items: [], asks: [] }),
+    [confirmed, t, language],
   )
   // Terms come from scanning the OCR text of this document. Nothing is shown that isn't in it.
   const terms = useMemo(() => (doc ? findTerms(doc.lines) : []), [doc])

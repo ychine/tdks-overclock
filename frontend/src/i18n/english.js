@@ -8,7 +8,7 @@ const english = {
   'app.close': 'Close',
   'app.back': 'Back',
   'app.backHome': 'Back to Home',
-  'app.backLanding': 'Back to landing',
+  'app.backLanding': 'Cancel and exit',
   'app.retry': 'Retry',
   'app.step': 'Step {n} of 3',
   'app.errorTitle': 'Something went wrong.',
@@ -69,7 +69,7 @@ const english = {
   'landing.previewChat': '“There are 2 things to clear up before you sign.”',
   'landing.noteRead': 'Read aloud',
   'landing.noteAsk': 'Ask in plain English',
-  'landing.trust': ['Private by default', 'Auto-deleted after 24 hours', 'No signup', 'Plain, not legalese'],
+  'landing.trust': ['Private by default', 'We don’t save your document', 'No signup', 'Plain, not legalese'],
   'landing.howTitle': 'You don’t need to be an expert.',
   'landing.howText': 'You make the decision. We just help you see what matters.',
   'landing.steps': [
@@ -113,8 +113,9 @@ const english = {
   ],
   'landing.privacyTitle': 'Your document is yours.',
   'landing.privacyText':
-    'Encrypted while it’s checked and automatically deleted after 24 hours. Your personal document is never sold or used to train AI.',
-  'landing.statLabels': ["auto-delete","languages","hotlines","ads or spam"],
+    'Linaw doesn’t save your document. It stays on your phone and is cleared when you close the page. It is never sold or used to train AI.',
+  'landing.statLabels': ["documents saved","languages","hotlines","ads or spam"],
+  'landing.statNone': 'No',
   'landing.faqTitle': 'Questions workers ask us',
   'landing.faqText': 'Plain answers, short first. Tap a question to see the full explanation.',
   'landing.faqTopics': ['All', 'The basics', 'Privacy', 'Using Linaw', 'Getting help'],
@@ -152,8 +153,8 @@ const english = {
     {
       topic: 2,
       q: 'What happens to my document after I upload it?',
-      short: 'It is protected while it is read, then deleted after 24 hours.',
-      a: 'Your file is encrypted while Linaw checks it. After 24 hours it is deleted automatically, together with the summary.',
+      short: 'Linaw doesn’t save it. It stays on your phone until you close the page.',
+      a: 'Your file is sent once to our reading service so the text can be read, and that copy is then deleted. Linaw keeps nothing on its servers, and everything on your phone is cleared when you close the page.',
       points: ['We never sell your document or share it with anyone', 'We never use your document to train AI', 'No account is made, so nothing is tied to your name'],
     },
     {
@@ -227,7 +228,7 @@ const english = {
   'landing.footerRights': 'All rights reserved.',
   'landing.footerBy': 'Made by',
   'landing.footerLinks': 'Footer',
-  'landing.footerPrivacy': 'Auto-deleted after 24 hours. No signup.',
+  'landing.footerPrivacy': 'We don’t save your document. No signup.',
 
   'home.h1a': 'Understand your contract',
   'home.h1b': 'before you sign.',
@@ -236,9 +237,25 @@ const english = {
   'home.upload': 'Upload a contract',
   'home.none': 'I don’t have a contract',
   'home.compare': 'Compare two contracts',
-  'home.trust1': 'Auto-deleted after 24 hours',
+  'home.trust1': 'We don’t save your document',
   'home.trust2': 'Simple and judgment-free',
   'home.trust3': 'Real agencies you can turn to',
+
+  // ---------- consent ----------
+  'consent.title': 'Before we read your document',
+  'consent.text':
+    'We need your okay first. Here is exactly what we collect, how we use it, and why we don’t keep it.',
+  'consent.whatTitle': 'What we collect',
+  'consent.what': 'The photo or PDF you choose. Nothing else from your phone.',
+  'consent.useTitle': 'How we use it',
+  'consent.use': 'Only to read the contract and explain it to you. We never sell it or use it to train AI.',
+  'consent.keepTitle': 'Do we keep it?',
+  'consent.keep': 'Linaw doesn’t save it. It’s cleared from your phone when you close the page.',
+  'consent.noAccount': 'No account, email, or name is needed.',
+  'consent.agree': 'I understand and agree to how my document is collected and used.',
+  'consent.cta': 'Agree and continue',
+  'consent.notNow': 'Not now',
+  'consent.help': 'Get help',
 
   'upload.title': 'Upload your document',
   'upload.text': 'Contract, quitclaim, offer letter—a photo is fine.',
@@ -253,7 +270,7 @@ const english = {
   'upload.tips': ['Flatten the paper', 'Avoid shadows and glare', 'Fit the whole page in the photo'],
   'upload.privacyTitle': 'Your document is yours.',
   'upload.privacyText':
-    'Encrypted while it’s read. The file and its analysis are deleted automatically after 24 hours.',
+    'Linaw doesn’t save your file or its analysis. It’s read once, then cleared when you close the page.',
   'upload.dismiss': 'Dismiss message',
   'file.blurry.title': 'The photo is a bit blurry.',
   'file.blurry.text': 'Try again in a bright place with the paper laid flat.',
@@ -491,6 +508,7 @@ const english = {
   'compare.oldDone': 'Uploaded · {name}',
   'compare.oldAria': 'Choose the old contract',
   'compare.replace': 'Replace',
+  'compare.demo': 'Sample result: this shows how a comparison will look. Reading two real contracts side by side is coming soon.',
   'compare.new': 'New contract',
   'compare.newHint': 'Tap to upload',
   'compare.newAria': 'Choose the new contract',

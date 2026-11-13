@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -115,79 +115,134 @@ function BrushSun() {
   )
 }
 
-/** The hero visual reuses the real ListGroup / ListRow / Badge, so the preview is the product. */
+/** A contract page drawn with bars. Tinted rows mark what Linaw found; the page number shows when opened. */
+function Page({ rows, open, reduce, label, className, animate }) {
+  return (
+    <motion.div
+      aria-hidden="true"
+      initial={false}
+      animate={animate}
+      transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 200, damping: 24, mass: 0.9 }}
+      style={{ transformOrigin: '100% 50%' }}
+      className={cn('absolute inset-y-3 left-0 w-[64%] rounded-card border border-line bg-surface-2 p-5', className)}
+    >
+      <div className="h-3 w-2/5 rounded-full bg-ink/25" />
+      {rows.map((group, g) => (
+        <div key={g} className={cn('grid gap-2.5', g === 0 ? 'mt-5' : 'mt-6')}>
+          {group.map(([width, tone], i) => (
+            <div key={i} className={cn('rounded-full', tone ? 'h-2.5' : 'h-2 bg-line', width, tone)} />
+          ))}
+        </div>
+      ))}
+      <motion.span
+        initial={false}
+        animate={{ opacity: open ? 1 : 0, y: open ? 0 : 6 }}
+        transition={{ duration: reduce ? 0 : 0.25, delay: open && !reduce ? 0.15 : 0 }}
+        className="absolute bottom-4 left-5 rounded-full bg-surface px-2.5 py-1 text-xs font-semibold text-subtle tabular-nums"
+      >
+        {label}
+      </motion.span>
+    </motion.div>
+  )
+}
+
+const PAGE_ONE = [
+  [['w-full'], ['w-11/12'], ['w-4/5', 'bg-brand-soft ring-1 ring-brand/40'], ['w-full'], ['w-9/12']],
+  [['w-full'], ['w-10/12', 'bg-sun/60'], ['w-full'], ['w-7/12']],
+  [['w-11/12'], ['w-full', 'bg-alert-soft ring-1 ring-alert/50'], ['w-8/12']],
+]
+const PAGE_TWO = [
+  [['w-full'], ['w-10/12'], ['w-full'], ['w-8/12']],
+  [['w-11/12'], ['w-full'], ['w-9/12', 'bg-brand-soft ring-1 ring-brand/40'], ['w-6/12']],
+  [['w-full'], ['w-7/12']],
+]
+const SHADOW_REST = '0 10px 26px -14px rgb(16 23 34 / 0.22)'
+const SHADOW_LIFTED = '0 26px 50px -20px rgb(16 23 34 / 0.4)'
+
+/**
+ * Hero visual. The worker's two photographed pages sit behind Linaw's summary card. Hover (or tap on touch)
+ * opens the stack like a booklet: both pages swing out from the spine, the back one furthest, and the
+ * summary lifts forward. The card reuses the real ListGroup / ListRow / Badge, so the preview is the product.
+ */
 function ContractPreview({ t }) {
-  const [open] = useState(false)
-  const spring = { type: 'spring', stiffness: 200, damping: 24, mass: 0.9 }
+  const reduce = useReducedMotion()
+  const [open, setOpen] = useState(false)
+  const hover = (value) => (e) => e.pointerType === 'mouse' && setOpen(value)
+  const tap = (e) => e.pointerType !== 'mouse' && setOpen((v) => !v)
+  const spring = reduce ? { duration: 0 } : { type: 'spring', stiffness: 200, damping: 24, mass: 0.9 }
   return (
     <div data-hero="visual" className="relative mx-auto w-full max-w-[480px] py-10">
-      <div data-parallax className="relative">
-        {/* The original page: what the worker photographed. Bars stand in for text; colors mark what Linaw found. */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-y-3 left-0 z-[1] w-[64%] -rotate-[4deg] rounded-card border border-line bg-surface-2 p-5 shadow-card"
-        >
-          <div className="h-3 w-2/5 rounded-full bg-ink/25" />
-          <div className="mt-5 grid gap-2.5">
-            <div className="h-2 w-full rounded-full bg-line" />
-            <div className="h-2 w-11/12 rounded-full bg-line" />
-            <div className="h-2.5 w-4/5 rounded-full bg-brand-soft ring-1 ring-brand/40" />
-            <div className="h-2 w-full rounded-full bg-line" />
-            <div className="h-2 w-9/12 rounded-full bg-line" />
-          </div>
-          <div className="mt-6 grid gap-2.5">
-            <div className="h-2 w-full rounded-full bg-line" />
-            <div className="h-2.5 w-10/12 rounded-full bg-sun/60" />
-            <div className="h-2 w-full rounded-full bg-line" />
-            <div className="h-2 w-7/12 rounded-full bg-line" />
-          </div>
-          <div className="mt-6 grid gap-2.5">
-            <div className="h-2 w-11/12 rounded-full bg-line" />
-            <div className="h-2.5 w-full rounded-full bg-alert-soft ring-1 ring-alert/50" />
-            <div className="h-2 w-8/12 rounded-full bg-line" />
-          </div>
-        </div>
+      <div
+        data-parallax
+        className="relative [perspective:1400px]"
+        onPointerEnter={hover(true)}
+        onPointerLeave={hover(false)}
+        onPointerUp={tap}
+      >
+        <Page
+          rows={PAGE_TWO}
+          open={open}
+          reduce={reduce}
+          label="2 / 2"
+          className="z-0"
+          animate={
+            open
+              ? { x: '-22%', y: 8, rotate: -12, rotateY: 24, boxShadow: SHADOW_LIFTED }
+              : { x: '-3%', y: 6, rotate: -6.5, rotateY: 0, boxShadow: SHADOW_REST }
+          }
+        />
+        <Page
+          rows={PAGE_ONE}
+          open={open}
+          reduce={reduce}
+          label="1 / 2"
+          className="z-[1]"
+          animate={
+            open
+              ? { x: '-9%', y: -10, rotate: -5.5, rotateY: 14, boxShadow: SHADOW_LIFTED }
+              : { x: 0, y: 0, rotate: -4, rotateY: 0, boxShadow: SHADOW_REST }
+          }
+        />
 
         <motion.div
           initial={false}
-          animate={open ? { x: '7%', y: -14, rotate: 3.5, rotateY: -10 } : { x: 0, y: 0, rotate: 1.5, rotateY: 0 }}
+          animate={open ? { x: '7%', y: -14, rotate: 3, rotateY: -8 } : { x: 0, y: 0, rotate: 1.5, rotateY: 0 }}
           transition={spring}
           style={{ transformOrigin: '0% 50%' }}
           className="relative z-[2] mt-14 ml-auto w-[min(400px,90%)]"
         >
-        <BrushSun />
-        <Panel className="relative z-[1] p-4 shadow-float">
-          <div className="flex items-center gap-3 border-b border-line pb-4">
-            <IconTile icon="file" tone="brand" />
-            <div className="grid flex-1 text-sm">
-              <strong>{t('landing.previewFile')}</strong>
-              <small className="text-subtle">{t('landing.previewMeta')}</small>
+          <BrushSun />
+          <Panel className="relative z-[1] p-4 shadow-float">
+            <div className="flex items-center gap-3 border-b border-line pb-4">
+              <IconTile icon="file" tone="brand" />
+              <div className="grid flex-1 text-sm">
+                <strong>{t('landing.previewFile')}</strong>
+                <small className="text-subtle">{t('landing.previewMeta')}</small>
+              </div>
+              <Badge tone="ok" icon="check">OK</Badge>
             </div>
-            <Badge tone="ok" icon="check">OK</Badge>
-          </div>
-          <p className="pt-4 pb-2 text-sm font-semibold text-subtle">{t('landing.previewLabel')}</p>
-          <ListGroup data-preview="rows">
-            <ListRow icon="wallet" tone="brand" title={t('landing.previewSalary')} value={t('landing.previewSalaryValue')} />
-            <ListRow icon="sun" tone="sun" title={t('landing.previewHours')} value={t('landing.previewHoursValue')} />
-            <ListRow
-              icon="alert"
-              tone="alert"
-              title={t('landing.previewAsk')}
-              detail={t('landing.previewAskValue')}
-              badge={<Badge tone="alert">{t('summary.askBadge')}</Badge>}
-              className="bg-alert-soft"
-            />
-          </ListGroup>
-          <div data-preview="chat" className="mt-3 flex gap-2.5 rounded-card bg-navy p-3.5 text-[#f8f4ec]">
-            <span className="mt-0.5 shrink-0 text-sun">
-              <Icon name="spark" size={18} />
-            </span>
-            <p className="text-sm leading-snug">{t('landing.previewChat')}</p>
-          </div>
-        </Panel>
+            <p className="pt-4 pb-2 text-sm font-semibold text-subtle">{t('landing.previewLabel')}</p>
+            <ListGroup data-preview="rows">
+              <ListRow icon="wallet" tone="brand" title={t('landing.previewSalary')} value={t('landing.previewSalaryValue')} />
+              <ListRow icon="sun" tone="sun" title={t('landing.previewHours')} value={t('landing.previewHoursValue')} />
+              <ListRow
+                icon="alert"
+                tone="alert"
+                title={t('landing.previewAsk')}
+                detail={t('landing.previewAskValue')}
+                badge={<Badge tone="alert">{t('summary.askBadge')}</Badge>}
+                className="bg-alert-soft"
+              />
+            </ListGroup>
+            <div data-preview="chat" className="mt-3 flex gap-2.5 rounded-card bg-navy p-3.5 text-[#f8f4ec]">
+              <span className="mt-0.5 shrink-0 text-sun">
+                <Icon name="spark" size={18} />
+              </span>
+              <p className="text-sm leading-snug">{t('landing.previewChat')}</p>
+            </div>
+          </Panel>
         </motion.div>
-          </div>
-          
+      </div>
     </div>
   )
 }
@@ -242,7 +297,7 @@ function Audiences({ t, enter }) {
 /** Human fallback under the FAQ: a free call to DOLE, or start checking the contract. */
 function StillHelp({ t, enter, className }) {
   return (
-    <div className={cn('rounded-card bg-navy p-6 text-[#f8f4ec]', className)}>
+    <div className={cn('rounded-card bg-navy p-6 text-[#f8f4ec] dark:ring-1 dark:ring-line', className)}>
       <p className="font-display text-2xl font-semibold">{t('landing.faqStillTitle')}</p>
       <p className="mt-2 text-[#f8f4ec]/80">{t('landing.faqStillText')}</p>
       <div className="mt-5 flex flex-wrap gap-3">
@@ -314,7 +369,7 @@ export default function Landing({ enter, dark, setDark }) {
   const info = t('help.agencies')
   const root = useRef(null)
   const trustIcons = ['lock', 'refresh', 'check', 'spark']
-  const statValues = [24, 3, 4, 0]
+  const statValues = [0, 3, 4, 0]
 
   // Smooth, inertial scrolling. Skipped for prefers-reduced-motion. Driven by GSAP's ticker so
   // ScrollTrigger stays in sync.
@@ -517,8 +572,7 @@ export default function Landing({ enter, dark, setDark }) {
                 <div key={label} className="flex flex-col bg-navy p-6">
                   <dt className="order-2 mt-1 text-sm text-[#f8f4ec]/75">{label}</dt>
                   <dd className="font-display text-5xl font-semibold tabular-nums">
-                    <span data-count={statValues[i]}>{statValues[i]}</span>
-                    {i === 0 && <span className="text-3xl">h</span>}
+                    <span data-count={statValues[i]}>{i === 0 ? t('landing.statNone') : statValues[i]}</span>
                     <span aria-hidden="true" className="mt-3 block h-1 w-8 rounded-full bg-sun" />
                   </dd>
                 </div>

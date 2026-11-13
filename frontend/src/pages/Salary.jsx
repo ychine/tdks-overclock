@@ -8,6 +8,7 @@ import { Page, PageHeading } from '../components/ui/Page'
 import { Card, IconTile, ListGroup, Panel } from '../components/ui/Surfaces'
 import { useI18n } from '../i18n/useI18n'
 import { contract, peso } from '../lib/contract'
+import { localizeFieldValue } from '../lib/extract'
 import { computeDeductions, parseSalary } from '../lib/payroll'
 
 /** Starting salary: the one confirmed in Step 2 when it is monthly, otherwise the sample. */
@@ -38,7 +39,7 @@ function CountUp({ value }) {
 }
 
 export default function Salary({ go, confirmed }) {
-  const { t } = useI18n()
+  const { t, language } = useI18n()
   const [start] = useState(() => initialSalary(confirmed))
   const [input, setInput] = useState(String(start.amount))
 
@@ -53,7 +54,7 @@ export default function Salary({ go, confirmed }) {
     start.source === 'contract'
       ? t('salary.fromContract')
       : start.source === 'notMonthly'
-        ? t('salary.notMonthly', { value: start.raw })
+        ? t('salary.notMonthly', { value: localizeFieldValue(start.raw, language) })
         : t('salary.sample')
 
   return (
@@ -102,7 +103,7 @@ export default function Salary({ go, confirmed }) {
                   {row.label}
                   <span className="rounded-md bg-surface-2 px-1.5 py-0.5 text-xs text-subtle">{t('salary.mandatory')}</span>
                 </span>
-                <strong className="text-alert tabular-nums">− {peso(row.amount)}</strong>
+                <strong className="shrink-0 whitespace-nowrap text-alert tabular-nums">−{'\u00a0'}{peso(row.amount)}</strong>
               </li>
             ))}
             <li className="flex min-h-16 items-center justify-between bg-brand-soft/60 px-5 text-lg">
