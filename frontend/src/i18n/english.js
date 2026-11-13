@@ -1,4 +1,4 @@
-// English: plain, friendly. Keys mirror taglish.js.
+﻿// English: plain, friendly. Keys mirror taglish.js.
 const english = {
   'app.skip': 'Skip to content',
   'app.disclaimer': 'We explain, we don’t give legal advice.',
@@ -372,13 +372,7 @@ const english = {
     'How many hours is the job really—just 8, or is there extra?',
   ],
 
-  "chat.workerQ": "Who is this contract for? Different laws apply to each.",
-  "chat.worker.kasambahay": "Kasambahay (domestic worker)",
-  "chat.worker.ofw": "OFW / working abroad",
-  "chat.worker.local": "Employee in the Philippines",
-  "chat.workerFirst": "First choose who the contract is for.",
   "chat.noLawYet": "Linaw has no verified law for this yet, so it can only explain your contract. For legal questions, contact DOLE, DMW, or PAO.",
-  "chat.err.INVALID_WORKER_TYPE": "First choose who the contract is for.",
   "chat.sugg.missing": "My contract doesn't say anything about {label}. What should I ask?",
   "chat.sugg.penalty": "What does the law say if I leave before the contract ends?",
   "chat.sugg.rest": "What does the law say about rest, and what does my contract say?",
