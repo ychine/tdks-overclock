@@ -123,18 +123,6 @@ export default function Compare() {
           {/* Honest about what this is. Always visible, never dismissible, until real extraction exists. */}
           <Callout tone="info" icon="help" title={t('compare.sample.title')} className="mb-4" role="note">
             {t('compare.sample.text')}
-          <Callout tone="info" icon="spark" className="mb-4" role="note">
-            {t('compare.demo')}
-          </Callout>
-          <Callout title={t('compare.alertLabel')} className="mb-5">
-            <p className="font-sans text-lg font-bold text-ink">
-              {t('compare.alertTitle')} <s>₱18,000</s>{' '}
-              <span className="inline-block align-[-3px]">
-                <Icon name="arrow" size={18} />
-              </span>{' '}
-              ₱16,500
-            </p>
-            <p className="mt-1">{t('compare.alertText')}</p>
           </Callout>
 
           {biggest && (
