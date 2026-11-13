@@ -23,6 +23,8 @@ import { Badge, Panel } from '../components/ui/Surfaces'
 import { LANGUAGE_TAGS } from '../i18n/messages'
 import { useI18n } from '../i18n/useI18n'
 import { matchIntent } from '../lib/contractQa'
+import { fullText } from '../lib/extract'
+import { detectWorkerType } from '../lib/workerType'
 
 const stripBold = (text) => text.replaceAll('**', '')
 const hasValue = (field) => String(field?.value ?? '').trim() !== ''
@@ -32,9 +34,6 @@ const FIXED_INTENTS = ['quitclaim', 'probationary']
 
 // Fields that have a "what does the law say" suggestion, in priority order.
 const FIELD_SUGGESTIONS = ['penalty', 'rest', 'hours', 'salary', 'start']
-
-// Which law applies depends on who the worker is, so the user picks this before asking.
-const WORKER_TYPES = ['kasambahay', 'ofw', 'local']
 
 /**
  * Suggestions come from the user's own confirmed fields (no AI):
@@ -89,14 +88,15 @@ function useBeuiMessages(t) {
   )
 }
 
-export default function Chat({ go, confirmed }) {
+export default function Chat({ go, doc, confirmed }) {
   const { t, language } = useI18n()
   const messages = useBeuiMessages(t)
   const [thread, setThread] = useState([])
   const [asked, setAsked] = useState([]) // suggestion ids already used
   const [sessionId, setSessionId] = useState(null) // one Lumen conversation per confirmed contract
   const [contract, setContract] = useState(confirmed)
-  const [workerType, setWorkerType] = useState(null) // 'kasambahay' | 'ofw' | 'local'
+  // Who the contract is for, read from the OCR text: 'kasambahay' | 'ofw' | 'local'. Never asked.
+  const workerType = useMemo(() => detectWorkerType(doc ? fullText(doc.lines) : ''), [doc])
   const [coverage, setCoverage] = useState(null) // verified law entries per worker type
   const [copied, setCopied] = useState(null)
   const nextId = useRef(0)
@@ -108,7 +108,6 @@ export default function Chat({ go, confirmed }) {
     setThread([])
     setAsked([])
     setSessionId(null)
-    setWorkerType(null)
   }
 
   useEffect(() => {
@@ -125,7 +124,7 @@ export default function Chat({ go, confirmed }) {
   }, [])
 
   const suggestions = useMemo(
-    () => (confirmed && workerType ? buildSuggestions(confirmed, t, workerType).filter((s) => !asked.includes(s.id)) : []),
+    () => (confirmed ? buildSuggestions(confirmed, t, workerType).filter((s) => !asked.includes(s.id)) : []),
     [confirmed, t, asked, workerType],
   )
 
@@ -137,7 +136,7 @@ export default function Chat({ go, confirmed }) {
 
   const ask = async (text, suggestionId) => {
     const question = text.trim()
-    if (!question || busy || !workerType) return // one question at a time: no double charges
+    if (!question || busy) return // one question at a time: no double charges
     const id = nextId.current++
     if (suggestionId) setAsked((list) => [...list, suggestionId])
 
@@ -169,13 +168,6 @@ export default function Chat({ go, confirmed }) {
     }
   }
 
-  // Switching worker type means different law, so start a clean conversation.
-  const chooseWorker = (type) => {
-    setWorkerType(type)
-    setThread([])
-    setAsked([])
-    setSessionId(null)
-  }
   const noLawFor = (type) => coverage && coverage[type] === 0
 
   const retry = (turn) => {
@@ -233,32 +225,7 @@ export default function Chat({ go, confirmed }) {
                   <MessageBubble variant="soft">
                     <MessageBubbleContent>
                       <p>{t('chat.greeting')}</p>
-                    </MessageBubbleContent>
-                  </MessageBubble>
-                </MessageContent>
-              </Message>
-
-              <Message from="assistant">
-                <Avatar />
-                <MessageContent>
-                  <MessageBubble variant="soft">
-                    <MessageBubbleContent>
-                      <p className="font-semibold">{t('chat.workerQ')}</p>
-                      <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label={t('chat.workerQ')}>
-                        {WORKER_TYPES.map((type) => (
-                          <Chip
-                            key={type}
-                            aria-pressed={workerType === type}
-                            disabled={busy}
-                            className={workerType === type ? 'border-brand bg-brand-soft' : undefined}
-                            onClick={() => chooseWorker(type)}
-                          >
-                            {workerType === type ? '✓ ' : ''}
-                            {t(`chat.worker.${type}`)}
-                          </Chip>
-                        ))}
-                      </div>
-                      {workerType && noLawFor(workerType) && <p className="mt-2 text-sm text-subtle">{t('chat.noLawYet')}</p>}
+                      {noLawFor(workerType) && <p className="mt-2 text-sm text-subtle">{t('chat.noLawYet')}</p>}
                     </MessageBubbleContent>
                   </MessageBubble>
                 </MessageContent>
@@ -352,8 +319,7 @@ export default function Chat({ go, confirmed }) {
             <PromptInput
               minRows={2}
               maxRows={4}
-              disabled={busy || !workerType}
-              placeholder={workerType ? undefined : t('chat.workerFirst')}
+              disabled={busy}
               onSubmit={(prompt) => ask(prompt)}
               className="rounded-card border-line shadow-card"
             />
