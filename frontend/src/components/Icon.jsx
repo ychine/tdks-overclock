@@ -88,6 +88,7 @@ const paths = {
   ),
   map: <path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15m6-12v15" />,
   chevron: <path d="m9 18 6-6-6-6" />,
+  minus: <path d="M5 12h14" />,
   plus: <path d="M12 5v14M5 12h14" />,
   close: <path d="m6 6 12 12M18 6 6 18" />,
   wifi: (
